@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { BreadcrumbComponent, ShellBreadcrumbItem } from './breadcrumb.component';
@@ -22,7 +23,7 @@ import { TopbarComponent } from './topbar.component';
       <div class="erp-shell__main">
         <app-topbar
           title="Daqiq ERP"
-          subtitle="زیرساخت اولیه سامانه"
+          subtitle="ERP shell foundation"
           [sidebarCollapsed]="sidebarCollapsed()"
           (sidebarToggled)="toggleSidebar()"
         />
@@ -30,7 +31,7 @@ import { TopbarComponent } from './topbar.component';
         <main class="erp-shell__body">
           <app-breadcrumb [items]="breadcrumbItems()" />
 
-          <section class="erp-shell__content" aria-label="محتوای صفحه">
+          <section class="erp-shell__content" aria-label="Page content">
             <router-outlet />
           </section>
 
@@ -42,17 +43,19 @@ import { TopbarComponent } from './topbar.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShellLayoutComponent {
+  private readonly document = inject(DOCUMENT);
+
   protected readonly sidebarCollapsed = signal(false);
 
   protected readonly breadcrumbItems = signal<readonly ShellBreadcrumbItem[]>([
     {
-      label: 'داشبورد'
+      label: 'Dashboard'
     }
   ]);
 
   protected readonly menuItems = signal<readonly ShellMenuItem[]>([
     {
-      label: 'داشبورد',
+      label: 'Dashboard',
       icon: 'pi pi-chart-line',
       route: '/dashboard'
     }
@@ -63,7 +66,7 @@ export class ShellLayoutComponent {
   }
 
   protected closeSidebarOnSmallScreens(): void {
-    if (window.matchMedia('(max-width: 900px)').matches) {
+    if (this.document.defaultView?.matchMedia('(max-width: 900px)').matches === true) {
       this.sidebarCollapsed.set(true);
     }
   }

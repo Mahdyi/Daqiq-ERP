@@ -1,0 +1,23 @@
+.app-dark {
+  color-scheme: dark;
+
+  --erp-surface-page: #0f172a;
+  --erp-surface-ground: #111827;
+  --erp-surface-section: #111827;
+  --erp-surface-card: #1e293b;
+  --erp-surface-hover: rgba(59, 130, 246, 0.16);
+  --erp-text-color: #e5e7eb;
+  --erp-text-muted-color: #94a3b8;
+  --erp-border-color: #334155;
+  --erp-border-hover-color: #64748b;
+  --erp-sidebar-bg: #111827;
+  --erp-sidebar-link-color: #cbd5e1;
+  --erp-sidebar-link-active-bg: rgba(59, 130, 246, 0.18);
+  --erp-sidebar-link-active-color: #93c5fd;
+  --erp-topbar-bg: rgba(17, 24, 39, 0.92);
+  --erp-card-bg: #1e293b;
+  --erp-card-border-color: #334155;
+  --erp-placeholder-text-color: #cbd5e1;
+  --erp-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --erp-shadow-md: 0 16px 40px rgba(0, 0, 0, 0.35);
+}

@@ -1,0 +1,10 @@
+:root {
+  --p-primary-color: var(--erp-primary-color);
+  --p-primary-contrast-color: var(--erp-primary-contrast-color);
+}
+
+.p-focus,
+.p-button:focus-visible,
+.p-inputtext:enabled:focus {
+  box-shadow: var(--erp-focus-ring);
+}
