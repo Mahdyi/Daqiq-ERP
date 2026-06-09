@@ -1,0 +1,49 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@daqiq/core": ["libs/core/src/public-api.ts"],
+      "@daqiq/core/*": ["libs/core/src/*"],
+      "@daqiq/data-access": ["libs/data-access/src/public-api.ts"],
+      "@daqiq/data-access/*": ["libs/data-access/src/*"],
+      "@daqiq/feature-auth": ["libs/feature-auth/src/public-api.ts"],
+      "@daqiq/feature-auth/*": ["libs/feature-auth/src/*"],
+      "@daqiq/feature-customers": ["libs/feature-customers/src/public-api.ts"],
+      "@daqiq/feature-customers/*": ["libs/feature-customers/src/*"],
+      "@daqiq/feature-dashboard": ["libs/feature-dashboard/src/public-api.ts"],
+      "@daqiq/feature-dashboard/*": ["libs/feature-dashboard/src/*"],
+      "@daqiq/feature-equipment": ["libs/feature-equipment/src/public-api.ts"],
+      "@daqiq/feature-equipment/*": ["libs/feature-equipment/src/*"],
+      "@daqiq/feature-equipment-receipts": [
+        "libs/feature-equipment-receipts/src/public-api.ts"
+      ],
+      "@daqiq/feature-equipment-receipts/*": ["libs/feature-equipment-receipts/src/*"],
+      "@daqiq/feature-preinvoices": ["libs/feature-preinvoices/src/public-api.ts"],
+      "@daqiq/feature-preinvoices/*": ["libs/feature-preinvoices/src/*"],
+      "@daqiq/shared": ["libs/shared/src/public-api.ts"],
+      "@daqiq/shared/*": ["libs/shared/src/*"],
+      "@daqiq/ui": ["libs/ui/src/public-api.ts"],
+      "@daqiq/ui/*": ["libs/ui/src/*"]
+    },
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "preserve"
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "typeCheckHostBindings": true,
+    "strictTemplates": true
+  }
+}

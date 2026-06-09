@@ -1,0 +1,402 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "cli": {
+    "packageManager": "npm",
+    "analytics": "6293ad1e-97c0-4d1c-b425-c2301684a5dd"
+  },
+  "newProjectRoot": "projects",
+  "projects": {
+    "erp-shell": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/erp-shell",
+      "sourceRoot": "apps/erp-shell/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "apps/erp-shell/src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "apps/erp-shell/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "apps/erp-shell/public"
+              }
+            ],
+            "styles": [
+              "apps/erp-shell/src/styles.scss"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "erp-shell:build:production"
+            },
+            "development": {
+              "buildTarget": "erp-shell:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular/build:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "apps/erp-shell/tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "apps/erp-shell/public"
+              }
+            ],
+            "styles": [
+              "apps/erp-shell/src/styles.scss"
+            ]
+          }
+        }
+      }
+    },
+    "core": {
+      "projectType": "library",
+      "root": "libs/core",
+      "sourceRoot": "libs/core/src",
+      "prefix": "daqiq",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/core/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/core/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "libs/core/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "shared": {
+      "projectType": "library",
+      "root": "libs/shared",
+      "sourceRoot": "libs/shared/src",
+      "prefix": "daqiq",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/shared/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/shared/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "libs/shared/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "ui": {
+      "projectType": "library",
+      "root": "libs/ui",
+      "sourceRoot": "libs/ui/src",
+      "prefix": "daqiq",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/ui/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/ui/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "libs/ui/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "data-access": {
+      "projectType": "library",
+      "root": "libs/data-access",
+      "sourceRoot": "libs/data-access/src",
+      "prefix": "daqiq",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/data-access/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/data-access/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "libs/data-access/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "feature-auth": {
+      "projectType": "library",
+      "root": "libs/feature-auth",
+      "sourceRoot": "libs/feature-auth/src",
+      "prefix": "daqiq",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/feature-auth/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/feature-auth/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "libs/feature-auth/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "feature-dashboard": {
+      "projectType": "library",
+      "root": "libs/feature-dashboard",
+      "sourceRoot": "libs/feature-dashboard/src",
+      "prefix": "daqiq",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/feature-dashboard/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/feature-dashboard/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "libs/feature-dashboard/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "feature-customers": {
+      "projectType": "library",
+      "root": "libs/feature-customers",
+      "sourceRoot": "libs/feature-customers/src",
+      "prefix": "daqiq",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/feature-customers/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/feature-customers/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "libs/feature-customers/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "feature-equipment": {
+      "projectType": "library",
+      "root": "libs/feature-equipment",
+      "sourceRoot": "libs/feature-equipment/src",
+      "prefix": "daqiq",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/feature-equipment/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/feature-equipment/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "libs/feature-equipment/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "feature-preinvoices": {
+      "projectType": "library",
+      "root": "libs/feature-preinvoices",
+      "sourceRoot": "libs/feature-preinvoices/src",
+      "prefix": "daqiq",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/feature-preinvoices/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/feature-preinvoices/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "libs/feature-preinvoices/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "feature-equipment-receipts": {
+      "projectType": "library",
+      "root": "libs/feature-equipment-receipts",
+      "sourceRoot": "libs/feature-equipment-receipts/src",
+      "prefix": "daqiq",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/feature-equipment-receipts/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/feature-equipment-receipts/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "libs/feature-equipment-receipts/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

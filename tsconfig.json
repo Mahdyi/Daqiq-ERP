@@ -1,0 +1,73 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compileOnSave": false,
+  "files": [],
+  "references": [
+    {
+      "path": "./apps/erp-shell/tsconfig.app.json"
+    },
+    {
+      "path": "./apps/erp-shell/tsconfig.spec.json"
+    },
+    {
+      "path": "./libs/core/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/core/tsconfig.spec.json"
+    },
+    {
+      "path": "./libs/shared/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/shared/tsconfig.spec.json"
+    },
+    {
+      "path": "./libs/ui/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/ui/tsconfig.spec.json"
+    },
+    {
+      "path": "./libs/data-access/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/data-access/tsconfig.spec.json"
+    },
+    {
+      "path": "./libs/feature-auth/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/feature-auth/tsconfig.spec.json"
+    },
+    {
+      "path": "./libs/feature-dashboard/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/feature-dashboard/tsconfig.spec.json"
+    },
+    {
+      "path": "./libs/feature-customers/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/feature-customers/tsconfig.spec.json"
+    },
+    {
+      "path": "./libs/feature-equipment/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/feature-equipment/tsconfig.spec.json"
+    },
+    {
+      "path": "./libs/feature-preinvoices/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/feature-preinvoices/tsconfig.spec.json"
+    },
+    {
+      "path": "./libs/feature-equipment-receipts/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/feature-equipment-receipts/tsconfig.spec.json"
+    }
+  ]
+}
