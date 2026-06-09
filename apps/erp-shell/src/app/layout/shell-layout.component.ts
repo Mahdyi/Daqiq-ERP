@@ -5,6 +5,7 @@ import { RouterOutlet } from '@angular/router';
 import { BreadcrumbComponent, ShellBreadcrumbItem } from './breadcrumb.component';
 import { FooterComponent } from './footer.component';
 import { ShellMenuItem, SidebarComponent } from './sidebar.component';
+import { SHELL_LABELS } from './shell.labels';
 import { TopbarComponent } from './topbar.component';
 
 @Component({
@@ -22,8 +23,8 @@ import { TopbarComponent } from './topbar.component';
 
       <div class="erp-shell__main">
         <app-topbar
-          title="Daqiq ERP"
-          subtitle="ERP shell foundation"
+          [title]="labels.productName"
+          [subtitle]="labels.topbarSubtitle"
           [sidebarCollapsed]="sidebarCollapsed()"
           (sidebarToggled)="toggleSidebar()"
         />
@@ -31,7 +32,7 @@ import { TopbarComponent } from './topbar.component';
         <main class="erp-shell__body">
           <app-breadcrumb [items]="breadcrumbItems()" />
 
-          <section class="erp-shell__content" aria-label="Page content">
+          <section class="erp-shell__content" [attr.aria-label]="labels.pageContent">
             <router-outlet />
           </section>
 
@@ -45,17 +46,18 @@ import { TopbarComponent } from './topbar.component';
 export class ShellLayoutComponent {
   private readonly document = inject(DOCUMENT);
 
+  protected readonly labels = SHELL_LABELS;
   protected readonly sidebarCollapsed = signal(false);
 
   protected readonly breadcrumbItems = signal<readonly ShellBreadcrumbItem[]>([
     {
-      label: 'Dashboard'
+      label: SHELL_LABELS.dashboard
     }
   ]);
 
   protected readonly menuItems = signal<readonly ShellMenuItem[]>([
     {
-      label: 'Dashboard',
+      label: SHELL_LABELS.dashboard,
       icon: 'pi pi-chart-line',
       route: '/dashboard'
     }

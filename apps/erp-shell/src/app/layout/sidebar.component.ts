@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
+import { SHELL_LABELS } from './shell.labels';
+
 export interface ShellMenuItem {
   readonly label: string;
   readonly icon: string;
@@ -12,13 +14,13 @@ export interface ShellMenuItem {
   selector: 'app-sidebar',
   imports: [RouterLink, RouterLinkActive],
   template: `
-    <aside class="erp-sidebar" aria-label="منوی اصلی">
+    <aside class="erp-sidebar" [attr.aria-label]="labels.menu">
       <div class="erp-sidebar__header">
         <div class="erp-sidebar__brand">
           <span class="erp-sidebar__logo" aria-hidden="true">D</span>
           <div class="erp-sidebar__copy">
-            <p class="erp-sidebar__title">Daqiq ERP</p>
-            <p class="erp-sidebar__subtitle">سامانه مدیریت سازمانی</p>
+            <p class="erp-sidebar__title">{{ labels.productName }}</p>
+            <p class="erp-sidebar__subtitle">{{ labels.productSubtitle }}</p>
           </div>
         </div>
       </div>
@@ -46,6 +48,7 @@ export class SidebarComponent {
   readonly menuItems = input<readonly ShellMenuItem[]>([]);
   readonly itemSelected = output<ShellMenuItem>();
 
+  protected readonly labels = SHELL_LABELS;
   protected readonly visibleMenuItems = computed(() =>
     this.menuItems().filter((item) => item.disabled !== true)
   );

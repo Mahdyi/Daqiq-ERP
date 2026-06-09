@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
+import { SHELL_LABELS } from './shell.labels';
+
 @Component({
   selector: 'app-footer',
   template: `
@@ -11,8 +13,8 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FooterComponent {
-  readonly productName = input('Daqiq ERP');
+  readonly productName = input(SHELL_LABELS.productName);
   readonly year = input(new Date().getFullYear());
 
-  protected readonly copyrightLabel = computed(() => `نسخه پایه - ${this.year()}`);
+  protected readonly copyrightLabel = computed(() => `${SHELL_LABELS.footerVersion} - ${this.year()}`);
 }

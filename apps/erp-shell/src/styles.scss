@@ -1,8 +1,11 @@
+@use './styles/font-face';
 @use './styles/tokens';
 @use './styles/theme-light';
 @use './styles/theme-dark';
 @use './styles/theme-custom';
 @use './styles/primeng-theme-overrides';
+@use './styles/typography';
+@use './styles/rtl';
 @use './styles/layout-theme';
 
 @import 'primeicons/primeicons.css';

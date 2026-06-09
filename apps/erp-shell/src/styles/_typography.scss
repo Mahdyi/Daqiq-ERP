@@ -1,0 +1,53 @@
+html {
+  font-size: var(--erp-font-size-base);
+}
+
+body {
+  font-family: var(--erp-font-family);
+  font-size: var(--erp-font-size-body);
+  font-weight: var(--erp-font-weight-regular);
+  line-height: var(--erp-line-height-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block-start: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--erp-text-color);
+  font-weight: var(--erp-font-weight-bold);
+  line-height: var(--erp-line-height-heading);
+}
+
+h1 {
+  font-size: var(--erp-font-size-heading-lg);
+}
+
+h2 {
+  font-size: var(--erp-font-size-heading-md);
+}
+
+h3 {
+  font-size: var(--erp-font-size-heading-sm);
+}
+
+small,
+.erp-text-small {
+  font-size: var(--erp-font-size-sm);
+  line-height: var(--erp-line-height-tight);
+}
+
+.p-component {
+  font-family: var(--erp-font-family);
+}

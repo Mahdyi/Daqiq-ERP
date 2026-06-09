@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { ThemePreference, ThemeService } from '@daqiq/core';
 
+import { SHELL_LABELS } from './shell.labels';
+
 interface ThemePreferenceOption {
   readonly label: string;
   readonly icon: string;
@@ -15,7 +17,7 @@ interface ThemePreferenceOption {
         <button
           class="erp-icon-button"
           type="button"
-          [attr.aria-label]="sidebarCollapsed() ? 'Show menu' : 'Collapse menu'"
+          [attr.aria-label]="sidebarCollapsed() ? labels.showMenu : labels.collapseMenu"
           (click)="sidebarToggled.emit()"
         >
           <i class="pi pi-bars" aria-hidden="true"></i>
@@ -28,7 +30,12 @@ interface ThemePreferenceOption {
       </div>
 
       <div class="erp-topbar__actions">
-        <div class="erp-theme-switcher" role="group" aria-label="Theme preference">
+        <div class="erp-topbar__search" aria-label="Search placeholder">
+          <i class="pi pi-search" aria-hidden="true"></i>
+          <span>{{ labels.search }}</span>
+        </div>
+
+        <div class="erp-theme-switcher" role="group" [attr.aria-label]="labels.theme.group">
           @for (option of themeOptions; track option.value) {
             <button
               class="erp-theme-switcher__button"
@@ -36,6 +43,7 @@ interface ThemePreferenceOption {
               [class.erp-theme-switcher__button--active]="selectedTheme() === option.value"
               [attr.aria-pressed]="selectedTheme() === option.value"
               [attr.aria-label]="option.label"
+              [title]="option.label"
               (click)="setTheme(option.value)"
             >
               <i [class]="option.icon" aria-hidden="true"></i>
@@ -43,7 +51,7 @@ interface ThemePreferenceOption {
           }
         </div>
 
-        <button class="erp-icon-button" type="button" aria-label="Notifications">
+        <button class="erp-icon-button" type="button" [attr.aria-label]="labels.notifications">
           <i class="pi pi-bell" aria-hidden="true"></i>
         </button>
       </div>
@@ -54,25 +62,26 @@ interface ThemePreferenceOption {
 export class TopbarComponent {
   private readonly themeService = inject(ThemeService);
 
-  readonly title = input('Daqiq ERP');
-  readonly subtitle = input('ERP foundation');
+  readonly title = input(SHELL_LABELS.productName);
+  readonly subtitle = input(SHELL_LABELS.topbarSubtitle);
   readonly sidebarCollapsed = input(false);
   readonly sidebarToggled = output<void>();
 
+  protected readonly labels = SHELL_LABELS;
   protected readonly selectedTheme = this.themeService.preference;
   protected readonly themeOptions: readonly ThemePreferenceOption[] = [
     {
-      label: 'Light',
+      label: SHELL_LABELS.theme.light,
       icon: 'pi pi-sun',
       value: 'light'
     },
     {
-      label: 'Dark',
+      label: SHELL_LABELS.theme.dark,
       icon: 'pi pi-moon',
       value: 'dark'
     },
     {
-      label: 'System',
+      label: SHELL_LABELS.theme.system,
       icon: 'pi pi-desktop',
       value: 'system'
     }

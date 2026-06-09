@@ -100,11 +100,24 @@ select {
   gap: var(--erp-layout-space-sm);
 }
 
+.erp-topbar__search {
+  display: flex;
+  min-height: 2.5rem;
+  align-items: center;
+  gap: var(--erp-layout-space-sm);
+  border: 1px solid var(--erp-border-color);
+  border-radius: var(--erp-layout-radius-md);
+  background: var(--erp-surface-ground);
+  color: var(--erp-text-muted-color);
+  padding: 0 var(--erp-layout-space-md);
+}
+
 .erp-topbar__title,
 .erp-sidebar__title {
   margin: 0;
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: var(--erp-font-size-heading-sm);
+  font-weight: var(--erp-font-weight-bold);
+  line-height: var(--erp-line-height-tight);
 }
 
 .erp-topbar__subtitle,
@@ -112,7 +125,7 @@ select {
 .erp-page-placeholder__eyebrow {
   margin: 0.125rem 0 0;
   color: var(--erp-text-muted-color);
-  font-size: 0.8125rem;
+  font-size: var(--erp-font-size-sm);
 }
 
 .erp-icon-button,
@@ -191,7 +204,7 @@ select {
   border-radius: var(--erp-layout-radius-md);
   background: var(--erp-primary-color);
   color: var(--erp-primary-contrast-color);
-  font-weight: 800;
+  font-weight: var(--erp-font-weight-bold);
 }
 
 .erp-sidebar__nav {
@@ -235,7 +248,7 @@ select {
   gap: var(--erp-layout-space-sm);
   min-height: 2.25rem;
   color: var(--erp-text-muted-color);
-  font-size: 0.875rem;
+  font-size: var(--erp-font-size-sm);
 }
 
 .erp-page-placeholder {
@@ -257,14 +270,14 @@ select {
 
 .erp-page-placeholder__title {
   margin: 0.25rem 0 0;
-  font-size: 1.375rem;
+  font-size: var(--erp-font-size-heading-lg);
 }
 
 .erp-page-placeholder__text {
   max-width: 42rem;
   margin: 0.75rem 0 0;
   color: var(--erp-placeholder-text-color);
-  line-height: 1.9;
+  line-height: var(--erp-line-height-body);
 }
 
 .erp-page-placeholder__grid {
@@ -280,13 +293,13 @@ select {
 .erp-page-placeholder__metric-label {
   margin: 0;
   color: var(--erp-text-muted-color);
-  font-size: 0.875rem;
+  font-size: var(--erp-font-size-sm);
 }
 
 .erp-page-placeholder__metric-value {
   margin: 0.5rem 0 0;
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: var(--erp-font-size-heading-md);
+  font-weight: var(--erp-font-weight-bold);
 }
 
 .erp-footer {
@@ -296,11 +309,25 @@ select {
   justify-content: space-between;
   gap: var(--erp-layout-space-lg);
   color: var(--erp-text-muted-color);
-  font-size: 0.875rem;
+  font-size: var(--erp-font-size-sm);
   padding-block-start: var(--erp-layout-space-lg);
 }
 
 @media (max-width: 900px) {
+  .erp-topbar {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .erp-topbar__actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .erp-topbar__search {
+    flex: 1 1 9rem;
+  }
+
   .erp-shell__sidebar {
     transform: translateX(0);
   }

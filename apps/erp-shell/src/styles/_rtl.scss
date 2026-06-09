@@ -1,0 +1,41 @@
+:root,
+html,
+body {
+  direction: rtl;
+}
+
+body {
+  text-align: start;
+}
+
+.rtl {
+  direction: rtl;
+}
+
+.ltr {
+  direction: ltr;
+  unicode-bidi: plaintext;
+}
+
+.text-start {
+  text-align: start;
+}
+
+.text-end {
+  text-align: end;
+}
+
+.p-component,
+.p-inputtext,
+.p-button,
+.p-menu,
+.p-panel,
+.p-dialog {
+  direction: rtl;
+}
+
+.p-inputtext,
+input,
+textarea {
+  text-align: start;
+}
