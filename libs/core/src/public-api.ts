@@ -1,4 +1,27 @@
 export type { CoreLibraryScope } from './lib/core';
+export { provideCoreAuth } from './auth/auth.providers';
+export { authGuard } from './auth/guards/auth.guard';
+export { roleGuard } from './auth/guards/role.guard';
+export type {
+  AuthSession,
+  AuthState,
+  AuthStatus,
+  AuthToken
+} from './auth/models/auth-state.model';
+export type { PermissionCode, Role, RoleCode } from './auth/models/role.model';
+export type { User } from './auth/models/user.model';
+export { AuthService } from './auth/services/auth.service';
+export {
+  AUTH_CONFIG,
+  AUTH_TOKEN_STORAGE,
+  AUTH_TOKEN_STORAGE_KEY,
+  DEFAULT_AUTH_CONFIG
+} from './auth/tokens/auth.tokens';
+export type {
+  AuthConfig,
+  AuthStorageType,
+  AuthTokenStorage
+} from './auth/tokens/auth.tokens';
 export { provideDaqiqCore } from './core.providers';
 export { provideAppConfig } from './config/app-config.providers';
 export { APP_CONFIG } from './config/app-config.tokens';
