@@ -6,13 +6,20 @@
     "outDir": "../../out-tsc/lib",
     "declaration": true,
     "declarationMap": true,
+    "sourceMap": true,
     "inlineSources": true,
+    "paths": {
+      "@daqiq/core": [
+        "dist/core"
+      ]
+    },
     "types": []
   },
   "include": [
     "src/**/*.ts"
   ],
   "exclude": [
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "src/public-api.ts"
   ]
 }

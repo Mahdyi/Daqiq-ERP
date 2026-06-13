@@ -1,1 +1,1 @@
-export type { UiLibraryScope } from './lib/ui';
+export * from './index';
