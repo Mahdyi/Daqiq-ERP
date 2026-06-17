@@ -9,7 +9,8 @@
     "inlineSources": true,
     "sourceMap": true,
     "paths": {
-      "@daqiq/core": ["dist/core"]
+      "@daqiq/core": ["dist/core"],
+      "@daqiq/ui": ["dist/ui"]
     },
     "types": []
   },

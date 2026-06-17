@@ -1,61 +1,79 @@
-import { Injectable, signal } from '@angular/core';
-import { AuthService, AuthSession } from '@daqiq/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from '@daqiq/core';
 
-import { AuthApiService } from '../data-access/auth.api.service';
-import { LoginRequest, LoginResponse } from '../models/login.model';
+import { AuthApiService } from '../data-access/auth-api.service';
+import { LoginRequestDto } from '../dto/login-request.dto';
+import { mapLoginResponseToAuthSession } from '../mappers/auth-session.mapper';
+import { LoginError } from '../models/login-error.model';
+import { LoginFormValue, LOGIN_LABELS } from '../models/login-form-value.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthFacade {
-  private loading = signal(false);
-  private error = signal<string | null>(null);
+  private readonly api = inject(AuthApiService);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
 
-  constructor(
-    private api: AuthApiService,
-    private auth: AuthService
-  ) {}
+  private readonly loadingState = signal(false);
+  private readonly errorState = signal<LoginError | null>(null);
 
-  isLoading = this.loading.asReadonly();
-  errorState = this.error.asReadonly();
+  readonly isLoading = this.loadingState.asReadonly();
+  readonly error = this.errorState.asReadonly();
+  readonly errorMessage = computed(() => this.error()?.message ?? null);
+  readonly isAuthenticated = this.auth.isAuthenticated;
 
-  async login(req: LoginRequest): Promise<LoginResponse> {
-    this.loading.set(true);
-    this.error.set(null);
+  async login(value: LoginFormValue, returnUrl: string | null): Promise<void> {
+    if (this.loadingState()) {
+      return;
+    }
+
+    this.loadingState.set(true);
+    this.errorState.set(null);
 
     try {
-      const result = await this.api.login(req);
-      this.auth.login(this.toAuthSession(result));
-      this.loading.set(false);
-      return result;
+      const response = await this.api.login(this.toLoginRequestDto(value));
+      this.auth.login(mapLoginResponseToAuthSession(response));
+      await this.redirectAfterLogin(returnUrl);
     } catch (error: unknown) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : 'An error occurred during login';
-      this.error.set(message);
-      this.loading.set(false);
-      throw error;
+      this.errorState.set({
+        message: error instanceof Error ? error.message : LOGIN_LABELS.invalidCredentials
+      });
+    } finally {
+      this.loadingState.set(false);
     }
   }
 
   logout(): void {
-    this.error.set(null);
+    this.errorState.set(null);
     this.auth.logout();
   }
 
-  private toAuthSession(result: LoginResponse): AuthSession {
+  async redirectAfterLogin(returnUrl: string | null): Promise<void> {
+    await this.router.navigateByUrl(this.getSafeReturnUrl(returnUrl));
+  }
+
+  clearError(): void {
+    this.errorState.set(null);
+  }
+
+  private toLoginRequestDto(value: LoginFormValue): LoginRequestDto {
     return {
-      user: {
-        id: String(result.user.id),
-        username: result.user.email,
-        displayName: result.user.name,
-        email: result.user.email,
-        roles: result.user.roles.map((code) => ({ code, name: code }))
-      },
-      token: {
-        accessToken: result.token
-      }
+      email: value.email.trim().toLowerCase(),
+      password: value.password
     };
+  }
+
+  private getSafeReturnUrl(returnUrl: string | null): string {
+    if (!returnUrl || !returnUrl.startsWith('/') || returnUrl.startsWith('//')) {
+      return '/dashboard';
+    }
+
+    if (returnUrl.startsWith('/auth')) {
+      return '/dashboard';
+    }
+
+    return returnUrl;
   }
 }

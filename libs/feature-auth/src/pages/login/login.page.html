@@ -1,0 +1,59 @@
+<main class="auth-page" dir="rtl" [attr.aria-labelledby]="'auth-login-title'">
+  <section class="auth-card">
+    <div class="auth-card__header">
+      <p class="auth-card__eyebrow">Daqiq ERP</p>
+      <h1 id="auth-login-title">{{ labels.title }}</h1>
+      <p>{{ labels.subtitle }}</p>
+    </div>
+
+    <form class="auth-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <label class="auth-field">
+        <span>{{ labels.email }}</span>
+        <input
+          type="email"
+          inputmode="email"
+          autocomplete="username"
+          dir="ltr"
+          formControlName="email"
+          [placeholder]="labels.emailPlaceholder"
+          [attr.aria-invalid]="emailControl.invalid && emailControl.touched"
+        />
+      </label>
+
+      @if (emailControl.touched && emailControl.hasError('required')) {
+        <p class="auth-form__error">{{ labels.required }}</p>
+      } @else if (emailControl.touched && emailControl.hasError('email')) {
+        <p class="auth-form__error">{{ labels.invalidEmail }}</p>
+      }
+
+      <label class="auth-field">
+        <span>{{ labels.password }}</span>
+        <input
+          type="password"
+          autocomplete="current-password"
+          formControlName="password"
+          [placeholder]="labels.passwordPlaceholder"
+          [attr.aria-invalid]="passwordControl.invalid && passwordControl.touched"
+        />
+      </label>
+
+      @if (passwordControl.touched && passwordControl.hasError('required')) {
+        <p class="auth-form__error">{{ labels.required }}</p>
+      }
+
+      @if (auth.errorMessage()) {
+        <p class="auth-form__error auth-form__error--summary" role="alert">
+          {{ auth.errorMessage() }}
+        </p>
+      }
+
+      <daqiq-button
+        type="submit"
+        icon="pi pi-sign-in"
+        [label]="auth.isLoading() ? labels.submitting : labels.submit"
+        [loading]="auth.isLoading()"
+        [disabled]="form.invalid || auth.isLoading()"
+      />
+    </form>
+  </section>
+</main>

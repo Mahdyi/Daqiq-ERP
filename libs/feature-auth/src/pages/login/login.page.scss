@@ -1,0 +1,96 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.auth-page {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: clamp(1rem, 3vw, 2rem);
+  background:
+    linear-gradient(135deg, rgb(20 184 166 / 10%), transparent 36%),
+    var(--erp-surface-ground, #f8fafc);
+  color: var(--erp-text-color, #172033);
+}
+
+.auth-card {
+  width: min(100%, 27rem);
+  border: 1px solid var(--erp-border-color, #e2e8f0);
+  border-radius: var(--erp-layout-radius-lg, 0.75rem);
+  background: var(--erp-card-background, #fff);
+  box-shadow: var(--erp-shadow, 0 18px 45px rgb(15 23 42 / 10%));
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.auth-card__header {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+}
+
+.auth-card__header h1,
+.auth-card__header p {
+  margin: 0;
+}
+
+.auth-card__header h1 {
+  font-size: var(--erp-font-size-heading-md, 1.5rem);
+}
+
+.auth-card__header p {
+  color: var(--erp-text-muted-color, #64748b);
+  line-height: var(--erp-line-height-body, 1.8);
+}
+
+.auth-card__eyebrow {
+  font-size: var(--erp-font-size-sm, 0.875rem);
+  font-weight: var(--erp-font-weight-semibold, 600);
+  color: var(--erp-primary-color, #2563eb);
+}
+
+.auth-form {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.auth-field {
+  display: grid;
+  gap: 0.45rem;
+  font-weight: var(--erp-font-weight-medium, 500);
+}
+
+.auth-field input {
+  width: 100%;
+  min-height: 2.75rem;
+  border: 1px solid var(--erp-border-color, #e2e8f0);
+  border-radius: var(--erp-layout-radius-md, 0.5rem);
+  background: var(--erp-surface-ground, #fff);
+  color: var(--erp-text-color, #172033);
+  font: inherit;
+  padding: 0 0.875rem;
+}
+
+.auth-field input:focus {
+  border-color: var(--erp-primary-color, #2563eb);
+  box-shadow: var(--erp-focus-ring, 0 0 0 0.2rem rgb(37 99 235 / 22%));
+  outline: none;
+}
+
+.auth-field input[aria-invalid='true'] {
+  border-color: #dc2626;
+}
+
+.auth-form__error {
+  margin: -0.35rem 0 0;
+  color: #dc2626;
+  font-size: var(--erp-font-size-sm, 0.875rem);
+}
+
+.auth-form__error--summary {
+  margin: 0;
+  border: 1px solid rgb(220 38 38 / 22%);
+  border-radius: var(--erp-layout-radius-md, 0.5rem);
+  background: rgb(220 38 38 / 8%);
+  padding: 0.75rem;
+}

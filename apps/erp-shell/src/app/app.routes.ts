@@ -1,11 +1,17 @@
 import { Routes } from '@angular/router';
+import { authGuard } from '@daqiq/core';
 
 import { ShellLayoutComponent } from './layout/shell-layout.component';
 
 export const routes: Routes = [
   {
+    path: 'auth',
+    loadChildren: () => import('@daqiq/feature-auth').then((auth) => auth.AUTH_ROUTES)
+  },
+  {
     path: '',
     component: ShellLayoutComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: '',
