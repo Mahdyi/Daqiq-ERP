@@ -58,7 +58,7 @@ export class ShellLayoutComponent {
   protected readonly menuItems = signal<readonly ShellMenuItem[]>([
     {
       label: SHELL_LABELS.dashboard,
-      icon: 'pi pi-chart-line',
+      icon: 'pi pi-home',
       route: '/dashboard'
     }
   ]);

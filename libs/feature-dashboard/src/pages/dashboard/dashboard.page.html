@@ -1,0 +1,73 @@
+<section class="dashboard-page" dir="rtl" aria-labelledby="dashboard-title">
+  <header class="dashboard-page__header">
+    <div>
+      <h1 id="dashboard-title">داشبورد مدیریتی</h1>
+      <p>نمای کلی وضعیت سامانه</p>
+    </div>
+
+    @if (facade.lastUpdatedLabel()) {
+      <p class="dashboard-page__updated">
+        آخرین به‌روزرسانی:
+        <span>{{ facade.lastUpdatedLabel() }}</span>
+      </p>
+    }
+  </header>
+
+  @if (facade.error()) {
+    <p-message severity="error" icon="pi pi-exclamation-triangle">
+      <div class="dashboard-page__message">
+        <span>{{ facade.error() }}</span>
+        <p-button
+          label="تلاش دوباره"
+          icon="pi pi-refresh"
+          severity="secondary"
+          size="small"
+          [outlined]="true"
+          (onClick)="reload()"
+        />
+      </div>
+    </p-message>
+  }
+
+  @if (facade.loading()) {
+    <div class="dashboard-page__grid" aria-label="در حال دریافت اطلاعات داشبورد">
+      @for (item of skeletonItems; track item) {
+        <p-card>
+          <div class="dashboard-kpi dashboard-kpi--loading">
+            <p-skeleton size="3rem" shape="circle" />
+            <p-skeleton width="8rem" height="1.25rem" />
+            <p-skeleton width="11rem" height="2rem" />
+            <p-skeleton width="9rem" height="1rem" />
+          </div>
+        </p-card>
+      }
+    </div>
+  } @else {
+    <div class="dashboard-page__grid" aria-label="شاخص‌های کلیدی داشبورد">
+      @for (kpi of facade.kpis(); track kpi.key) {
+        <p-card>
+          <article class="dashboard-kpi">
+            <div class="dashboard-kpi__icon" aria-hidden="true">
+              <i [class]="kpi.icon"></i>
+            </div>
+
+            <div class="dashboard-kpi__body">
+              <p class="dashboard-kpi__title">{{ kpi.title }}</p>
+              <p class="dashboard-kpi__value">{{ facade.formatValue(kpi.value) }}</p>
+              <p
+                class="dashboard-kpi__trend"
+                [class.dashboard-kpi__trend--up]="kpi.trendDirection === 'up'"
+                [class.dashboard-kpi__trend--down]="kpi.trendDirection === 'down'"
+                [class.dashboard-kpi__trend--neutral]="kpi.trendDirection === 'neutral'"
+              >
+                <i [class]="getTrendIcon(kpi.trendDirection)" aria-hidden="true"></i>
+                <span>{{ facade.formatValue(kpi.trendPercentage) }}٪</span>
+                <span>{{ kpi.trendLabel }}</span>
+              </p>
+            </div>
+          </article>
+        </p-card>
+      }
+    </div>
+  }
+</section>

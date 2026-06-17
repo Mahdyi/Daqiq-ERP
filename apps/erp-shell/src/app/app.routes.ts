@@ -20,10 +20,8 @@ export const routes: Routes = [
       },
       {
         path: 'dashboard',
-        loadComponent: () =>
-          import('./pages/dashboard-placeholder.component').then(
-            (component) => component.DashboardPlaceholderComponent
-          )
+        loadChildren: () =>
+          import('@daqiq/feature-dashboard').then((dashboard) => dashboard.DASHBOARD_ROUTES)
       }
     ]
   },
