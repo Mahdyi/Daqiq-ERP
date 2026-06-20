@@ -1,4 +1,12 @@
 export type { CoreLibraryScope } from './lib/core';
+export { authorizationGuard } from './auth/authorization/authorization.guard';
+export type {
+  AppPermission,
+  AppRole,
+  AuthorizationPolicy
+} from './auth/authorization/authorization.model';
+export type { AuthorizationRouteData } from './auth/authorization/authorization-route-data.model';
+export { AuthorizationService } from './auth/authorization/authorization.service';
 export { provideCoreAuth } from './auth/auth.providers';
 export { authGuard } from './auth/guards/auth.guard';
 export { roleGuard } from './auth/guards/role.guard';
