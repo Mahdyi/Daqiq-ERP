@@ -22,6 +22,16 @@ export const routes: Routes = [
         path: 'dashboard',
         loadChildren: () =>
           import('@daqiq/feature-dashboard').then((dashboard) => dashboard.DASHBOARD_ROUTES)
+      },
+      {
+        path: 'access-denied',
+        data: {
+          breadcrumb: 'دسترسی مجاز نیست'
+        },
+        loadComponent: () =>
+          import('./pages/access-denied/access-denied.page').then(
+            (page) => page.AccessDeniedPage
+          )
       }
     ]
   },

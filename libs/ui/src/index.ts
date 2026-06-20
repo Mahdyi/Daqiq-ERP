@@ -48,6 +48,11 @@ export { LoadingComponent } from './feedback/loading.component';
 
 export { CardComponent } from './layout/card.component';
 export { PageContainerComponent } from './layout/page-container.component';
+export {
+  BreadcrumbComponent,
+  type UiBreadcrumbItem
+} from './navigation/breadcrumb.component';
+export { SidebarNavigationComponent } from './navigation/sidebar-navigation.component';
 
 export { BadgeComponent, type UiBadgeTone } from './primitives/badge.component';
 export {

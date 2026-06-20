@@ -1,0 +1,21 @@
+@if (items().length > 0) {
+  <nav class="breadcrumb" [attr.aria-label]="ariaLabel">
+    <ol class="breadcrumb__list">
+      <li class="breadcrumb__home">
+        <i class="pi pi-home" aria-hidden="true"></i>
+      </li>
+
+      @for (item of items(); track item.route.join('/'); let last = $last) {
+        <li class="breadcrumb__item">
+          <i class="pi pi-angle-left breadcrumb__separator" aria-hidden="true"></i>
+
+          @if (last) {
+            <span aria-current="page">{{ item.label }}</span>
+          } @else {
+            <a [routerLink]="item.route">{{ item.label }}</a>
+          }
+        </li>
+      }
+    </ol>
+  </nav>
+}

@@ -1,0 +1,21 @@
+<section class="access-denied" dir="rtl" aria-labelledby="access-denied-title">
+  <p-card>
+    <div class="access-denied__content">
+      <div class="access-denied__icon" aria-hidden="true">
+        <i class="pi pi-lock"></i>
+      </div>
+
+      <div class="access-denied__copy">
+        <h1 id="access-denied-title">دسترسی مجاز نیست</h1>
+        <p-message severity="warn" icon="pi pi-exclamation-triangle">
+          شما مجوز لازم برای مشاهده این بخش را ندارید.
+        </p-message>
+      </div>
+
+      <a pButton routerLink="/dashboard">
+        <i class="pi pi-home" aria-hidden="true"></i>
+        <span>بازگشت به داشبورد</span>
+      </a>
+    </div>
+  </p-card>
+</section>

@@ -1,0 +1,69 @@
+<nav
+  class="sidebar-navigation"
+  [class.sidebar-navigation--collapsed]="collapsed()"
+  [attr.aria-label]="ariaLabel()"
+>
+  @for (item of items(); track item.id) {
+    <div class="sidebar-navigation__item">
+      @if (item.route; as route) {
+        <a
+          class="sidebar-navigation__link"
+          routerLinkActive="sidebar-navigation__link--active"
+          [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+          [routerLink]="route"
+          (click)="selectItem(item)"
+        >
+          <i [class]="item.icon" aria-hidden="true"></i>
+          <span class="sidebar-navigation__label">{{ item.label }}</span>
+        </a>
+      } @else if (item.externalUrl; as externalUrl) {
+        <a
+          class="sidebar-navigation__link"
+          rel="noopener noreferrer"
+          target="_blank"
+          [href]="externalUrl"
+          (click)="selectItem(item)"
+        >
+          <i [class]="item.icon" aria-hidden="true"></i>
+          <span class="sidebar-navigation__label">{{ item.label }}</span>
+          <i class="pi pi-external-link sidebar-navigation__external" aria-hidden="true"></i>
+        </a>
+      } @else {
+        <div class="sidebar-navigation__group-label">
+          <i [class]="item.icon" aria-hidden="true"></i>
+          <span class="sidebar-navigation__label">{{ item.label }}</span>
+        </div>
+      }
+
+      @if (item.children?.length) {
+        <div class="sidebar-navigation__children">
+          @for (child of item.children; track child.id) {
+            @if (child.route; as childRoute) {
+              <a
+                class="sidebar-navigation__link sidebar-navigation__link--child"
+                routerLinkActive="sidebar-navigation__link--active"
+                [routerLinkActiveOptions]="{ exact: child.exact ?? false }"
+                [routerLink]="childRoute"
+                (click)="selectItem(child)"
+              >
+                <i [class]="child.icon" aria-hidden="true"></i>
+                <span class="sidebar-navigation__label">{{ child.label }}</span>
+              </a>
+            } @else if (child.externalUrl; as childExternalUrl) {
+              <a
+                class="sidebar-navigation__link sidebar-navigation__link--child"
+                rel="noopener noreferrer"
+                target="_blank"
+                [href]="childExternalUrl"
+                (click)="selectItem(child)"
+              >
+                <i [class]="child.icon" aria-hidden="true"></i>
+                <span class="sidebar-navigation__label">{{ child.label }}</span>
+              </a>
+            }
+          }
+        </div>
+      }
+    </div>
+  }
+</nav>

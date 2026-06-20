@@ -1,10 +1,11 @@
 import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { NavigationFacade } from '@daqiq/core';
+import { BreadcrumbComponent } from '@daqiq/ui';
 
-import { BreadcrumbComponent, ShellBreadcrumbItem } from './breadcrumb.component';
 import { FooterComponent } from './footer.component';
-import { ShellMenuItem, SidebarComponent } from './sidebar.component';
+import { SidebarComponent } from './sidebar.component';
 import { SHELL_LABELS } from './shell.labels';
 import { TopbarComponent } from './topbar.component';
 
@@ -16,7 +17,7 @@ import { TopbarComponent } from './topbar.component';
       <div class="erp-shell__sidebar">
         <app-sidebar
           [collapsed]="sidebarCollapsed()"
-          [menuItems]="menuItems()"
+          [items]="navigation.items()"
           (itemSelected)="closeSidebarOnSmallScreens()"
         />
       </div>
@@ -30,7 +31,7 @@ import { TopbarComponent } from './topbar.component';
         />
 
         <main class="erp-shell__body">
-          <app-breadcrumb [items]="breadcrumbItems()" />
+          <daqiq-breadcrumb />
 
           <section class="erp-shell__content" [attr.aria-label]="labels.pageContent">
             <router-outlet />
@@ -45,23 +46,10 @@ import { TopbarComponent } from './topbar.component';
 })
 export class ShellLayoutComponent {
   private readonly document = inject(DOCUMENT);
+  protected readonly navigation = inject(NavigationFacade);
 
   protected readonly labels = SHELL_LABELS;
   protected readonly sidebarCollapsed = signal(false);
-
-  protected readonly breadcrumbItems = signal<readonly ShellBreadcrumbItem[]>([
-    {
-      label: SHELL_LABELS.dashboard
-    }
-  ]);
-
-  protected readonly menuItems = signal<readonly ShellMenuItem[]>([
-    {
-      label: SHELL_LABELS.dashboard,
-      icon: 'pi pi-home',
-      route: '/dashboard'
-    }
-  ]);
 
   protected toggleSidebar(): void {
     this.sidebarCollapsed.update((collapsed) => !collapsed);

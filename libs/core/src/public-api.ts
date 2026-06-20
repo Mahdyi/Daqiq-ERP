@@ -39,14 +39,12 @@ export { ErrorService } from './error/error.service';
 export type { ApiError, ApiErrorSource } from './http/api-error.model';
 export type { ApiPageInfo, ApiResponse, PagedApiResponse } from './http/api-response.model';
 export { SKIP_GLOBAL_ERROR_HANDLER, SKIP_GLOBAL_LOADING } from './http/http-context.tokens';
-export type { BreadcrumbItem } from './layout/breadcrumb.model';
-export { BreadcrumbService } from './layout/breadcrumb.service';
 export type { LayoutState } from './layout/layout-state.model';
 export { LayoutService } from './layout/layout.service';
-export type { CoreMenuItem } from './layout/menu.model';
-export { MenuService } from './layout/menu.service';
 export type { LoadingState } from './loading/loading.model';
 export { LoadingService } from './loading/loading.service';
+export type { NavigationItem } from './navigation/models/navigation-item.model';
+export { NavigationFacade } from './navigation/navigation.facade';
 export { ConfirmationService } from './notifications/confirmation.service';
 export type {
   ConfirmationOptions,

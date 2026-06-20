@@ -1,0 +1,50 @@
+:host {
+  display: block;
+}
+
+.access-denied {
+  display: grid;
+  min-height: min(34rem, calc(100vh - 12rem));
+  place-items: center;
+  padding: var(--erp-layout-space-xl, 1.25rem);
+}
+
+.access-denied p-card {
+  width: min(100%, 34rem);
+}
+
+.access-denied__content {
+  display: grid;
+  justify-items: center;
+  gap: var(--erp-layout-space-xl, 1.25rem);
+  text-align: center;
+}
+
+.access-denied__icon {
+  display: grid;
+  width: 4.5rem;
+  height: 4.5rem;
+  place-items: center;
+  border-radius: var(--erp-layout-radius-lg, 0.75rem);
+  background: color-mix(in srgb, #d97706 12%, transparent);
+  color: #b45309;
+  font-size: 2rem;
+}
+
+.access-denied__copy {
+  display: grid;
+  gap: var(--erp-layout-space-lg, 1rem);
+}
+
+.access-denied h1 {
+  margin: 0;
+  color: var(--erp-text-color, #172033);
+  font-size: var(--erp-font-size-heading-lg, 1.5rem);
+}
+
+.access-denied a[pButton] {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--erp-layout-space-sm, 0.5rem);
+  text-decoration: none;
+}

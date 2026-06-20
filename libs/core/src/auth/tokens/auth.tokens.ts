@@ -18,7 +18,7 @@ export interface AuthTokenStorage {
 
 export const DEFAULT_AUTH_CONFIG: AuthConfig = {
   loginRoute: '/auth/login',
-  forbiddenRoute: '/forbidden',
+  forbiddenRoute: '/access-denied',
   storageType: 'session'
 };
 

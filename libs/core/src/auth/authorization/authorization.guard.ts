@@ -26,9 +26,13 @@ export const authorizationGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  if (state.url.split('?')[0] === '/dashboard') {
+  if (state.url.split('?')[0] === config.forbiddenRoute) {
     return false;
   }
 
-  return router.createUrlTree(['/dashboard']);
+  return router.createUrlTree([config.forbiddenRoute], {
+    queryParams: {
+      returnUrl: state.url
+    }
+  });
 };
