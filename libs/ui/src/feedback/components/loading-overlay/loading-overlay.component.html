@@ -1,0 +1,17 @@
+@if (loading.isLoading()) {
+  <div
+    class="loading-overlay"
+    role="status"
+    aria-live="polite"
+    aria-label="در حال پردازش"
+    dir="rtl"
+  >
+    <div class="loading-overlay__content">
+      <p-progress-spinner
+        ariaLabel="در حال پردازش"
+        strokeWidth="4"
+      />
+      <span>در حال پردازش...</span>
+    </div>
+  </div>
+}

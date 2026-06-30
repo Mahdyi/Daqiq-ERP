@@ -28,12 +28,6 @@ export type {
   FormFieldValueChange
 } from './form-engine/form-engine.types';
 
-export type {
-  UiConfirmationRequest,
-  UiNotificationRequest
-} from './dialogs/dialog.model';
-export { DialogService } from './dialogs/dialog.service';
-
 export { FilterComponent } from './filters/filter.component';
 export type {
   FilterChange,
@@ -45,6 +39,23 @@ export type {
 
 export { EmptyStateComponent } from './feedback/empty-state.component';
 export { LoadingComponent } from './feedback/loading.component';
+export { GlobalFeedbackOutletComponent } from './feedback/components/global-feedback-outlet/global-feedback-outlet.component';
+export { LoadingOverlayComponent } from './feedback/components/loading-overlay/loading-overlay.component';
+export { provideUiFeedback } from './feedback/feedback.providers';
+export type { ConfirmationOptions } from './feedback/models/confirmation.model';
+export type {
+  AppDialogOptions,
+  AppDialogRef
+} from './feedback/models/dialog.model';
+export type { LoadingHandle } from './feedback/models/loading.model';
+export type {
+  NotificationOptions,
+  NotificationSeverity
+} from './feedback/models/notification.model';
+export { ConfirmationService } from './feedback/services/confirmation.service';
+export { DialogService } from './feedback/services/dialog.service';
+export { LoadingService } from './feedback/services/loading.service';
+export { NotificationService } from './feedback/services/notification.service';
 
 export { CardComponent } from './layout/card.component';
 export { PageContainerComponent } from './layout/page-container.component';

@@ -38,20 +38,11 @@ export type { AppError, AppErrorContext, AppErrorSeverity } from './error/app-er
 export { ErrorService } from './error/error.service';
 export type { ApiError, ApiErrorSource } from './http/api-error.model';
 export type { ApiPageInfo, ApiResponse, PagedApiResponse } from './http/api-response.model';
-export { SKIP_GLOBAL_ERROR_HANDLER, SKIP_GLOBAL_LOADING } from './http/http-context.tokens';
+export { SKIP_GLOBAL_ERROR_HANDLER } from './http/http-context.tokens';
 export type { LayoutState } from './layout/layout-state.model';
 export { LayoutService } from './layout/layout.service';
-export type { LoadingState } from './loading/loading.model';
-export { LoadingService } from './loading/loading.service';
 export type { NavigationItem } from './navigation/models/navigation-item.model';
 export { NavigationFacade } from './navigation/navigation.facade';
-export { ConfirmationService } from './notifications/confirmation.service';
-export type {
-  ConfirmationOptions,
-  NotificationOptions,
-  NotificationSeverity
-} from './notifications/notification.model';
-export { NotificationService } from './notifications/notification.service';
 export { ThemeService } from './theme/theme.service';
 export { DEFAULT_THEME_CONFIG, THEME_STORAGE_KEY } from './theme/theme.tokens';
 export type {

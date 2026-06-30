@@ -1,5 +1,6 @@
 import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
 import { AppConfig, provideDaqiqCore } from '@daqiq/core';
+import { provideUiFeedback } from '@daqiq/ui';
 
 export const ERP_APP_CONFIG: AppConfig = {
   apiBaseUrl: '/api',
@@ -11,5 +12,8 @@ export const ERP_APP_CONFIG: AppConfig = {
 };
 
 export function provideErpShellProviders(): EnvironmentProviders {
-  return makeEnvironmentProviders([provideDaqiqCore(ERP_APP_CONFIG)]);
+  return makeEnvironmentProviders([
+    provideDaqiqCore(ERP_APP_CONFIG),
+    provideUiFeedback()
+  ]);
 }

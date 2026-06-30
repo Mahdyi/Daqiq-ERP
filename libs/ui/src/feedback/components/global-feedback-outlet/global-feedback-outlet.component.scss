@@ -1,0 +1,15 @@
+:host {
+  display: contents;
+}
+
+:host ::ng-deep .p-toast,
+:host ::ng-deep .p-confirmdialog {
+  direction: rtl;
+  font-family: var(--erp-font-family, sans-serif);
+  text-align: start;
+}
+
+:host ::ng-deep .p-toast-message-content,
+:host ::ng-deep .p-confirmdialog-message {
+  line-height: var(--erp-line-height-body, 1.9);
+}

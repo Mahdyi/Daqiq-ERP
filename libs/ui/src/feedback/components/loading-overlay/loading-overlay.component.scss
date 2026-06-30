@@ -1,0 +1,36 @@
+:host {
+  display: contents;
+}
+
+.loading-overlay {
+  position: fixed;
+  z-index: 1400;
+  display: grid;
+  place-items: center;
+  inset: 0;
+  background: color-mix(
+    in srgb,
+    var(--erp-surface-page, #f8fafc) 72%,
+    transparent
+  );
+  backdrop-filter: blur(2px);
+}
+
+.loading-overlay__content {
+  display: grid;
+  min-width: 11rem;
+  justify-items: center;
+  gap: var(--erp-layout-space-lg, 1rem);
+  border: 1px solid var(--erp-border-color, #e2e8f0);
+  border-radius: var(--erp-layout-radius-lg, 0.75rem);
+  background: var(--erp-card-bg, #fff);
+  box-shadow: var(--erp-shadow-md, 0 16px 40px rgb(15 23 42 / 10%));
+  color: var(--erp-text-color, #172033);
+  padding: var(--erp-layout-space-xl, 1.25rem);
+  font-weight: var(--erp-font-weight-medium, 500);
+}
+
+.loading-overlay p-progress-spinner {
+  width: 3rem;
+  height: 3rem;
+}
