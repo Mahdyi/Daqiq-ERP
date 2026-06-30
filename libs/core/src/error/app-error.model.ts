@@ -1,6 +1,5 @@
-import { ApiErrorSource } from '../http/api-error.model';
-
 export type AppErrorSeverity = 'info' | 'warning' | 'error' | 'critical';
+export type AppErrorSource = 'http' | 'network' | 'client' | 'server' | 'unknown' | 'global';
 
 export interface AppErrorContext {
   readonly source?: string;
@@ -12,7 +11,7 @@ export interface AppError {
   readonly id: string;
   readonly message: string;
   readonly severity: AppErrorSeverity;
-  readonly source: ApiErrorSource | 'global';
+  readonly source: AppErrorSource;
   readonly statusCode?: number;
   readonly code?: string;
   readonly details?: unknown;

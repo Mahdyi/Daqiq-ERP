@@ -42,6 +42,7 @@ export { LoadingComponent } from './feedback/loading.component';
 export { GlobalFeedbackOutletComponent } from './feedback/components/global-feedback-outlet/global-feedback-outlet.component';
 export { LoadingOverlayComponent } from './feedback/components/loading-overlay/loading-overlay.component';
 export { provideUiFeedback } from './feedback/feedback.providers';
+export { provideUiHttpActivityBridge } from './feedback/http/ui-http-activity-bridge.providers';
 export type { ConfirmationOptions } from './feedback/models/confirmation.model';
 export type {
   AppDialogOptions,

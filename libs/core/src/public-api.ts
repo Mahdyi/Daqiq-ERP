@@ -34,11 +34,32 @@ export { provideDaqiqCore } from './core.providers';
 export { provideAppConfig } from './config/app-config.providers';
 export { APP_CONFIG } from './config/app-config.tokens';
 export type { AppConfig, AppDirection, AppLocale } from './config/app-config.model';
-export type { AppError, AppErrorContext, AppErrorSeverity } from './error/app-error.model';
+export type {
+  AppError,
+  AppErrorContext,
+  AppErrorSeverity,
+  AppErrorSource
+} from './error/app-error.model';
 export { ErrorService } from './error/error.service';
-export type { ApiError, ApiErrorSource } from './http/api-error.model';
-export type { ApiPageInfo, ApiResponse, PagedApiResponse } from './http/api-response.model';
-export { SKIP_GLOBAL_ERROR_HANDLER } from './http/http-context.tokens';
+export { ApiClient } from './http/api-client/api-client.service';
+export type { ApiConfig } from './http/configuration/api-config.model';
+export { API_CONFIG } from './http/configuration/api-config.token';
+export { joinApiUrl } from './http/configuration/api-url.util';
+export { ApiError } from './http/errors/api-error.model';
+export type { ApiErrorCode, ApiFieldError } from './http/errors/api-error.model';
+export type { ApiEnvelope } from './http/models/api-envelope.model';
+export type { ApiPage, ApiPageRequest } from './http/models/api-page.model';
+export type { ApiQuery, ApiQueryValue } from './http/models/api-query.model';
+export type {
+  ApiRequestOptions,
+  ApiRequestParamValue,
+  ApiResponseShape
+} from './http/models/api-request-options.model';
+export type { HttpActivityHandle, HttpActivityPort } from './http/ports/http-activity.port';
+export { HTTP_ACTIVITY_PORT } from './http/ports/http-activity.token';
+export { BaseRepository } from './http/repositories/base-repository';
+export { SKIP_CORRELATION_ID, SKIP_HTTP_LOADING } from './http/tokens/http-context.tokens';
+export { provideCoreHttp } from './http/http.providers';
 export type { LayoutState } from './layout/layout-state.model';
 export { LayoutService } from './layout/layout.service';
 export type { NavigationItem } from './navigation/models/navigation-item.model';
