@@ -15,18 +15,22 @@ export type {
   DataTableSortDirection
 } from './table/data-table.types';
 
-export { FormEngineComponent } from './form-engine/form-engine.component';
+export { DynamicFormComponent } from './forms/components/dynamic-form/dynamic-form.component';
+export { DynamicFormFieldComponent } from './forms/components/dynamic-form-field/dynamic-form-field.component';
+export type { FormFieldKind } from './forms/models/form-field-kind.model';
 export type {
-  FormEngineConfig,
   FormFieldConfig,
-  FormFieldOption
-} from './form-engine/form-field.model';
-export type {
-  FormFieldInputValue,
   FormFieldKey,
-  FormFieldType,
-  FormFieldValueChange
-} from './form-engine/form-engine.types';
+  FormValidationErrorKey,
+  FormValidationMessages
+} from './forms/models/form-field-config.model';
+export type {
+  FormFieldOption,
+  FormScalarValue
+} from './forms/models/form-field-option.model';
+export { DEFAULT_FORM_LAYOUT } from './forms/models/form-layout.model';
+export type { FormLayoutConfig } from './forms/models/form-layout.model';
+export type { FormSubmitEvent } from './forms/models/form-submit-event.model';
 
 export { FilterComponent } from './filters/filter.component';
 export type {

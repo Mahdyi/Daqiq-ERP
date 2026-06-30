@@ -1,0 +1,44 @@
+@if (form(); as formGroup) {
+  <form
+    class="daqiq-dynamic-form"
+    [class.daqiq-dynamic-form--submitting]="submitting()"
+    [formGroup]="formGroup"
+    (ngSubmit)="handleSubmit()"
+    novalidate
+  >
+    <div
+      class="daqiq-dynamic-form__grid"
+      [style.--daqiq-form-columns]="resolvedLayout().columns"
+    >
+      @for (field of visibleFields(); track field.key) {
+        <daqiq-dynamic-form-field
+          class="daqiq-dynamic-form__field"
+          [style.grid-column]="fieldColSpan(field)"
+          [field]="field"
+          [control]="controlFor(formGroup, field)"
+          [formValue]="formValue()"
+        />
+      }
+    </div>
+
+    <div class="daqiq-dynamic-form__actions">
+      @if (resolvedLayout().showCancel) {
+        <p-button
+          type="button"
+          severity="secondary"
+          variant="outlined"
+          [label]="resolvedLayout().cancelLabel"
+          [disabled]="submitting()"
+          (onClick)="handleCancel()"
+        />
+      }
+
+      <p-button
+        type="submit"
+        [label]="resolvedLayout().submitLabel"
+        [loading]="submitting()"
+        [disabled]="formGroup.invalid || submitting()"
+      />
+    </div>
+  </form>
+}

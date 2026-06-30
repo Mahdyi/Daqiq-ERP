@@ -1,0 +1,140 @@
+<div class="daqiq-form-field" [class.daqiq-form-field--invalid]="invalid()">
+  <label class="daqiq-form-field__label" [for]="inputId()">
+    <span>{{ field().label }}</span>
+    @if (field().required) {
+      <span class="daqiq-form-field__required" aria-hidden="true">*</span>
+    }
+  </label>
+
+  @switch (field().kind) {
+    @case ('text') {
+      <input
+        pInputText
+        class="daqiq-form-field__control"
+        type="text"
+        [id]="inputId()"
+        [formControl]="control()"
+        [placeholder]="field().placeholder ?? ''"
+        [readonly]="field().readonly === true"
+        [attr.aria-describedby]="describedBy()"
+        [attr.aria-invalid]="invalid()"
+      />
+    }
+
+    @case ('email') {
+      <input
+        pInputText
+        class="daqiq-form-field__control"
+        type="email"
+        [id]="inputId()"
+        [formControl]="control()"
+        [placeholder]="field().placeholder ?? ''"
+        [readonly]="field().readonly === true"
+        [attr.aria-describedby]="describedBy()"
+        [attr.aria-invalid]="invalid()"
+      />
+    }
+
+    @case ('password') {
+      <p-password
+        styleClass="daqiq-form-field__prime-control daqiq-form-field__prime-control--password"
+        inputStyleClass="daqiq-form-field__control"
+        [inputId]="inputId()"
+        [formControl]="control()"
+        [placeholder]="field().placeholder ?? ''"
+        [feedback]="false"
+        [toggleMask]="true"
+        [fluid]="true"
+        [attr.aria-describedby]="describedBy()"
+        [attr.aria-invalid]="invalid()"
+      />
+    }
+
+    @case ('number') {
+      <p-inputNumber
+        styleClass="daqiq-form-field__prime-control"
+        inputStyleClass="daqiq-form-field__control"
+        [inputId]="inputId()"
+        [formControl]="control()"
+        [placeholder]="field().placeholder ?? ''"
+        [readonly]="field().readonly === true"
+        [useGrouping]="false"
+        [attr.aria-describedby]="describedBy()"
+        [attr.aria-invalid]="invalid()"
+      />
+    }
+
+    @case ('textarea') {
+      <textarea
+        pTextarea
+        class="daqiq-form-field__control daqiq-form-field__textarea"
+        [id]="inputId()"
+        [formControl]="control()"
+        [placeholder]="field().placeholder ?? ''"
+        [readonly]="field().readonly === true"
+        [rows]="field().rows ?? 4"
+        [attr.aria-describedby]="describedBy()"
+        [attr.aria-invalid]="invalid()"
+      ></textarea>
+    }
+
+    @case ('select') {
+      <p-select
+        styleClass="daqiq-form-field__prime-control"
+        [inputId]="inputId()"
+        [formControl]="control()"
+        [options]="selectOptions()"
+        optionLabel="label"
+        optionValue="value"
+        optionDisabled="disabled"
+        [placeholder]="field().placeholder ?? 'انتخاب کنید'"
+        [readonly]="field().readonly === true"
+        [showClear]="true"
+        appendTo="body"
+        [attr.aria-describedby]="describedBy()"
+        [attr.aria-invalid]="invalid()"
+      />
+    }
+
+    @case ('date') {
+      <p-datepicker
+        styleClass="daqiq-form-field__prime-control"
+        inputStyleClass="daqiq-form-field__control"
+        [inputId]="inputId()"
+        [formControl]="control()"
+        [placeholder]="field().placeholder ?? ''"
+        [readonlyInput]="field().readonly === true"
+        [showIcon]="true"
+        [showButtonBar]="true"
+        dateFormat="yy/mm/dd"
+        appendTo="body"
+        [attr.aria-describedby]="describedBy()"
+        [attr.aria-invalid]="invalid()"
+      />
+    }
+
+    @case ('switch') {
+      <div class="daqiq-form-field__switch">
+        <p-toggleswitch
+          [inputId]="inputId()"
+          [formControl]="control()"
+          [readonly]="field().readonly === true"
+          [attr.aria-describedby]="describedBy()"
+          [attr.aria-invalid]="invalid()"
+        />
+      </div>
+    }
+  }
+
+  @if (field().hint) {
+    <small class="daqiq-form-field__hint" [id]="hintId()">
+      {{ field().hint }}
+    </small>
+  }
+
+  @if (validationMessage(); as message) {
+    <small class="daqiq-form-field__error" [id]="errorId()">
+      {{ message }}
+    </small>
+  }
+</div>

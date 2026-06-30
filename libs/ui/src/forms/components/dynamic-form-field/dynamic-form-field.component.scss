@@ -1,0 +1,68 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.daqiq-form-field {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+  direction: rtl;
+}
+
+.daqiq-form-field__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--erp-text-color, var(--p-text-color));
+  font-size: var(--erp-font-size-sm, 0.875rem);
+  font-weight: var(--erp-font-weight-medium, 500);
+}
+
+.daqiq-form-field__required,
+.daqiq-form-field__error {
+  color: var(--p-red-500, #ef4444);
+}
+
+.daqiq-form-field__control,
+:host ::ng-deep .daqiq-form-field__prime-control,
+:host ::ng-deep .daqiq-form-field__prime-control .p-inputtext,
+:host ::ng-deep .daqiq-form-field__prime-control.p-select,
+:host ::ng-deep .daqiq-form-field__prime-control.p-datepicker {
+  width: 100%;
+}
+
+.daqiq-form-field__control {
+  text-align: start;
+}
+
+.daqiq-form-field__textarea {
+  min-height: 7rem;
+  resize: vertical;
+}
+
+.daqiq-form-field__hint {
+  color: var(--erp-text-muted-color, var(--p-text-muted-color));
+  font-size: var(--erp-font-size-xs, 0.75rem);
+  line-height: 1.7;
+}
+
+.daqiq-form-field__error {
+  font-size: var(--erp-font-size-xs, 0.75rem);
+  line-height: 1.7;
+}
+
+.daqiq-form-field__switch {
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+.daqiq-form-field--invalid {
+  :host ::ng-deep .p-inputtext,
+  :host ::ng-deep .p-select,
+  :host ::ng-deep .p-datepicker,
+  .daqiq-form-field__control {
+    border-color: var(--p-red-500, #ef4444);
+  }
+}
