@@ -1,0 +1,48 @@
+name: daqiq-erp-backend-dev
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: daqiq-erp-postgres-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      PGRST_DB_AUTHENTICATOR_PASSWORD: ${PGRST_DB_AUTHENTICATOR_PASSWORD:?PGRST_DB_AUTHENTICATOR_PASSWORD is required}
+      POSTGRES_APPLY_DEV_SEEDS: ${POSTGRES_APPLY_DEV_SEEDS:-false}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - daqiq_postgres_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+      - ./postgres/migrations:/migrations:ro
+      - ./postgres/seeds:/seeds:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  postgrest:
+    image: postgrest/postgrest:v12.2.8
+    container_name: daqiq-erp-postgrest-dev
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${PGRST_DB_AUTHENTICATOR_PASSWORD:?PGRST_DB_AUTHENTICATOR_PASSWORD is required}@postgres:5432/${POSTGRES_DB:?POSTGRES_DB is required}
+      PGRST_DB_SCHEMAS: api
+      PGRST_DB_ANON_ROLE: erp_anon
+      PGRST_JWT_SECRET: ${PGRST_JWT_SECRET:?PGRST_JWT_SECRET is required}
+      PGRST_JWT_ROLE_CLAIM_KEY: .role
+      PGRST_SERVER_HOST: 0.0.0.0
+      PGRST_SERVER_PORT: "3000"
+      PGRST_SERVER_CORS_ALLOWED_ORIGINS: ${PGRST_SERVER_CORS_ALLOWED_ORIGINS:-http://localhost:4200,http://127.0.0.1:4200}
+      PGRST_LOG_LEVEL: info
+    ports:
+      - "127.0.0.1:${POSTGREST_PORT:-3000}:3000"
+
+volumes:
+  daqiq_postgres_data:

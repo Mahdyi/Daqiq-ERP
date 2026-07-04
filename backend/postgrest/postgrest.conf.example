@@ -1,0 +1,18 @@
+# PostgREST v12 example configuration.
+# Prefer environment variables or a secret manager for real deployments.
+# This file intentionally contains placeholders only.
+
+db-uri = "postgres://authenticator:replace-with-password@db-host:5432/daqiq_erp"
+db-schemas = "api"
+db-anon-role = "erp_anon"
+
+# Symmetric JWT secret placeholder. Use at least 32 bytes, stored outside Git.
+jwt-secret = "replace-with-secret-from-secret-manager-at-least-32-bytes"
+jwt-role-claim-key = ".role"
+
+# Local development defaults. Restrict production origins explicitly.
+server-host = "0.0.0.0"
+server-port = 3000
+server-cors-allowed-origins = "http://localhost:4200,http://127.0.0.1:4200,https://erp.example.com"
+
+log-level = "info"
