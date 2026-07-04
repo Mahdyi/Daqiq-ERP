@@ -7,6 +7,11 @@
     "declaration": true,
     "declarationMap": true,
     "inlineSources": true,
+    "paths": {
+      "@daqiq/core": [
+        "dist/core"
+      ]
+    },
     "types": []
   },
   "include": [
