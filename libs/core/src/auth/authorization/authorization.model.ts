@@ -2,6 +2,10 @@ export type AppRole = 'admin' | 'manager' | 'accountant' | 'sales' | 'warehouse'
 
 export type AppPermission =
   | 'dashboard.view'
+  | 'customers.view'
+  | 'customers.create'
+  | 'customers.update'
+  | 'customers.delete'
   | 'sales.view'
   | 'sales.create'
   | 'sales.update'
@@ -30,6 +34,10 @@ export interface AuthorizationPolicy {
 export const ROLE_PERMISSIONS = {
   admin: [
     'dashboard.view',
+    'customers.view',
+    'customers.create',
+    'customers.update',
+    'customers.delete',
     'sales.view',
     'sales.create',
     'sales.update',
@@ -49,14 +57,31 @@ export const ROLE_PERMISSIONS = {
     'settings.view',
     'settings.update'
   ],
-  manager: ['dashboard.view', 'sales.view', 'inventory.view', 'accounting.view'],
+  manager: [
+    'dashboard.view',
+    'customers.view',
+    'customers.create',
+    'customers.update',
+    'sales.view',
+    'inventory.view',
+    'accounting.view'
+  ],
   accountant: [
     'dashboard.view',
+    'customers.view',
     'accounting.view',
     'accounting.create',
     'accounting.update'
   ],
-  sales: ['dashboard.view', 'sales.view', 'sales.create', 'sales.update'],
+  sales: [
+    'dashboard.view',
+    'customers.view',
+    'customers.create',
+    'customers.update',
+    'sales.view',
+    'sales.create',
+    'sales.update'
+  ],
   warehouse: ['dashboard.view', 'inventory.view', 'inventory.create', 'inventory.update'],
   viewer: ['dashboard.view']
 } satisfies Record<AppRole, readonly AppPermission[]>;

@@ -24,6 +24,11 @@ export const routes: Routes = [
           import('@daqiq/feature-dashboard').then((dashboard) => dashboard.DASHBOARD_ROUTES)
       },
       {
+        path: 'master-data/customers',
+        loadChildren: () =>
+          import('@daqiq/feature-customers').then((customers) => customers.CUSTOMER_ROUTES)
+      },
+      {
         path: 'access-denied',
         data: {
           breadcrumb: 'دسترسی مجاز نیست'

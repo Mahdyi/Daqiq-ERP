@@ -2,7 +2,8 @@ import {
   HttpClient,
   HttpContext,
   HttpHeaders,
-  HttpParams
+  HttpParams,
+  HttpResponse
 } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
@@ -13,6 +14,7 @@ import { joinApiUrl } from '../configuration/api-url.util';
 import { ApiEnvelope } from '../models/api-envelope.model';
 import {
   ApiRequestOptions,
+  NormalizedHttpRequestOptions,
   NormalizedApiRequestOptions
 } from '../models/api-request-options.model';
 
@@ -104,6 +106,62 @@ export class ApiClient {
     );
   }
 
+  getResponse<TResponse>(
+    endpoint: string,
+    options?: ApiRequestOptions
+  ): Observable<HttpResponse<TResponse>> {
+    return this.http.get<TResponse>(
+      joinApiUrl(this.config.baseUrl, endpoint),
+      {
+        ...this.toHttpOptions(this.normalizeOptions(options)),
+        observe: 'response'
+      }
+    );
+  }
+
+  postResponse<TRequest, TResponse>(
+    endpoint: string,
+    body: TRequest,
+    options?: ApiRequestOptions
+  ): Observable<HttpResponse<TResponse>> {
+    return this.http.post<TResponse>(
+      joinApiUrl(this.config.baseUrl, endpoint),
+      body,
+      {
+        ...this.toHttpOptions(this.normalizeOptions(options)),
+        observe: 'response'
+      }
+    );
+  }
+
+  patchResponse<TRequest, TResponse>(
+    endpoint: string,
+    body: TRequest,
+    options?: ApiRequestOptions
+  ): Observable<HttpResponse<TResponse>> {
+    return this.http.patch<TResponse>(
+      joinApiUrl(this.config.baseUrl, endpoint),
+      body,
+      {
+        ...this.toHttpOptions(this.normalizeOptions(options)),
+        observe: 'response'
+      }
+    );
+  }
+
+  deleteResponse<TResponse>(
+    endpoint: string,
+    options?: ApiRequestOptions
+  ): Observable<HttpResponse<TResponse>> {
+    return this.http.delete<TResponse>(
+      joinApiUrl(this.config.baseUrl, endpoint),
+      {
+        ...this.toHttpOptions(this.normalizeOptions(options)),
+        observe: 'response'
+      }
+    );
+  }
+
   private unwrap<TResponse>(
     response: Observable<TResponse | ApiEnvelope<TResponse>>,
     responseShape: 'envelope' | 'raw'
@@ -121,6 +179,14 @@ export class ApiClient {
       headers: this.buildHeaders(this.config, options?.headers),
       params: this.buildParams(options?.params),
       responseShape: options?.responseShape ?? 'envelope'
+    };
+  }
+
+  private toHttpOptions(options: NormalizedApiRequestOptions): NormalizedHttpRequestOptions {
+    return {
+      context: options.context,
+      headers: options.headers,
+      params: options.params
     };
   }
 

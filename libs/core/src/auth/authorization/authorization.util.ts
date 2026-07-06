@@ -11,6 +11,10 @@ const APP_ROLES = [
 
 const APP_PERMISSIONS = [
   'dashboard.view',
+  'customers.view',
+  'customers.create',
+  'customers.update',
+  'customers.delete',
   'sales.view',
   'sales.create',
   'sales.update',

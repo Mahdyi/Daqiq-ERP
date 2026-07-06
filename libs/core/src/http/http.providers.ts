@@ -4,6 +4,7 @@ import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
 import { ApiConfig } from './configuration/api-config.model';
 import { API_CONFIG } from './configuration/api-config.token';
 import { apiErrorInterceptor } from './interceptors/api-error.interceptor';
+import { authTokenInterceptor } from './interceptors/auth-token.interceptor';
 import { correlationIdInterceptor } from './interceptors/correlation-id.interceptor';
 import { loadingInterceptor } from './interceptors/loading.interceptor';
 
@@ -16,6 +17,7 @@ export function provideCoreHttp(config: ApiConfig): EnvironmentProviders {
     provideHttpClient(
       withInterceptors([
         correlationIdInterceptor,
+        authTokenInterceptor,
         loadingInterceptor,
         apiErrorInterceptor
       ])

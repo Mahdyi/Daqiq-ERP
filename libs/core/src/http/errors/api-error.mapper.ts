@@ -47,12 +47,18 @@ function mapHttpErrorResponse(error: HttpErrorResponse): ApiError {
   const traceId = readTraceId(error, backendPayload);
   const fieldErrors = readFieldErrors(backendPayload);
   const backendMessage = readString(backendPayload, 'message');
+  const backendCode = readString(backendPayload, 'code');
+  const details = readString(backendPayload, 'details');
+  const hint = readString(backendPayload, 'hint');
 
   return new ApiError({
     status: error.status,
     code,
     message: backendMessage ?? FALLBACK_MESSAGES[code],
     traceId,
+    backendCode,
+    details,
+    hint,
     fieldErrors,
     cause: error
   });

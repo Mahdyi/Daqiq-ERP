@@ -10,5 +10,22 @@ export const APP_NAVIGATION = [
     authorization: {
       permissions: ['dashboard.view']
     }
+  },
+  {
+    id: 'master-data',
+    label: 'اطلاعات پایه',
+    icon: 'pi pi-database',
+    children: [
+      {
+        id: 'customers',
+        label: 'مشتریان',
+        icon: 'pi pi-users',
+        route: ['/master-data/customers'],
+        exact: false,
+        authorization: {
+          permissions: ['customers.view']
+        }
+      }
+    ]
   }
 ] as const satisfies readonly NavigationItem[];

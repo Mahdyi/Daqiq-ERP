@@ -49,4 +49,23 @@ describe('mapApiError', () => {
       }
     ]);
   });
+
+  it('preserves PostgREST diagnostic fields without changing status classification', () => {
+    const error = mapApiError(
+      new HttpErrorResponse({
+        status: 409,
+        error: {
+          code: '23505',
+          message: 'duplicate key value violates unique constraint',
+          details: 'Key already exists.',
+          hint: 'Use a different customer code.'
+        }
+      })
+    );
+
+    expect(error.code).toBe('CONFLICT');
+    expect(error.backendCode).toBe('23505');
+    expect(error.details).toBe('Key already exists.');
+    expect(error.hint).toBe('Use a different customer code.');
+  });
 });

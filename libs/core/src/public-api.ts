@@ -58,7 +58,11 @@ export type {
 export type { HttpActivityHandle, HttpActivityPort } from './http/ports/http-activity.port';
 export { HTTP_ACTIVITY_PORT } from './http/ports/http-activity.token';
 export { BaseRepository } from './http/repositories/base-repository';
-export { SKIP_CORRELATION_ID, SKIP_HTTP_LOADING } from './http/tokens/http-context.tokens';
+export {
+  SKIP_AUTH_TOKEN,
+  SKIP_CORRELATION_ID,
+  SKIP_HTTP_LOADING
+} from './http/tokens/http-context.tokens';
 export { provideCoreHttp } from './http/http.providers';
 export type { LayoutState } from './layout/layout-state.model';
 export { LayoutService } from './layout/layout.service';

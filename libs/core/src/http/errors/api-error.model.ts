@@ -20,6 +20,9 @@ export interface ApiErrorInput {
   readonly code: ApiErrorCode;
   readonly message: string;
   readonly traceId?: string;
+  readonly backendCode?: string;
+  readonly details?: string;
+  readonly hint?: string;
   readonly fieldErrors?: readonly ApiFieldError[];
   readonly cause?: unknown;
 }
@@ -29,6 +32,9 @@ export class ApiError extends Error {
   readonly status: number;
   readonly code: ApiErrorCode;
   readonly traceId?: string;
+  readonly backendCode?: string;
+  readonly details?: string;
+  readonly hint?: string;
   readonly fieldErrors: readonly ApiFieldError[];
   override readonly cause?: unknown;
 
@@ -38,6 +44,9 @@ export class ApiError extends Error {
     this.status = input.status;
     this.code = input.code;
     this.traceId = input.traceId;
+    this.backendCode = input.backendCode;
+    this.details = input.details;
+    this.hint = input.hint;
     this.fieldErrors = input.fieldErrors ?? [];
     this.cause = input.cause;
   }

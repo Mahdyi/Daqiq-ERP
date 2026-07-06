@@ -27,3 +27,9 @@ export interface NormalizedApiRequestOptions {
   readonly context: HttpContext;
   readonly responseShape: ApiResponseShape;
 }
+
+export interface NormalizedHttpRequestOptions {
+  readonly params: HttpParams;
+  readonly headers: HttpHeaders;
+  readonly context: HttpContext;
+}

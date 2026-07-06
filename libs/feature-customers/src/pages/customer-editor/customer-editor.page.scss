@@ -1,0 +1,23 @@
+:host {
+  display: block;
+  direction: rtl;
+}
+
+.customer-editor__state,
+.customer-editor__error {
+  display: flex;
+  min-height: 12rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.customer-editor__state {
+  color: var(--erp-text-muted-color, var(--p-text-muted-color));
+}
+
+.customer-editor__error {
+  flex-wrap: wrap;
+  color: var(--p-red-700, #b91c1c);
+}
