@@ -7,6 +7,7 @@ db-schemas = "api"
 db-anon-role = "erp_anon"
 
 # Symmetric JWT secret placeholder. Use at least 32 bytes, stored outside Git.
+# PostgreSQL app.jwt_secret must be set to the same value for api.login signing.
 jwt-secret = "replace-with-secret-from-secret-manager-at-least-32-bytes"
 jwt-role-claim-key = ".role"
 

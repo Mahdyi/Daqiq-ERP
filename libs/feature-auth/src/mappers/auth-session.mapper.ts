@@ -1,19 +1,20 @@
-import { AuthSession, PermissionCode, RoleCode } from '@daqiq/core';
+import { AuthSession, normalizeRoles } from '@daqiq/core';
 
 import { LoginResponseDto } from '../dto/login-response.dto';
 
 export function mapLoginResponseToAuthSession(response: LoginResponseDto): AuthSession {
+  const roles = normalizeRoles(response.user.roles);
+
   return {
     user: {
       id: response.user.id,
-      username: response.user.username,
+      username: response.user.email,
       displayName: response.user.displayName,
       email: response.user.email,
-      roles: response.user.roles.map((role) => ({
-        code: role as RoleCode,
+      roles: roles.map((role) => ({
+        code: role,
         name: role
-      })),
-      permissions: response.user.permissions?.map((permission) => permission as PermissionCode)
+      }))
     },
     token: {
       accessToken: response.accessToken,

@@ -7,6 +7,7 @@ export type {
 } from './auth/authorization/authorization.model';
 export type { AuthorizationRouteData } from './auth/authorization/authorization-route-data.model';
 export { AuthorizationService } from './auth/authorization/authorization.service';
+export { isAppRole, normalizeRoles } from './auth/authorization/authorization.util';
 export { provideCoreAuth } from './auth/auth.providers';
 export { authGuard } from './auth/guards/auth.guard';
 export { roleGuard } from './auth/guards/role.guard';

@@ -6,6 +6,7 @@ import { AUTH_CONFIG } from '../tokens/auth.tokens';
 
 export const authGuard: CanActivateFn = (_route, state) => {
   const authService = inject(AuthService);
+  authService.clearExpiredSession();
 
   if (authService.isAuthenticated()) {
     return true;

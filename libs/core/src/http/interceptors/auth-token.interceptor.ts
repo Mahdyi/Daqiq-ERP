@@ -8,10 +8,16 @@ import { SKIP_AUTH_TOKEN } from '../tokens/http-context.tokens';
 export const authTokenInterceptor: HttpInterceptorFn = (request, next) => {
   const config = inject(API_CONFIG);
   const authService = inject(AuthService);
-  const accessToken = authService.token()?.accessToken?.trim();
+  const token = authService.token();
+  const accessToken = token?.accessToken?.trim();
+
+  if (authService.isTokenExpired(token)) {
+    authService.clearExpiredSession();
+  }
 
   if (
     request.context.get(SKIP_AUTH_TOKEN) ||
+    authService.isTokenExpired(token) ||
     !accessToken ||
     request.headers.has('Authorization') ||
     !isApiRequest(request.url, config.baseUrl)

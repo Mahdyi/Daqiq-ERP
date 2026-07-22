@@ -46,6 +46,8 @@ Migrations are applied in lexical order during first local PostgreSQL initializa
 002_private_functions.sql
 003_customers_table.sql
 004_customers_rls_grants.sql
+005_auth_tables.sql
+006_auth_functions.sql
 ```
 
 Development seeds are applied only when:
@@ -81,7 +83,16 @@ Only do this for local disposable data.
 
 ## Smoke Tests
 
-After starting the local backend and obtaining locally signed test JWTs, export tokens through environment variables:
+After starting the local backend, the auth smoke script can log in with development users and
+exercise PostgREST with returned JWTs:
+
+```powershell
+$env:PGRST_BASE_URL = 'http://127.0.0.1:3000'
+pwsh backend/postgrest/smoke-test-auth.ps1
+```
+
+The older customer smoke script expects externally supplied tokens. Use it only when you
+need to test manually supplied JWTs:
 
 ```powershell
 $env:PGRST_ADMIN_TOKEN = '<local-admin-test-token>'
@@ -97,4 +108,5 @@ Then run:
 pwsh backend/postgrest/smoke-test-customers.ps1
 ```
 
-The script does not store tokens. It creates records with a `SMOKE-` code prefix and cleans them up with the admin token.
+Smoke scripts do not store tokens. They create records with smoke-test code prefixes and
+clean them up with an admin token.

@@ -15,7 +15,7 @@ import { AUTH_TOKEN_STORAGE } from '../tokens/auth.tokens';
 })
 export class AuthService {
   private readonly tokenStorage = inject(AUTH_TOKEN_STORAGE);
-  private readonly storedToken = this.tokenStorage.read();
+  private readonly storedToken = this.readStoredToken();
   private readonly userState = signal<User | null>(null);
   private readonly tokenState = signal<AuthToken | null>(this.storedToken);
   private readonly statusState = signal<AuthStatus>(
@@ -25,8 +25,12 @@ export class AuthService {
   readonly user = this.userState.asReadonly();
   readonly token = this.tokenState.asReadonly();
   readonly status = this.statusState.asReadonly();
+  readonly hasValidToken = computed(() => {
+    const token = this.token();
+    return token !== null && !this.isTokenExpired(token);
+  });
   readonly isAuthenticated = computed(
-    () => this.status() === 'authenticated' && this.user() !== null && this.token() !== null
+    () => this.status() === 'authenticated' && this.user() !== null && this.hasValidToken()
   );
   readonly roles = computed(() => this.user()?.roles ?? []);
   readonly permissions = computed<ReadonlySet<PermissionCode>>(() => {
@@ -48,6 +52,11 @@ export class AuthService {
   }));
 
   login(session: AuthSession): void {
+    if (this.isTokenExpired(session.token)) {
+      this.logout();
+      return;
+    }
+
     this.tokenStorage.write(session.token);
     this.tokenState.set(session.token);
     this.userState.set(session.user);
@@ -67,8 +76,13 @@ export class AuthService {
   }
 
   setToken(token: AuthToken | null): void {
-    if (token) {
+    if (token && !this.isTokenExpired(token)) {
       this.tokenStorage.write(token);
+    } else if (token) {
+      this.tokenStorage.remove();
+      this.tokenState.set(null);
+      this.synchronizeStatus();
+      return;
     } else {
       this.tokenStorage.remove();
     }
@@ -96,12 +110,50 @@ export class AuthService {
     );
   }
 
+  isTokenExpired(token: AuthToken | null): boolean {
+    if (!token?.expiresAt) {
+      return false;
+    }
+
+    const expiresAtMs = Date.parse(token.expiresAt);
+
+    if (Number.isNaN(expiresAtMs)) {
+      return true;
+    }
+
+    return expiresAtMs <= Date.now();
+  }
+
+  clearExpiredSession(): void {
+    if (this.isTokenExpired(this.token())) {
+      this.logout();
+    }
+  }
+
+  private readStoredToken(): AuthToken | null {
+    const token = this.tokenStorage.read();
+
+    if (!token || !this.isTokenExpired(token)) {
+      return token;
+    }
+
+    this.tokenStorage.remove();
+    return null;
+  }
+
   private synchronizeStatus(): void {
-    if (this.user() && this.token()) {
+    const token = this.token();
+
+    if (token && this.isTokenExpired(token)) {
+      this.logout();
+      return;
+    }
+
+    if (this.user() && token) {
       this.statusState.set('authenticated');
       return;
     }
 
-    this.statusState.set(this.token() ? 'unknown' : 'unauthenticated');
+    this.statusState.set(token ? 'unknown' : 'unauthenticated');
   }
 }

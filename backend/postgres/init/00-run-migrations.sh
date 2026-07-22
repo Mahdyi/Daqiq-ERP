@@ -4,6 +4,7 @@ set -eu
 : "${POSTGRES_DB:?POSTGRES_DB is required}"
 : "${POSTGRES_USER:?POSTGRES_USER is required}"
 : "${PGRST_DB_AUTHENTICATOR_PASSWORD:?PGRST_DB_AUTHENTICATOR_PASSWORD is required}"
+: "${PGRST_JWT_SECRET:?PGRST_JWT_SECRET is required}"
 
 for migration in /migrations/*.sql; do
   echo "Applying migration: ${migration}"
@@ -18,8 +19,11 @@ psql \
   --username "${POSTGRES_USER}" \
   --dbname "${POSTGRES_DB}" \
   --set ON_ERROR_STOP=1 \
-  --set authenticator_password="${PGRST_DB_AUTHENTICATOR_PASSWORD}" <<'SQL'
+  --set authenticator_password="${PGRST_DB_AUTHENTICATOR_PASSWORD}" \
+  --set jwt_secret="${PGRST_JWT_SECRET}" \
+  --set database_name="${POSTGRES_DB}" <<'SQL'
 ALTER ROLE authenticator WITH PASSWORD :'authenticator_password';
+ALTER DATABASE :"database_name" SET app.jwt_secret = :'jwt_secret';
 SQL
 
 if [ "${POSTGRES_APPLY_DEV_SEEDS:-false}" = "true" ]; then

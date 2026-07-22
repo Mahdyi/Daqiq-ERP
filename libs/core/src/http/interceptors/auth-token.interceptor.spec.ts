@@ -1,4 +1,4 @@
-import { HttpContext, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpClient, HttpContext, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
@@ -7,14 +7,15 @@ import { AuthService } from '../../auth/services/auth.service';
 import { API_CONFIG } from '../configuration/api-config.token';
 import { SKIP_AUTH_TOKEN } from '../tokens/http-context.tokens';
 import { authTokenInterceptor } from './auth-token.interceptor';
-import { HttpClient } from '@angular/common/http';
 
 describe('authTokenInterceptor', () => {
-  function setup(accessToken: string | null): {
+  function setup(accessToken: string | null, expiresAt?: string): {
     readonly httpClient: HttpClient;
     readonly http: HttpTestingController;
+    readonly clearExpiredSession: jasmine.Spy;
   } {
-    const tokenSignal = signal(accessToken ? { accessToken } : null);
+    const tokenSignal = signal(accessToken ? { accessToken, expiresAt } : null);
+    const clearExpiredSession = jasmine.createSpy('clearExpiredSession');
 
     TestBed.configureTestingModule({
       providers: [
@@ -29,7 +30,10 @@ describe('authTokenInterceptor', () => {
         {
           provide: AuthService,
           useValue: {
-            token: tokenSignal.asReadonly()
+            token: tokenSignal.asReadonly(),
+            isTokenExpired: (token: { readonly expiresAt?: string } | null) =>
+              token?.expiresAt ? Date.parse(token.expiresAt) <= Date.now() : false,
+            clearExpiredSession
           }
         }
       ]
@@ -37,7 +41,8 @@ describe('authTokenInterceptor', () => {
 
     return {
       httpClient: TestBed.inject(HttpClient),
-      http: TestBed.inject(HttpTestingController)
+      http: TestBed.inject(HttpTestingController),
+      clearExpiredSession
     };
   }
 
@@ -73,6 +78,21 @@ describe('authTokenInterceptor', () => {
     const request = http.expectOne('https://example.com/metrics');
     expect(request.request.headers.has('Authorization')).toBeFalse();
     request.flush({});
+    http.verify();
+  });
+
+  it('does not attach expired tokens', () => {
+    const { httpClient, http, clearExpiredSession } = setup(
+      'expired-access-value',
+      '2000-01-01T00:00:00.000Z'
+    );
+
+    httpClient.get('/api/customers').subscribe();
+
+    const request = http.expectOne('/api/customers');
+    expect(request.request.headers.has('Authorization')).toBeFalse();
+    expect(clearExpiredSession).toHaveBeenCalled();
+    request.flush([]);
     http.verify();
   });
 });

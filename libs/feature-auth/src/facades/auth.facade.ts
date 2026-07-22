@@ -1,7 +1,8 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '@daqiq/core';
+import { ApiError, AuthService } from '@daqiq/core';
 import { LoadingService, NotificationService } from '@daqiq/ui';
+import { firstValueFrom } from 'rxjs';
 
 import { AuthApiService } from '../data-access/auth-api.service';
 import { LoginRequestDto } from '../dto/login-request.dto';
@@ -37,7 +38,7 @@ export class AuthFacade {
     const loadingHandle = this.loadingService.begin();
 
     try {
-      const response = await this.api.login(this.toLoginRequestDto(value));
+      const response = await firstValueFrom(this.api.login(this.toLoginRequestDto(value)));
       this.auth.login(mapLoginResponseToAuthSession(response));
       this.notifications.success(
         'ورود موفق',
@@ -46,7 +47,7 @@ export class AuthFacade {
       await this.redirectAfterLogin(returnUrl);
     } catch (error: unknown) {
       this.errorState.set({
-        message: error instanceof Error ? error.message : LOGIN_LABELS.invalidCredentials
+        message: this.resolveLoginErrorMessage(error)
       });
     } finally {
       loadingHandle.close();
@@ -72,6 +73,14 @@ export class AuthFacade {
       email: value.email.trim().toLowerCase(),
       password: value.password
     };
+  }
+
+  private resolveLoginErrorMessage(error: unknown): string {
+    if (error instanceof ApiError) {
+      return LOGIN_LABELS.invalidCredentials;
+    }
+
+    return LOGIN_LABELS.invalidCredentials;
   }
 
   private getSafeReturnUrl(returnUrl: string | null): string {
