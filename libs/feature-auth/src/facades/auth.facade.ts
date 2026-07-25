@@ -55,9 +55,25 @@ export class AuthFacade {
     }
   }
 
-  logout(): void {
+  async logout(): Promise<void> {
     this.errorState.set(null);
-    this.auth.logout();
+    const refreshToken = this.auth.token()?.refreshToken?.trim();
+
+    try {
+      if (refreshToken) {
+        await firstValueFrom(
+          this.api.logout({
+            refreshToken
+          })
+        );
+      }
+    } catch {
+      // Local logout must not be blocked by a network or revocation failure.
+    } finally {
+      this.auth.logout();
+      this.notifications.success('خروج', 'خروج با موفقیت انجام شد.');
+      await this.router.navigateByUrl('/auth/login');
+    }
   }
 
   async redirectAfterLogin(returnUrl: string | null): Promise<void> {

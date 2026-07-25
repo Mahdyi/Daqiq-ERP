@@ -1,7 +1,7 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 
-import { AuthToken } from '../models/auth-state.model';
+import { AuthSession } from '../models/auth-state.model';
 import {
   AUTH_CONFIG,
   AUTH_TOKEN_STORAGE_KEY,
@@ -19,38 +19,38 @@ export class BrowserAuthTokenStorage implements AuthTokenStorage {
   private readonly memoryStorage = new Map<string, string>();
   private readonly isBrowser = isPlatformBrowser(this.platformId);
 
-  read(): AuthToken | null {
-    const serializedToken = this.readSerializedToken();
+  read(): AuthSession | null {
+    const serializedSession = this.readSerializedSession();
 
-    if (!serializedToken) {
+    if (!serializedSession) {
       return null;
     }
 
     try {
-      const parsedToken: unknown = JSON.parse(serializedToken);
+      const parsedSession: unknown = JSON.parse(serializedSession);
 
-      return this.isAuthToken(parsedToken) ? parsedToken : null;
+      return this.isAuthSession(parsedSession) ? parsedSession : null;
     } catch {
       this.remove();
       return null;
     }
   }
 
-  write(token: AuthToken): void {
-    const serializedToken = JSON.stringify(token);
+  write(session: AuthSession): void {
+    const serializedSession = JSON.stringify(session);
     const storage = this.getBrowserStorage();
 
     if (storage) {
       try {
-        storage.setItem(this.storageKey, serializedToken);
+        storage.setItem(this.storageKey, serializedSession);
         return;
       } catch {
-        this.memoryStorage.set(this.storageKey, serializedToken);
+        this.memoryStorage.set(this.storageKey, serializedSession);
         return;
       }
     }
 
-    this.memoryStorage.set(this.storageKey, serializedToken);
+    this.memoryStorage.set(this.storageKey, serializedSession);
   }
 
   remove(): void {
@@ -67,7 +67,7 @@ export class BrowserAuthTokenStorage implements AuthTokenStorage {
     this.memoryStorage.delete(this.storageKey);
   }
 
-  private readSerializedToken(): string | null {
+  private readSerializedSession(): string | null {
     const storage = this.getBrowserStorage();
 
     if (storage) {
@@ -99,13 +99,29 @@ export class BrowserAuthTokenStorage implements AuthTokenStorage {
     }
   }
 
-  private isAuthToken(value: unknown): value is AuthToken {
+  private isAuthSession(value: unknown): value is AuthSession {
     if (typeof value !== 'object' || value === null) {
       return false;
     }
 
-    const token = value as Record<string, unknown>;
+    const session = value as Record<string, unknown>;
+    const token = session['token'];
+    const user = session['user'];
 
-    return typeof token['accessToken'] === 'string' && token['accessToken'].length > 0;
+    if (typeof token !== 'object' || token === null || typeof user !== 'object' || user === null) {
+      return false;
+    }
+
+    const tokenRecord = token as Record<string, unknown>;
+    const userRecord = user as Record<string, unknown>;
+
+    return (
+      typeof tokenRecord['accessToken'] === 'string' &&
+      tokenRecord['accessToken'].length > 0 &&
+      typeof userRecord['id'] === 'string' &&
+      typeof userRecord['username'] === 'string' &&
+      typeof userRecord['displayName'] === 'string' &&
+      Array.isArray(userRecord['roles'])
+    );
   }
 }

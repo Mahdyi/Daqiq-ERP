@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 
-import { AuthToken } from '../models/auth-state.model';
+import { AuthSession } from '../models/auth-state.model';
 
 export type AuthStorageType = 'local' | 'session' | 'memory';
 
@@ -11,8 +11,8 @@ export interface AuthConfig {
 }
 
 export interface AuthTokenStorage {
-  read(): AuthToken | null;
-  write(token: AuthToken): void;
+  read(): AuthSession | null;
+  write(session: AuthSession): void;
   remove(): void;
 }
 

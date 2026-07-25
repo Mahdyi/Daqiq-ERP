@@ -9,12 +9,12 @@ import { SKIP_AUTH_TOKEN } from '../tokens/http-context.tokens';
 import { authTokenInterceptor } from './auth-token.interceptor';
 
 describe('authTokenInterceptor', () => {
-  function setup(accessToken: string | null, expiresAt?: string): {
+  function setup(accessToken: string | null, expiresAt?: string, refreshToken?: string): {
     readonly httpClient: HttpClient;
     readonly http: HttpTestingController;
     readonly clearExpiredSession: jasmine.Spy;
   } {
-    const tokenSignal = signal(accessToken ? { accessToken, expiresAt } : null);
+    const tokenSignal = signal(accessToken ? { accessToken, expiresAt, refreshToken } : null);
     const clearExpiredSession = jasmine.createSpy('clearExpiredSession');
 
     TestBed.configureTestingModule({
@@ -92,6 +92,21 @@ describe('authTokenInterceptor', () => {
     const request = http.expectOne('/api/customers');
     expect(request.request.headers.has('Authorization')).toBeFalse();
     expect(clearExpiredSession).toHaveBeenCalled();
+    request.flush([]);
+    http.verify();
+  });
+
+  it('does not attach expired access tokens even when a refresh token exists', () => {
+    const { httpClient, http } = setup(
+      'expired-access-value',
+      '2000-01-01T00:00:00.000Z',
+      'opaque-refresh-value'
+    );
+
+    httpClient.get('/api/customers').subscribe();
+
+    const request = http.expectOne('/api/customers');
+    expect(request.request.headers.has('Authorization')).toBeFalse();
     request.flush([]);
     http.verify();
   });

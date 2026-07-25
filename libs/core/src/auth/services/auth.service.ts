@@ -15,11 +15,11 @@ import { AUTH_TOKEN_STORAGE } from '../tokens/auth.tokens';
 })
 export class AuthService {
   private readonly tokenStorage = inject(AUTH_TOKEN_STORAGE);
-  private readonly storedToken = this.readStoredToken();
-  private readonly userState = signal<User | null>(null);
-  private readonly tokenState = signal<AuthToken | null>(this.storedToken);
+  private readonly storedSession = this.readStoredSession();
+  private readonly userState = signal<User | null>(this.storedSession?.user ?? null);
+  private readonly tokenState = signal<AuthToken | null>(this.storedSession?.token ?? null);
   private readonly statusState = signal<AuthStatus>(
-    this.storedToken ? 'unknown' : 'unauthenticated'
+    this.storedSession ? 'authenticated' : 'unauthenticated'
   );
 
   readonly user = this.userState.asReadonly();
@@ -32,6 +32,7 @@ export class AuthService {
   readonly isAuthenticated = computed(
     () => this.status() === 'authenticated' && this.user() !== null && this.hasValidToken()
   );
+  readonly hasRefreshToken = computed(() => Boolean(this.token()?.refreshToken?.trim()));
   readonly roles = computed(() => this.user()?.roles ?? []);
   readonly permissions = computed<ReadonlySet<PermissionCode>>(() => {
     const user = this.user();
@@ -57,10 +58,27 @@ export class AuthService {
       return;
     }
 
-    this.tokenStorage.write(session.token);
+    this.tokenStorage.write(session);
     this.tokenState.set(session.token);
     this.userState.set(session.user);
     this.statusState.set('authenticated');
+  }
+
+  updateToken(token: AuthToken): boolean {
+    const user = this.user();
+
+    if (!user || this.isTokenExpired(token)) {
+      this.logout();
+      return false;
+    }
+
+    this.tokenStorage.write({
+      user,
+      token
+    });
+    this.tokenState.set(token);
+    this.statusState.set('authenticated');
+    return true;
   }
 
   logout(): void {
@@ -72,14 +90,14 @@ export class AuthService {
 
   setUser(user: User | null): void {
     this.userState.set(user);
+    this.persistCurrentSession();
     this.synchronizeStatus();
   }
 
   setToken(token: AuthToken | null): void {
     if (token && !this.isTokenExpired(token)) {
-      this.tokenStorage.write(token);
+      this.writeTokenWithCurrentUser(token);
     } else if (token) {
-      this.tokenStorage.remove();
       this.tokenState.set(null);
       this.synchronizeStatus();
       return;
@@ -88,6 +106,7 @@ export class AuthService {
     }
 
     this.tokenState.set(token);
+    this.persistCurrentSession();
     this.synchronizeStatus();
   }
 
@@ -125,16 +144,20 @@ export class AuthService {
   }
 
   clearExpiredSession(): void {
-    if (this.isTokenExpired(this.token())) {
+    if (this.isTokenExpired(this.token()) && !this.hasRefreshToken()) {
       this.logout();
     }
   }
 
-  private readStoredToken(): AuthToken | null {
-    const token = this.tokenStorage.read();
+  private readStoredSession(): AuthSession | null {
+    const session = this.tokenStorage.read();
 
-    if (!token || !this.isTokenExpired(token)) {
-      return token;
+    if (!session) {
+      return null;
+    }
+
+    if (!this.isTokenExpired(session.token) || session.token.refreshToken) {
+      return session;
     }
 
     this.tokenStorage.remove();
@@ -145,7 +168,7 @@ export class AuthService {
     const token = this.token();
 
     if (token && this.isTokenExpired(token)) {
-      this.logout();
+      this.statusState.set(this.user() && token.refreshToken ? 'authenticated' : 'unauthenticated');
       return;
     }
 
@@ -155,5 +178,27 @@ export class AuthService {
     }
 
     this.statusState.set(token ? 'unknown' : 'unauthenticated');
+  }
+
+  private persistCurrentSession(): void {
+    const user = this.user();
+    const token = this.token();
+
+    if (user && token) {
+      this.tokenStorage.write({ user, token });
+      return;
+    }
+
+    if (!user && !token) {
+      this.tokenStorage.remove();
+    }
+  }
+
+  private writeTokenWithCurrentUser(token: AuthToken): void {
+    const user = this.user();
+
+    if (user) {
+      this.tokenStorage.write({ user, token });
+    }
   }
 }

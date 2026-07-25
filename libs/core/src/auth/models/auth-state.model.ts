@@ -4,6 +4,7 @@ export type AuthStatus = 'unknown' | 'unauthenticated' | 'authenticated';
 
 export interface AuthToken {
   readonly accessToken: string;
+  readonly refreshToken?: string;
   readonly tokenType?: string;
   readonly expiresAt?: string;
 }

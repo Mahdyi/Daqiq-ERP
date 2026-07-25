@@ -18,6 +18,7 @@ export function mapLoginResponseToAuthSession(response: LoginResponseDto): AuthS
     },
     token: {
       accessToken: response.accessToken,
+      refreshToken: response.refreshToken,
       tokenType: response.tokenType,
       expiresAt: response.expiresAt
     }

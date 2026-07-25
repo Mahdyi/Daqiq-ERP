@@ -17,8 +17,14 @@ export type {
   AuthStatus,
   AuthToken
 } from './auth/models/auth-state.model';
+export type {
+  AuthRefreshPort,
+  AuthRefreshResult
+} from './auth/ports/auth-refresh.port';
+export { AUTH_REFRESH_PORT } from './auth/ports/auth-refresh.token';
 export type { PermissionCode, Role, RoleCode } from './auth/models/role.model';
 export type { User } from './auth/models/user.model';
+export { AuthRefreshService } from './auth/services/auth-refresh.service';
 export { AuthService } from './auth/services/auth.service';
 export {
   AUTH_CONFIG,

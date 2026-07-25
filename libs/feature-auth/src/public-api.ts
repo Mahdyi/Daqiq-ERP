@@ -3,3 +3,4 @@ export { AUTH_ROUTES } from './routes/auth.routes';
 export { AuthFacade } from './facades/auth.facade';
 export type { LoginError } from './models/login-error.model';
 export type { LoginFormValue } from './models/login-form-value.model';
+export { provideFeatureAuthSessionLifecycle } from './providers/auth-session-lifecycle.providers';

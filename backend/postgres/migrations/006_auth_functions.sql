@@ -44,7 +44,7 @@ IMMUTABLE
 STRICT
 SET search_path = pg_catalog
 AS $$
-  SELECT translate(rtrim(encode(data, 'base64'), '='), '+/', '-_');
+  SELECT translate(rtrim(regexp_replace(encode(data, 'base64'), '\s', '', 'g'), '='), '+/', '-_');
 $$;
 
 CREATE OR REPLACE FUNCTION private.jwt_sign(payload jsonb)

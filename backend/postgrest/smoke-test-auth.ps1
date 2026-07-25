@@ -1,5 +1,3 @@
-#requires -Version 7.0
-
 [CmdletBinding()]
 param(
   [string] $BaseUrl = $env:PGRST_BASE_URL
@@ -35,7 +33,7 @@ function Invoke-Api {
     Method = $Method
     Uri = "$BaseUrl$Path"
     Headers = $headers
-    SkipHttpErrorCheck = $true
+    UseBasicParsing = $true
   }
 
   if ($null -ne $Body) {
@@ -43,7 +41,22 @@ function Invoke-Api {
     $request['Body'] = ($Body | ConvertTo-Json -Depth 8)
   }
 
-  Invoke-WebRequest @request
+  try {
+    Invoke-WebRequest @request
+  } catch [System.Net.WebException] {
+    if ($null -eq $_.Exception.Response) {
+      throw
+    }
+
+    $response = $_.Exception.Response
+    $reader = New-Object System.IO.StreamReader($response.GetResponseStream())
+
+    [pscustomobject]@{
+      StatusCode = [int] $response.StatusCode
+      Content = $reader.ReadToEnd()
+      Headers = $response.Headers
+    }
+  }
 }
 
 function Assert-Status {
@@ -81,6 +94,10 @@ function Login-DevUser {
     throw "Login response for $Email did not include an access token."
   }
 
+  if ([string]::IsNullOrWhiteSpace($payload.refreshToken)) {
+    throw "Login response for $Email did not include a refresh token."
+  }
+
   if ($response.Content -match 'password_hash') {
     throw 'Login response leaked password_hash.'
   }
@@ -103,13 +120,60 @@ Assert-Status $invalidLogin @(400, 401, 403) 'Invalid login fails safely'
 $admin = Login-DevUser -Email 'admin@erp.com' -Password 'admin'
 $accountant = Login-DevUser -Email 'accountant@erp.com' -Password 'accountant'
 $warehouse = Login-DevUser -Email 'warehouse@erp.com' -Password 'warehouse'
+$sales = Login-DevUser -Email 'sales@erp.com' -Password 'sales'
 
 if ([datetime]::Parse($admin.expiresAt) -le [datetime]::UtcNow) {
   throw 'Admin token expiry is not in the future.'
 }
 Write-Host 'PASS: Login response contains finite future expiry'
 
-$me = Invoke-Api -Method POST -Path '/rpc/me' -Token $admin.accessToken
+$adminRefresh = Invoke-Api `
+  -Method POST `
+  -Path '/rpc/refresh_session' `
+  -Body @{
+    refresh_token = $admin.refreshToken
+  }
+Assert-Status $adminRefresh @(200) 'Refresh returns a new session'
+$adminRefreshed = $adminRefresh.Content | ConvertFrom-Json
+
+if ([string]::IsNullOrWhiteSpace($adminRefreshed.accessToken)) {
+  throw 'Refresh response did not include a new access token.'
+}
+
+if ([string]::IsNullOrWhiteSpace($adminRefreshed.refreshToken)) {
+  throw 'Refresh response did not include a new refresh token.'
+}
+
+if ($adminRefreshed.refreshToken -eq $admin.refreshToken) {
+  throw 'Refresh token was not rotated.'
+}
+Write-Host 'PASS: Refresh token rotation returns a distinct refresh token'
+
+$oldRefreshReuse = Invoke-Api `
+  -Method POST `
+  -Path '/rpc/refresh_session' `
+  -Body @{
+    refresh_token = $admin.refreshToken
+  }
+Assert-Status $oldRefreshReuse @(400, 401, 403) 'Old refresh token reuse fails safely'
+
+$salesLogout = Invoke-Api `
+  -Method POST `
+  -Path '/rpc/logout' `
+  -Body @{
+    refresh_token = $sales.refreshToken
+  }
+Assert-Status $salesLogout @(200) 'Logout revokes current refresh session safely'
+
+$salesRefreshAfterLogout = Invoke-Api `
+  -Method POST `
+  -Path '/rpc/refresh_session' `
+  -Body @{
+    refresh_token = $sales.refreshToken
+  }
+Assert-Status $salesRefreshAfterLogout @(400, 401, 403) 'Refresh after logout fails safely'
+
+$me = Invoke-Api -Method POST -Path '/rpc/me' -Token $adminRefreshed.accessToken
 Assert-Status $me @(200) 'Authenticated user can call /rpc/me'
 if ($me.Content -match 'password_hash') {
   throw '/rpc/me response leaked password_hash.'
@@ -118,9 +182,8 @@ Write-Host 'PASS: /rpc/me does not expose password_hash'
 
 $adminList = Invoke-Api `
   -Method GET `
-  -Path '/customers?order=created_at.desc&id=not.is.null' `
-  -Token $admin.accessToken `
-  -ExtraHeaders @{ 'Range-Unit' = 'items'; 'Range' = '0-4'; 'Prefer' = 'count=exact' }
+  -Path '/customers?order=created_at.desc&limit=5' `
+  -Token $adminRefreshed.accessToken
 Assert-Status $adminList @(200, 206) 'Admin token can list customers'
 
 $testCode = ("AUTH-SMOKE-{0}" -f [Guid]::NewGuid().ToString('N').Substring(0, 12)).ToUpperInvariant()
@@ -129,7 +192,7 @@ try {
   $create = Invoke-Api `
     -Method POST `
     -Path '/customers' `
-    -Token $admin.accessToken `
+    -Token $adminRefreshed.accessToken `
     -ExtraHeaders @{ Prefer = 'return=representation' } `
     -Body @{
       code = $testCode
@@ -162,5 +225,5 @@ finally {
   Invoke-Api `
     -Method DELETE `
     -Path "/customers?code=like.AUTH-SMOKE-*" `
-    -Token $admin.accessToken | Out-Null
+    -Token $adminRefreshed.accessToken | Out-Null
 }

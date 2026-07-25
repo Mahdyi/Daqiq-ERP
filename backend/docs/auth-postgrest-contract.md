@@ -27,6 +27,7 @@ Successful response:
 ```json
 {
   "accessToken": "<jwt>",
+  "refreshToken": "<opaque refresh token>",
   "tokenType": "Bearer",
   "expiresAt": "2026-07-22T12:00:00Z",
   "user": {
@@ -40,6 +41,55 @@ Successful response:
 
 Invalid email, invalid password, inactive user, and users without valid roles return a generic
 authentication error. The response must not reveal whether the email exists.
+
+### Refresh Session
+
+```http
+POST /rpc/refresh_session
+Content-Type: application/json
+```
+
+Request:
+
+```json
+{
+  "refresh_token": "<opaque refresh token>"
+}
+```
+
+Successful response uses the same shape as login and includes a new access token and a new
+refresh token. Refresh tokens rotate on every successful refresh. The old refresh session is
+marked as rotated and cannot be used again.
+
+If a rotated refresh token is reused, PostgreSQL marks reuse detection on the old session,
+revokes the entire token family, and returns a generic authentication error. This is a
+compromise signal: the client must clear the local session and require login again.
+
+### Logout
+
+```http
+POST /rpc/logout
+Content-Type: application/json
+```
+
+Request:
+
+```json
+{
+  "refresh_token": "<opaque refresh token>"
+}
+```
+
+Response:
+
+```json
+{
+  "success": true
+}
+```
+
+Logout revokes the matching refresh session if it exists. It does not reveal whether the token
+was known. Angular must clear the local session even if the network logout call fails.
 
 ### Current Session
 
@@ -63,7 +113,7 @@ This endpoint reads JWT claims supplied by PostgREST. It never returns password 
 
 ## JWT Claims
 
-The JWT is signed with HS256 and contains a PostgREST database role claim:
+The access token is signed with HS256 and contains a PostgREST database role claim:
 
 ```json
 {
@@ -78,6 +128,20 @@ The JWT is signed with HS256 and contains a PostgREST database role claim:
 
 The `role` claim is the PostgreSQL role used by PostgREST. The `app_roles` claim is the
 Angular-facing role list.
+
+## Token Lifetimes and Storage
+
+Current local-development lifetimes:
+
+| Token | Lifetime | Storage |
+| --- | ---: | --- |
+| Access token | 60 minutes | Angular session storage |
+| Refresh token | 7 days | Angular session storage; PostgreSQL stores only a SHA-256 hash |
+
+Refresh tokens are returned in JSON for this local-development architecture. For production,
+prefer a hardened secure-cookie strategy where feasible: `HttpOnly`, `Secure`, strict
+same-site policy, TLS-only transport, CSRF protection where relevant, and centralized session
+revocation monitoring.
 
 ## Role Mapping
 
@@ -123,7 +187,8 @@ The committed files contain placeholders only. Do not commit real secrets or JWT
 
 ## Angular Usage
 
-Angular calls `/rpc/login`, stores `accessToken` in the existing auth service, and sends:
+Angular calls `/rpc/login`, stores the access and refresh token in the existing auth service,
+and sends only the access token as:
 
 ```http
 Authorization: Bearer <accessToken>
@@ -132,7 +197,11 @@ Authorization: Bearer <accessToken>
 The customer feature then calls `/customers` through PostgREST. PostgreSQL grants and RLS
 remain the final security boundary.
 
+When an access token expires, Angular may call `/rpc/refresh_session` with the refresh token.
+It must never send the refresh token as a Bearer token.
+
 ## Not Implemented Yet
 
-Refresh tokens, password reset, OAuth/OIDC, production identity provider integration, user
-management UI, session revocation, and audit logging are intentionally outside this step.
+Password reset, OAuth/OIDC, production identity provider integration, user management UI,
+session-management UI, logout-all UI, MFA, and audit logging are intentionally outside this
+step.

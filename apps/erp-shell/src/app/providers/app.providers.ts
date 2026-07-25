@@ -1,5 +1,6 @@
 import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
 import { AppConfig, provideDaqiqCore } from '@daqiq/core';
+import { provideFeatureAuthSessionLifecycle } from '@daqiq/feature-auth';
 import { provideUiFeedback, provideUiHttpActivityBridge } from '@daqiq/ui';
 
 export const ERP_APP_CONFIG: AppConfig = {
@@ -14,6 +15,7 @@ export const ERP_APP_CONFIG: AppConfig = {
 export function provideErpShellProviders(): EnvironmentProviders {
   return makeEnvironmentProviders([
     provideDaqiqCore(ERP_APP_CONFIG),
+    ...provideFeatureAuthSessionLifecycle(),
     provideUiFeedback(),
     ...provideUiHttpActivityBridge()
   ]);
