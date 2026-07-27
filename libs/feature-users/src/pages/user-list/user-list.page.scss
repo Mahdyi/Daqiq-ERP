@@ -1,0 +1,46 @@
+:host {
+  display: block;
+}
+
+.user-list__actions,
+.user-list__row-actions,
+.user-list__search,
+.user-list__error {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-list__search {
+  margin-block-end: 1rem;
+  flex-wrap: wrap;
+}
+
+.user-list__search-label {
+  color: var(--erp-text-muted-color);
+  font-weight: var(--erp-font-weight-medium);
+}
+
+.user-list__search-input {
+  min-height: 2.5rem;
+  min-width: min(100%, 22rem);
+  flex: 1 1 18rem;
+  border: 1px solid var(--erp-border-color);
+  border-radius: var(--erp-layout-radius-md);
+  background: var(--erp-surface-ground);
+  color: var(--erp-text-color);
+  padding-inline: 0.875rem;
+}
+
+.user-list__error {
+  margin-block-end: 1rem;
+  border: 1px solid color-mix(in srgb, #dc2626 35%, var(--erp-border-color));
+  border-radius: var(--erp-layout-radius-md);
+  color: #b91c1c;
+  padding: 0.75rem 1rem;
+}
+
+.user-list__row-actions {
+  justify-content: center;
+  flex-wrap: wrap;
+}

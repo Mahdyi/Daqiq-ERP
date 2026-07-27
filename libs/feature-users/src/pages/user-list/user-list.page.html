@@ -1,0 +1,91 @@
+<daqiq-page-container title="کاربران" subtitle="مدیریت کاربران و نقش‌های سامانه">
+  <div pageActions class="user-list__actions">
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading()"
+      (pressed)="handleRefresh()"
+    />
+
+    @if (facade.canCreate()) {
+      <daqiq-button label="ایجاد کاربر" icon="pi pi-plus" (pressed)="handleCreate()" />
+    }
+  </div>
+
+  <daqiq-card>
+    <form class="user-list__search" (submit)="$event.preventDefault(); handleSearchSubmit()">
+      <label class="user-list__search-label" for="user-search">جستجو</label>
+      <input
+        id="user-search"
+        class="user-list__search-input"
+        type="search"
+        [value]="searchTerm()"
+        placeholder="جستجو بر اساس ایمیل یا نام نمایشی"
+        (input)="handleSearchInput($event)"
+      />
+      <daqiq-button label="جستجو" icon="pi pi-search" type="submit" />
+    </form>
+
+    @if (facade.error(); as error) {
+      <section class="user-list__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+        <daqiq-button
+          label="تلاش دوباره"
+          icon="pi pi-refresh"
+          variant="secondary"
+          (pressed)="handleRefresh()"
+        />
+      </section>
+    }
+
+    @if (!facade.loading() && facade.items().length === 0 && !facade.error()) {
+      <daqiq-empty-state
+        icon="pi pi-users"
+        message="کاربری برای نمایش وجود ندارد."
+        description="با ایجاد کاربر جدید یا تغییر عبارت جستجو، داده‌ها در این بخش نمایش داده می‌شوند."
+      />
+    } @else {
+      <daqiq-data-table
+        [rows]="facade.items()"
+        [columns]="columns"
+        [loading]="facade.loading()"
+        [totalRecords]="facade.totalItems()"
+        [pageIndex]="pageIndex()"
+        [pageSize]="pageSize()"
+        rowKey="id"
+        [rowActionsTemplate]="rowActions"
+        (pageChange)="handlePageChange($event)"
+      />
+    }
+
+    <ng-template #rowActions let-row="row">
+      <div class="user-list__row-actions">
+        @if (facade.canUpdate()) {
+          <daqiq-button
+            label="ویرایش"
+            icon="pi pi-pencil"
+            variant="text"
+            (pressed)="handleEdit(row)"
+          />
+          <daqiq-button
+            label="تغییر رمز"
+            icon="pi pi-key"
+            variant="text"
+            (pressed)="handleResetPassword(row)"
+          />
+        }
+
+        @if (facade.canDelete()) {
+          <daqiq-button
+            [label]="row.active ? 'غیرفعال‌سازی' : 'فعال‌سازی'"
+            [icon]="row.active ? 'pi pi-lock' : 'pi pi-lock-open'"
+            [variant]="row.active ? 'danger' : 'secondary'"
+            (pressed)="handleToggleActive(row)"
+          />
+        }
+      </div>
+    </ng-template>
+  </daqiq-card>
+</daqiq-page-container>

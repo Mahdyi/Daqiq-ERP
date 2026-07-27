@@ -27,5 +27,22 @@ export const APP_NAVIGATION = [
         }
       }
     ]
+  },
+  {
+    id: 'system-management',
+    label: 'مدیریت سیستم',
+    icon: 'pi pi-cog',
+    children: [
+      {
+        id: 'users',
+        label: 'کاربران',
+        icon: 'pi pi-users',
+        route: ['/admin/users'],
+        exact: false,
+        authorization: {
+          permissions: ['users.view']
+        }
+      }
+    ]
   }
 ] as const satisfies readonly NavigationItem[];

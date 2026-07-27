@@ -12,6 +12,8 @@
       "@daqiq/feature-auth/*": ["libs/feature-auth/src/*"],
       "@daqiq/feature-customers": ["libs/feature-customers/src/public-api.ts"],
       "@daqiq/feature-customers/*": ["libs/feature-customers/src/*"],
+      "@daqiq/feature-users": ["libs/feature-users/src/public-api.ts"],
+      "@daqiq/feature-users/*": ["libs/feature-users/src/*"],
       "@daqiq/feature-dashboard": ["libs/feature-dashboard/src/public-api.ts"],
       "@daqiq/feature-dashboard/*": ["libs/feature-dashboard/src/*"],
       "@daqiq/feature-equipment": ["libs/feature-equipment/src/public-api.ts"],

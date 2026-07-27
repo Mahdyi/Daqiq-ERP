@@ -129,7 +129,8 @@ select {
 }
 
 .erp-icon-button,
-.erp-theme-switcher__button {
+.erp-theme-switcher__button,
+.erp-logout-button {
   display: inline-grid;
   place-items: center;
   border: 1px solid var(--erp-border-color);
@@ -144,15 +145,30 @@ select {
   border-radius: var(--erp-layout-radius-md);
 }
 
+.erp-logout-button {
+  min-height: 2.5rem;
+  grid-auto-flow: column;
+  gap: var(--erp-layout-space-sm);
+  border-radius: var(--erp-layout-radius-md);
+  padding: 0 var(--erp-layout-space-md);
+}
+
 .erp-icon-button:hover,
-.erp-theme-switcher__button:hover {
+.erp-theme-switcher__button:hover,
+.erp-logout-button:hover {
   border-color: var(--erp-border-hover-color);
 }
 
 .erp-icon-button:focus-visible,
-.erp-theme-switcher__button:focus-visible {
+.erp-theme-switcher__button:focus-visible,
+.erp-logout-button:focus-visible {
   outline: none;
   box-shadow: var(--erp-focus-ring);
+}
+
+.erp-logout-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .erp-theme-switcher {
@@ -291,6 +307,10 @@ select {
 
   .erp-topbar__search {
     flex: 1 1 9rem;
+  }
+
+  .erp-logout-button span {
+    display: none;
   }
 
   .erp-shell__sidebar {

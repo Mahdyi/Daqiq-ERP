@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { ThemePreference, ThemeService } from '@daqiq/core';
+import { AuthFacade } from '@daqiq/feature-auth';
 
 import { SHELL_LABELS } from './shell.labels';
 
@@ -54,6 +55,21 @@ interface ThemePreferenceOption {
         <button class="erp-icon-button" type="button" [attr.aria-label]="labels.notifications">
           <i class="pi pi-bell" aria-hidden="true"></i>
         </button>
+
+        <button
+          class="erp-logout-button"
+          type="button"
+          [disabled]="logoutPending()"
+          aria-label="خروج از سامانه"
+          (click)="logout()"
+        >
+          @if (logoutPending()) {
+            <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+          } @else {
+            <i class="pi pi-sign-out" aria-hidden="true"></i>
+          }
+          <span>خروج از سامانه</span>
+        </button>
       </div>
     </header>
   `,
@@ -61,6 +77,7 @@ interface ThemePreferenceOption {
 })
 export class TopbarComponent {
   private readonly themeService = inject(ThemeService);
+  private readonly authFacade = inject(AuthFacade);
 
   readonly title = input(SHELL_LABELS.productName);
   readonly subtitle = input(SHELL_LABELS.topbarSubtitle);
@@ -68,6 +85,7 @@ export class TopbarComponent {
   readonly sidebarToggled = output<void>();
 
   protected readonly labels = SHELL_LABELS;
+  protected readonly logoutPending = signal(false);
   protected readonly selectedTheme = this.themeService.preference;
   protected readonly themeOptions: readonly ThemePreferenceOption[] = [
     {
@@ -89,5 +107,19 @@ export class TopbarComponent {
 
   protected setTheme(preference: ThemePreference): void {
     this.themeService.setPreference(preference);
+  }
+
+  protected async logout(): Promise<void> {
+    if (this.logoutPending()) {
+      return;
+    }
+
+    this.logoutPending.set(true);
+
+    try {
+      await this.authFacade.logout();
+    } finally {
+      this.logoutPending.set(false);
+    }
   }
 }
