@@ -41,6 +41,14 @@ export { provideDaqiqCore } from './core.providers';
 export { provideAppConfig } from './config/app-config.providers';
 export { APP_CONFIG } from './config/app-config.tokens';
 export type { AppConfig, AppDirection, AppLocale } from './config/app-config.model';
+export { RuntimeConfigService } from './configuration/runtime-config/runtime-config.service';
+export type {
+  RuntimeFeatureFlag,
+  RuntimeLookupValue,
+  RuntimeSettingValue,
+  RuntimeSettingValueType,
+  RuntimeSystemSetting
+} from './configuration/runtime-config/runtime-config.model';
 export type {
   AppError,
   AppErrorContext,

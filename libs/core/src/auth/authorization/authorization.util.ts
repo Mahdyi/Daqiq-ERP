@@ -33,7 +33,13 @@ const APP_PERMISSIONS = [
   'users.delete',
   'audit.view',
   'settings.view',
-  'settings.update'
+  'settings.update',
+  'lookups.view',
+  'lookups.create',
+  'lookups.update',
+  'lookups.delete',
+  'featureFlags.view',
+  'featureFlags.update'
 ] as const satisfies readonly AppPermission[];
 
 export function isAppRole(value: string): value is AppRole {

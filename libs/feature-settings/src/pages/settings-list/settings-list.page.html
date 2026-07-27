@@ -1,0 +1,127 @@
+<daqiq-page-container title="تنظیمات سامانه" subtitle="مدیریت تنظیمات عمومی سامانه">
+  <div pageActions class="settings-list__actions">
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading()"
+      (pressed)="handleRefresh()"
+    />
+  </div>
+
+  <daqiq-card>
+    <form class="settings-list__search" (submit)="$event.preventDefault(); handleSearchSubmit()">
+      <label class="settings-list__search-label" for="settings-search">جستجو</label>
+      <input
+        id="settings-search"
+        class="settings-list__search-input"
+        type="search"
+        [value]="searchTerm()"
+        placeholder="جستجو بر اساس کلید، دسته یا عنوان"
+        (input)="handleSearchInput($event)"
+      />
+      <daqiq-button label="جستجو" icon="pi pi-search" type="submit" />
+    </form>
+
+    @if (facade.error(); as error) {
+      <section class="settings-list__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    }
+
+    @if (!facade.loading() && facade.items().length === 0 && !facade.error()) {
+      <daqiq-empty-state
+        icon="pi pi-sliders-h"
+        message="تنظیمی برای نمایش وجود ندارد."
+        description="با تغییر عبارت جستجو یا به‌روزرسانی صفحه، تنظیمات سامانه دوباره بارگیری می‌شوند."
+      />
+    } @else {
+      <daqiq-data-table
+        [rows]="facade.items()"
+        [columns]="columns"
+        [loading]="facade.loading()"
+        [totalRecords]="facade.totalItems()"
+        [pageIndex]="pageIndex()"
+        [pageSize]="pageSize()"
+        rowKey="id"
+        [rowActionsTemplate]="rowActions"
+        (pageChange)="handlePageChange($event)"
+      />
+    }
+
+    <ng-template #rowActions let-row="row">
+      <div class="settings-list__row-actions">
+        @if (row.editable && facade.canUpdate()) {
+          <daqiq-button
+            label="ویرایش"
+            icon="pi pi-pencil"
+            variant="text"
+            (pressed)="startEdit(row)"
+          />
+        } @else {
+          <span class="settings-list__readonly">خواندنی</span>
+        }
+      </div>
+    </ng-template>
+  </daqiq-card>
+
+  @if (editingSetting(); as setting) {
+    <daqiq-card>
+      <section class="settings-list__editor" aria-label="ویرایش تنظیم">
+        <div class="settings-list__editor-header">
+          <h2>{{ setting.label }}</h2>
+          <span>{{ setting.settingKey }}</span>
+        </div>
+
+        <label class="settings-list__field-label" for="setting-value">مقدار</label>
+        @if (setting.valueType === 'boolean') {
+          <select
+            id="setting-value"
+            class="settings-list__input"
+            [value]="editValueText()"
+            (change)="handleBooleanValueChange($event)"
+          >
+            <option value="true">فعال / بله</option>
+            <option value="false">غیرفعال / خیر</option>
+          </select>
+        } @else if (setting.valueType === 'json') {
+          <textarea
+            id="setting-value"
+            class="settings-list__textarea"
+            rows="5"
+            [value]="editValueText()"
+            (input)="handleEditValueInput($event)"
+          ></textarea>
+        } @else {
+          <input
+            id="setting-value"
+            class="settings-list__input"
+            [type]="setting.valueType === 'number' ? 'number' : 'text'"
+            [value]="editValueText()"
+            (input)="handleEditValueInput($event)"
+          />
+        }
+
+        @if (parseError(); as message) {
+          <p class="settings-list__validation" role="alert">{{ message }}</p>
+        }
+
+        <div class="settings-list__editor-actions">
+          <daqiq-button
+            label="ثبت تغییرات"
+            icon="pi pi-check"
+            [loading]="facade.submitting()"
+            (pressed)="saveEdit()"
+          />
+          <daqiq-button
+            label="انصراف"
+            icon="pi pi-times"
+            variant="secondary"
+            (pressed)="cancelEdit()"
+          />
+        </div>
+      </section>
+    </daqiq-card>
+  }
+</daqiq-page-container>

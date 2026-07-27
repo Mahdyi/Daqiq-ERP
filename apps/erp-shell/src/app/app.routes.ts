@@ -38,6 +38,11 @@ export const routes: Routes = [
           import('@daqiq/feature-audit').then((audit) => audit.AUDIT_LOG_ROUTES)
       },
       {
+        path: 'admin',
+        loadChildren: () =>
+          import('@daqiq/feature-settings').then((settings) => settings.SETTINGS_ROUTES)
+      },
+      {
         path: 'access-denied',
         data: {
           breadcrumb: 'دسترسی مجاز نیست'

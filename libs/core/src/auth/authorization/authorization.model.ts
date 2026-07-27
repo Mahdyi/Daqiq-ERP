@@ -24,7 +24,13 @@ export type AppPermission =
   | 'users.delete'
   | 'audit.view'
   | 'settings.view'
-  | 'settings.update';
+  | 'settings.update'
+  | 'lookups.view'
+  | 'lookups.create'
+  | 'lookups.update'
+  | 'lookups.delete'
+  | 'featureFlags.view'
+  | 'featureFlags.update';
 
 export interface AuthorizationPolicy {
   readonly roles?: readonly AppRole[];
@@ -57,7 +63,13 @@ export const ROLE_PERMISSIONS = {
     'users.delete',
     'audit.view',
     'settings.view',
-    'settings.update'
+    'settings.update',
+    'lookups.view',
+    'lookups.create',
+    'lookups.update',
+    'lookups.delete',
+    'featureFlags.view',
+    'featureFlags.update'
   ],
   manager: [
     'dashboard.view',
@@ -66,7 +78,10 @@ export const ROLE_PERMISSIONS = {
     'customers.update',
     'sales.view',
     'inventory.view',
-    'accounting.view'
+    'accounting.view',
+    'settings.view',
+    'lookups.view',
+    'featureFlags.view'
   ],
   accountant: [
     'dashboard.view',

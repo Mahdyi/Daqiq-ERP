@@ -1,0 +1,75 @@
+:host {
+  display: block;
+  direction: rtl;
+}
+
+.settings-list__actions,
+.settings-list__row-actions,
+.settings-list__editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.settings-list__search {
+  display: grid;
+  grid-template-columns: auto minmax(14rem, 1fr) auto;
+  gap: 0.75rem;
+  align-items: end;
+  margin-block-end: 1rem;
+}
+
+.settings-list__search-label,
+.settings-list__field-label {
+  color: var(--erp-text-muted-color, #64748b);
+  font-size: var(--erp-font-size-sm, 0.875rem);
+}
+
+.settings-list__search-input,
+.settings-list__input,
+.settings-list__textarea {
+  width: 100%;
+  border: 1px solid var(--erp-border-color, #e2e8f0);
+  border-radius: var(--erp-layout-radius-md, 0.5rem);
+  background: var(--erp-surface-ground, #fff);
+  color: var(--erp-text-color, #172033);
+  font: inherit;
+  padding: 0.625rem 0.75rem;
+}
+
+.settings-list__error,
+.settings-list__validation {
+  color: #b91c1c;
+}
+
+.settings-list__error {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-block-end: 1rem;
+}
+
+.settings-list__readonly {
+  color: var(--erp-text-muted-color, #64748b);
+  font-size: var(--erp-font-size-sm, 0.875rem);
+}
+
+.settings-list__editor {
+  display: grid;
+  gap: 0.875rem;
+}
+
+.settings-list__editor-header h2 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.settings-list__editor-header span {
+  color: var(--erp-text-muted-color, #64748b);
+}
+
+@media (max-width: 640px) {
+  .settings-list__search {
+    grid-template-columns: 1fr;
+  }
+}

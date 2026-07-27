@@ -1,0 +1,180 @@
+<daqiq-page-container
+  title="داده‌های پایه"
+  subtitle="مدیریت مقادیر مرجع قابل استفاده در ماژول‌های سامانه"
+>
+  <div pageActions class="lookup-management__actions">
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading() || facade.valuesLoading()"
+      (pressed)="handleRefresh()"
+    />
+  </div>
+
+  <section class="lookup-management__layout">
+    <daqiq-card>
+      <div class="lookup-management__types" aria-label="انواع داده پایه">
+        @for (type of facade.types(); track type.id) {
+          <button
+            class="lookup-management__type-button"
+            type="button"
+            [class.lookup-management__type-button--active]="type.code === facade.selectedTypeCode()"
+            (click)="selectType(type)"
+          >
+            <i class="pi pi-folder" aria-hidden="true"></i>
+            <span>{{ type.name }}</span>
+          </button>
+        }
+      </div>
+    </daqiq-card>
+
+    <daqiq-card>
+      <div class="lookup-management__header">
+        <div>
+          <h2>{{ selectedType()?.name ?? 'انتخاب نوع داده پایه' }}</h2>
+          <p>{{ selectedType()?.description ?? 'برای مشاهده مقادیر، یک نوع داده پایه انتخاب کنید.' }}</p>
+        </div>
+      </div>
+
+      <form
+        class="lookup-management__search"
+        (submit)="$event.preventDefault(); handleSearchSubmit()"
+      >
+        <label class="lookup-management__label" for="lookup-search">جستجو</label>
+        <input
+          id="lookup-search"
+          class="lookup-management__input"
+          type="search"
+          [value]="searchTerm()"
+          placeholder="جستجو بر اساس کد یا عنوان"
+          (input)="handleSearchInput($event)"
+        />
+        <daqiq-button label="جستجو" icon="pi pi-search" type="submit" />
+      </form>
+
+      @if (facade.error(); as error) {
+        <section class="lookup-management__error" role="alert">
+          <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+          <span>{{ error.message }}</span>
+        </section>
+      }
+
+      @if (!facade.valuesLoading() && facade.values().length === 0 && !facade.error()) {
+        <daqiq-empty-state
+          icon="pi pi-list"
+          message="مقداری برای نمایش وجود ندارد."
+          description="برای این نوع داده پایه هنوز مقدار فعالی ثبت نشده است."
+        />
+      } @else {
+        <daqiq-data-table
+          [rows]="facade.values()"
+          [columns]="columns"
+          [loading]="facade.valuesLoading()"
+          [totalRecords]="facade.totalValues()"
+          [pageIndex]="pageIndex()"
+          [pageSize]="pageSize()"
+          rowKey="id"
+          [rowActionsTemplate]="rowActions"
+          (pageChange)="handlePageChange($event)"
+        />
+      }
+
+      <ng-template #rowActions let-row="row">
+        <div class="lookup-management__row-actions">
+          @if (facade.canUpdate()) {
+            <daqiq-button
+              label="ویرایش"
+              icon="pi pi-pencil"
+              variant="text"
+              (pressed)="startEdit(row)"
+            />
+            <daqiq-button
+              [label]="row.active ? 'غیرفعال‌سازی' : 'فعال‌سازی'"
+              [icon]="row.active ? 'pi pi-lock' : 'pi pi-lock-open'"
+              [variant]="row.active ? 'danger' : 'secondary'"
+              (pressed)="toggleActive(row)"
+            />
+          }
+        </div>
+      </ng-template>
+    </daqiq-card>
+  </section>
+
+  @if (facade.canCreate() || editingValue()) {
+    <daqiq-card>
+      <form class="lookup-management__form" (submit)="$event.preventDefault(); submitForm()">
+        <h2>{{ editingValue() ? 'ویرایش مقدار مرجع' : 'ایجاد مقدار مرجع' }}</h2>
+
+        <label class="lookup-management__label" for="lookup-code">کد</label>
+        <input
+          id="lookup-code"
+          class="lookup-management__input"
+          type="text"
+          [value]="code()"
+          (input)="handleInput($event, 'code')"
+        />
+
+        <label class="lookup-management__label" for="lookup-label">عنوان</label>
+        <input
+          id="lookup-label"
+          class="lookup-management__input"
+          type="text"
+          [value]="label()"
+          (input)="handleInput($event, 'label')"
+        />
+
+        <label class="lookup-management__label" for="lookup-description">توضیح</label>
+        <input
+          id="lookup-description"
+          class="lookup-management__input"
+          type="text"
+          [value]="description()"
+          (input)="handleInput($event, 'description')"
+        />
+
+        <label class="lookup-management__label" for="lookup-sort-order">ترتیب</label>
+        <input
+          id="lookup-sort-order"
+          class="lookup-management__input"
+          type="number"
+          [value]="sortOrder()"
+          (input)="handleInput($event, 'sortOrder')"
+        />
+
+        <label class="lookup-management__label" for="lookup-metadata">متادیتا JSON</label>
+        <textarea
+          id="lookup-metadata"
+          class="lookup-management__textarea"
+          rows="4"
+          [value]="metadataText()"
+          (input)="handleInput($event, 'metadata')"
+        ></textarea>
+
+        <label class="lookup-management__checkbox">
+          <input type="checkbox" [checked]="active()" (change)="handleActiveChange($event)" />
+          <span>فعال</span>
+        </label>
+
+        @if (formError(); as message) {
+          <p class="lookup-management__error" role="alert">{{ message }}</p>
+        }
+
+        <div class="lookup-management__form-actions">
+          <daqiq-button
+            label="ثبت"
+            icon="pi pi-check"
+            type="submit"
+            [loading]="facade.submitting()"
+          />
+          <daqiq-button
+            label="پاک کردن فرم"
+            icon="pi pi-times"
+            variant="secondary"
+            (pressed)="resetForm()"
+          />
+        </div>
+      </form>
+    </daqiq-card>
+  }
+</daqiq-page-container>

@@ -1,0 +1,75 @@
+<daqiq-page-container
+  title="قابلیت‌های سامانه"
+  subtitle="فعال‌سازی یا غیرفعال‌سازی قابلیت‌های سامانه"
+>
+  <div pageActions class="feature-flags__actions">
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading()"
+      (pressed)="handleRefresh()"
+    />
+  </div>
+
+  <daqiq-card>
+    <section class="feature-flags__notice">
+      <i class="pi pi-info-circle" aria-hidden="true"></i>
+      <span>غیرفعال‌سازی یک قابلیت فقط دسترسی و نمایش آن را کنترل می‌کند و داده‌های موجود را حذف نمی‌کند.</span>
+    </section>
+
+    <form class="feature-flags__search" (submit)="$event.preventDefault(); handleSearchSubmit()">
+      <label class="feature-flags__search-label" for="feature-flag-search">جستجو</label>
+      <input
+        id="feature-flag-search"
+        class="feature-flags__search-input"
+        type="search"
+        [value]="searchTerm()"
+        placeholder="جستجو بر اساس کلید، دسته یا عنوان"
+        (input)="handleSearchInput($event)"
+      />
+      <daqiq-button label="جستجو" icon="pi pi-search" type="submit" />
+    </form>
+
+    @if (facade.error(); as error) {
+      <section class="feature-flags__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    }
+
+    @if (!facade.loading() && facade.items().length === 0 && !facade.error()) {
+      <daqiq-empty-state
+        icon="pi pi-toggle-on"
+        message="قابلیتی برای نمایش وجود ندارد."
+        description="قابلیت‌های سامانه پس از تعریف در پایگاه داده در این بخش نمایش داده می‌شوند."
+      />
+    } @else {
+      <daqiq-data-table
+        [rows]="facade.items()"
+        [columns]="columns"
+        [loading]="facade.loading()"
+        [totalRecords]="facade.totalItems()"
+        [pageIndex]="pageIndex()"
+        [pageSize]="pageSize()"
+        rowKey="id"
+        [rowActionsTemplate]="rowActions"
+        (pageChange)="handlePageChange($event)"
+      />
+    }
+
+    <ng-template #rowActions let-row="row">
+      <div class="feature-flags__row-actions">
+        @if (facade.canUpdate()) {
+          <daqiq-button
+            [label]="row.enabled ? 'غیرفعال‌سازی' : 'فعال‌سازی'"
+            [icon]="row.enabled ? 'pi pi-toggle-off' : 'pi pi-toggle-on'"
+            [variant]="row.enabled ? 'danger' : 'secondary'"
+            [loading]="facade.submitting()"
+            (pressed)="toggle(row)"
+          />
+        }
+      </div>
+    </ng-template>
+  </daqiq-card>
+</daqiq-page-container>

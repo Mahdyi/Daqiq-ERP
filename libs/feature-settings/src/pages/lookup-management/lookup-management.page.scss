@@ -1,0 +1,98 @@
+:host {
+  display: block;
+  direction: rtl;
+}
+
+.lookup-management__actions,
+.lookup-management__row-actions,
+.lookup-management__form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.lookup-management__layout {
+  display: grid;
+  grid-template-columns: minmax(13rem, 18rem) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.lookup-management__types {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.lookup-management__type-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--erp-border-color, #e2e8f0);
+  border-radius: var(--erp-layout-radius-md, 0.5rem);
+  background: var(--erp-surface-ground, #fff);
+  color: var(--erp-text-color, #172033);
+  cursor: pointer;
+  font: inherit;
+  padding: 0.625rem 0.75rem;
+  text-align: start;
+}
+
+.lookup-management__type-button--active {
+  border-color: var(--erp-primary-color, #2563eb);
+  color: var(--erp-primary-color, #2563eb);
+}
+
+.lookup-management__header h2,
+.lookup-management__form h2 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.lookup-management__header p {
+  margin: 0.25rem 0 1rem;
+  color: var(--erp-text-muted-color, #64748b);
+}
+
+.lookup-management__search,
+.lookup-management__form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.lookup-management__search {
+  grid-template-columns: auto minmax(14rem, 1fr) auto;
+  align-items: end;
+  margin-block-end: 1rem;
+}
+
+.lookup-management__label {
+  color: var(--erp-text-muted-color, #64748b);
+  font-size: var(--erp-font-size-sm, 0.875rem);
+}
+
+.lookup-management__input,
+.lookup-management__textarea {
+  width: 100%;
+  border: 1px solid var(--erp-border-color, #e2e8f0);
+  border-radius: var(--erp-layout-radius-md, 0.5rem);
+  background: var(--erp-surface-ground, #fff);
+  color: var(--erp-text-color, #172033);
+  font: inherit;
+  padding: 0.625rem 0.75rem;
+}
+
+.lookup-management__checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lookup-management__error {
+  color: #b91c1c;
+}
+
+@media (max-width: 900px) {
+  .lookup-management__layout,
+  .lookup-management__search {
+    grid-template-columns: 1fr;
+  }
+}

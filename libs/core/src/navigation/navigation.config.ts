@@ -52,6 +52,36 @@ export const APP_NAVIGATION = [
         authorization: {
           permissions: ['audit.view']
         }
+      },
+      {
+        id: 'settings',
+        label: 'تنظیمات سامانه',
+        icon: 'pi pi-sliders-h',
+        route: ['/admin/settings'],
+        exact: false,
+        authorization: {
+          permissions: ['settings.view']
+        }
+      },
+      {
+        id: 'lookups',
+        label: 'داده‌های پایه',
+        icon: 'pi pi-list',
+        route: ['/admin/lookups'],
+        exact: false,
+        authorization: {
+          permissions: ['lookups.view']
+        }
+      },
+      {
+        id: 'feature-flags',
+        label: 'قابلیت‌های سامانه',
+        icon: 'pi pi-toggle-on',
+        route: ['/admin/feature-flags'],
+        exact: false,
+        authorization: {
+          permissions: ['featureFlags.view']
+        }
       }
     ]
   }
