@@ -1,0 +1,87 @@
+<daqiq-page-container title="جزئیات فعالیت" subtitle="مشاهده جزئیات یک رویداد ثبت‌شده">
+  <div pageActions>
+    <daqiq-button
+      label="بازگشت"
+      icon="pi pi-arrow-right"
+      variant="secondary"
+      (pressed)="backToList()"
+    />
+  </div>
+
+  <daqiq-card>
+    @if (facade.detailLoading()) {
+      <section class="audit-log-detail__state" role="status" aria-live="polite">
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+        <span>در حال بارگذاری جزئیات فعالیت...</span>
+      </section>
+    } @else if (facade.detailError(); as error) {
+      <section class="audit-log-detail__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    } @else if (facade.selectedLog(); as log) {
+      <dl class="audit-log-detail__grid">
+        <div>
+          <dt>زمان</dt>
+          <dd>{{ formatDate(log) }}</dd>
+        </div>
+        <div>
+          <dt>کاربر</dt>
+          <dd>{{ log.actorEmail ?? 'سامانه' }}</dd>
+        </div>
+        <div>
+          <dt>نقش‌ها</dt>
+          <dd>{{ log.actorRoles.join('، ') || 'نامشخص' }}</dd>
+        </div>
+        <div>
+          <dt>نقش پایگاه‌داده</dt>
+          <dd>{{ log.dbRole ?? 'نامشخص' }}</dd>
+        </div>
+        <div>
+          <dt>عملیات</dt>
+          <dd>{{ log.action }}</dd>
+        </div>
+        <div>
+          <dt>نوع موجودیت</dt>
+          <dd>{{ log.entityType }}</dd>
+        </div>
+        <div>
+          <dt>شناسه موجودیت</dt>
+          <dd>{{ log.entityId ?? 'ثبت نشده' }}</dd>
+        </div>
+        <div>
+          <dt>نتیجه</dt>
+          <dd>{{ formatOutcome(log) }}</dd>
+        </div>
+        <div class="audit-log-detail__wide">
+          <dt>توضیح</dt>
+          <dd>{{ log.summary }}</dd>
+        </div>
+        <div>
+          <dt>IP</dt>
+          <dd>{{ log.ipAddress ?? 'ثبت نشده' }}</dd>
+        </div>
+        <div>
+          <dt>User-Agent</dt>
+          <dd>{{ log.userAgent ?? 'ثبت نشده' }}</dd>
+        </div>
+        <div>
+          <dt>Request ID</dt>
+          <dd>{{ log.requestId ?? 'ثبت نشده' }}</dd>
+        </div>
+      </dl>
+
+      <section class="audit-log-detail__metadata" aria-labelledby="audit-log-metadata-title">
+        <h2 id="audit-log-metadata-title">Metadata</h2>
+        @if (metadataEmpty()) {
+          <daqiq-empty-state
+            icon="pi pi-info-circle"
+            message="متادیتایی برای این رویداد ثبت نشده است."
+          />
+        } @else {
+          <pre>{{ metadataText() }}</pre>
+        }
+      </section>
+    }
+  </daqiq-card>
+</daqiq-page-container>

@@ -31,6 +31,7 @@ const APP_PERMISSIONS = [
   'users.create',
   'users.update',
   'users.delete',
+  'audit.view',
   'settings.view',
   'settings.update'
 ] as const satisfies readonly AppPermission[];

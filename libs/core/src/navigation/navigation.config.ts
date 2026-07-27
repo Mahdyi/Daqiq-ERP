@@ -42,6 +42,16 @@ export const APP_NAVIGATION = [
         authorization: {
           permissions: ['users.view']
         }
+      },
+      {
+        id: 'audit-logs',
+        label: 'گزارش فعالیت‌ها',
+        icon: 'pi pi-history',
+        route: ['/admin/audit-logs'],
+        exact: false,
+        authorization: {
+          permissions: ['audit.view']
+        }
       }
     ]
   }

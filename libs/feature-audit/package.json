@@ -1,0 +1,13 @@
+{
+  "name": "@daqiq/feature-audit",
+  "version": "0.0.0",
+  "peerDependencies": {
+    "@angular/common": "^20.0.0",
+    "@angular/core": "^20.0.0",
+    "@angular/router": "^20.0.0",
+    "@daqiq/core": "0.0.0",
+    "@daqiq/ui": "0.0.0",
+    "rxjs": "^7.8.0"
+  },
+  "sideEffects": false
+}

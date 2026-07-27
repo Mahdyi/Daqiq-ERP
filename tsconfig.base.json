@@ -10,6 +10,8 @@
       "@daqiq/data-access/*": ["libs/data-access/src/*"],
       "@daqiq/feature-auth": ["libs/feature-auth/src/public-api.ts"],
       "@daqiq/feature-auth/*": ["libs/feature-auth/src/*"],
+      "@daqiq/feature-audit": ["libs/feature-audit/src/public-api.ts"],
+      "@daqiq/feature-audit/*": ["libs/feature-audit/src/*"],
       "@daqiq/feature-customers": ["libs/feature-customers/src/public-api.ts"],
       "@daqiq/feature-customers/*": ["libs/feature-customers/src/*"],
       "@daqiq/feature-users": ["libs/feature-users/src/public-api.ts"],

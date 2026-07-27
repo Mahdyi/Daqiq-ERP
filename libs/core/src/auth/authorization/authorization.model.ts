@@ -22,6 +22,7 @@ export type AppPermission =
   | 'users.create'
   | 'users.update'
   | 'users.delete'
+  | 'audit.view'
   | 'settings.view'
   | 'settings.update';
 
@@ -54,6 +55,7 @@ export const ROLE_PERMISSIONS = {
     'users.create',
     'users.update',
     'users.delete',
+    'audit.view',
     'settings.view',
     'settings.update'
   ],
