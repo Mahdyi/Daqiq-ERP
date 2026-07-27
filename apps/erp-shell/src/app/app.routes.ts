@@ -29,6 +29,11 @@ export const routes: Routes = [
           import('@daqiq/feature-customers').then((customers) => customers.CUSTOMER_ROUTES)
       },
       {
+        path: 'master-data/products',
+        loadChildren: () =>
+          import('@daqiq/feature-products').then((products) => products.PRODUCT_ROUTES)
+      },
+      {
         path: 'admin/users',
         loadChildren: () => import('@daqiq/feature-users').then((users) => users.USER_ROUTES)
       },

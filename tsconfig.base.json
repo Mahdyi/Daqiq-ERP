@@ -28,6 +28,8 @@
       "@daqiq/feature-equipment-receipts/*": ["libs/feature-equipment-receipts/src/*"],
       "@daqiq/feature-preinvoices": ["libs/feature-preinvoices/src/public-api.ts"],
       "@daqiq/feature-preinvoices/*": ["libs/feature-preinvoices/src/*"],
+      "@daqiq/feature-products": ["libs/feature-products/src/public-api.ts"],
+      "@daqiq/feature-products/*": ["libs/feature-products/src/*"],
       "@daqiq/shared": ["libs/shared/src/public-api.ts"],
       "@daqiq/shared/*": ["libs/shared/src/*"],
       "@daqiq/ui": ["libs/ui/src/public-api.ts"],

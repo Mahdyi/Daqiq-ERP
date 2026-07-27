@@ -25,6 +25,16 @@ export const APP_NAVIGATION = [
         authorization: {
           permissions: ['customers.view']
         }
+      },
+      {
+        id: 'products',
+        label: 'کالاها',
+        icon: 'pi pi-box',
+        route: ['/master-data/products'],
+        exact: false,
+        authorization: {
+          permissions: ['products.view']
+        }
       }
     ]
   },

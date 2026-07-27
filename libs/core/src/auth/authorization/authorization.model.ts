@@ -6,6 +6,10 @@ export type AppPermission =
   | 'customers.create'
   | 'customers.update'
   | 'customers.delete'
+  | 'products.view'
+  | 'products.create'
+  | 'products.update'
+  | 'products.delete'
   | 'sales.view'
   | 'sales.create'
   | 'sales.update'
@@ -45,6 +49,10 @@ export const ROLE_PERMISSIONS = {
     'customers.create',
     'customers.update',
     'customers.delete',
+    'products.view',
+    'products.create',
+    'products.update',
+    'products.delete',
     'sales.view',
     'sales.create',
     'sales.update',
@@ -76,6 +84,9 @@ export const ROLE_PERMISSIONS = {
     'customers.view',
     'customers.create',
     'customers.update',
+    'products.view',
+    'products.create',
+    'products.update',
     'sales.view',
     'inventory.view',
     'accounting.view',
@@ -86,6 +97,7 @@ export const ROLE_PERMISSIONS = {
   accountant: [
     'dashboard.view',
     'customers.view',
+    'products.view',
     'accounting.view',
     'accounting.create',
     'accounting.update'
@@ -95,10 +107,18 @@ export const ROLE_PERMISSIONS = {
     'customers.view',
     'customers.create',
     'customers.update',
+    'products.view',
     'sales.view',
     'sales.create',
     'sales.update'
   ],
-  warehouse: ['dashboard.view', 'inventory.view', 'inventory.create', 'inventory.update'],
+  warehouse: [
+    'dashboard.view',
+    'products.view',
+    'products.update',
+    'inventory.view',
+    'inventory.create',
+    'inventory.update'
+  ],
   viewer: ['dashboard.view']
 } satisfies Record<AppRole, readonly AppPermission[]>;
