@@ -431,6 +431,66 @@
         }
       }
     },
+    "feature-suppliers": {
+      "projectType": "library",
+      "root": "libs/feature-suppliers",
+      "sourceRoot": "libs/feature-suppliers/src",
+      "prefix": "daqiq",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/feature-suppliers/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/feature-suppliers/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "libs/feature-suppliers/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "feature-warehouses": {
+      "projectType": "library",
+      "root": "libs/feature-warehouses",
+      "sourceRoot": "libs/feature-warehouses/src",
+      "prefix": "daqiq",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/feature-warehouses/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/feature-warehouses/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "libs/feature-warehouses/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
     "feature-equipment": {
       "projectType": "library",
       "root": "libs/feature-equipment",

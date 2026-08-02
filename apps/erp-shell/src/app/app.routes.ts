@@ -34,6 +34,16 @@ export const routes: Routes = [
           import('@daqiq/feature-products').then((products) => products.PRODUCT_ROUTES)
       },
       {
+        path: 'master-data/suppliers',
+        loadChildren: () =>
+          import('@daqiq/feature-suppliers').then((suppliers) => suppliers.SUPPLIER_ROUTES)
+      },
+      {
+        path: 'master-data',
+        loadChildren: () =>
+          import('@daqiq/feature-warehouses').then((warehouses) => warehouses.WAREHOUSE_ROUTES)
+      },
+      {
         path: 'admin/users',
         loadChildren: () => import('@daqiq/feature-users').then((users) => users.USER_ROUTES)
       },

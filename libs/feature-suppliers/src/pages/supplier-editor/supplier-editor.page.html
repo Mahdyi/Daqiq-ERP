@@ -1,0 +1,38 @@
+<daqiq-page-container
+  [title]="title"
+  subtitle="اطلاعات تماس، گروه و شرایط پایه تأمین‌کننده را تکمیل کنید"
+>
+  <daqiq-card>
+    @if (facade.editorLoading() || facade.lookupsLoading()) {
+      <section class="supplier-editor__state" role="status" aria-live="polite">
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+        <span>در حال بارگذاری اطلاعات تأمین‌کننده...</span>
+      </section>
+    } @else if (facade.editorError(); as error) {
+      <section class="supplier-editor__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+        <daqiq-button
+          label="تلاش دوباره"
+          icon="pi pi-refresh"
+          variant="secondary"
+          (pressed)="handleRetry()"
+        />
+      </section>
+    } @else {
+      <daqiq-dynamic-form
+        [fields]="facade.formFields()"
+        [initialValue]="initialValue()"
+        [layout]="{
+          columns: 2,
+          submitLabel: isEditMode ? 'به‌روزرسانی' : 'ایجاد تأمین‌کننده',
+          cancelLabel: 'انصراف',
+          showCancel: true
+        }"
+        [submitting]="facade.submitting()"
+        (submitted)="handleSubmit($event)"
+        (cancelled)="handleCancel()"
+      />
+    }
+  </daqiq-card>
+</daqiq-page-container>

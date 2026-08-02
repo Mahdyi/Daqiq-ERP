@@ -1,0 +1,35 @@
+<daqiq-page-container [title]="title" subtitle="انبار، نوع، ساختار والد و وضعیت موقعیت را تکمیل کنید">
+  <daqiq-card>
+    @if (facade.editorLoading() || facade.referenceLoading()) {
+      <section class="storage-location-editor__state" role="status" aria-live="polite">
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+        <span>در حال بارگذاری اطلاعات موقعیت انبار...</span>
+      </section>
+    } @else if (facade.editorError(); as error) {
+      <section class="storage-location-editor__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+        <daqiq-button
+          label="تلاش دوباره"
+          icon="pi pi-refresh"
+          variant="secondary"
+          (pressed)="handleRetry()"
+        />
+      </section>
+    } @else {
+      <daqiq-dynamic-form
+        [fields]="facade.formFields()"
+        [initialValue]="initialValue()"
+        [layout]="{
+          columns: 2,
+          submitLabel: isEditMode ? 'به‌روزرسانی' : 'ایجاد موقعیت',
+          cancelLabel: 'انصراف',
+          showCancel: true
+        }"
+        [submitting]="facade.submitting()"
+        (submitted)="handleSubmit($event)"
+        (cancelled)="handleCancel()"
+      />
+    }
+  </daqiq-card>
+</daqiq-page-container>

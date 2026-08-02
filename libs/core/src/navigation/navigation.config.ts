@@ -35,6 +35,36 @@ export const APP_NAVIGATION = [
         authorization: {
           permissions: ['products.view']
         }
+      },
+      {
+        id: 'suppliers',
+        label: 'تأمین‌کنندگان',
+        icon: 'pi pi-truck',
+        route: ['/master-data/suppliers'],
+        exact: false,
+        authorization: {
+          permissions: ['suppliers.view']
+        }
+      },
+      {
+        id: 'warehouses',
+        label: 'انبارها',
+        icon: 'pi pi-building',
+        route: ['/master-data/warehouses'],
+        exact: false,
+        authorization: {
+          permissions: ['warehouses.view']
+        }
+      },
+      {
+        id: 'storage-locations',
+        label: 'موقعیت‌های انبار',
+        icon: 'pi pi-map-marker',
+        route: ['/master-data/storage-locations'],
+        exact: false,
+        authorization: {
+          permissions: ['storageLocations.view']
+        }
       }
     ]
   },

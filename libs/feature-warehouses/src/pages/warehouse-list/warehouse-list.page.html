@@ -1,0 +1,91 @@
+<daqiq-page-container title="انبارها" subtitle="مدیریت انبارها و مراکز نگهداری کالا">
+  <div pageActions class="warehouse-list__actions">
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading() || facade.lookupsLoading()"
+      (pressed)="handleRefresh()"
+    />
+
+    @if (facade.canCreate()) {
+      <daqiq-button
+        label="ایجاد انبار"
+        icon="pi pi-plus"
+        (pressed)="handleCreate()"
+      />
+    }
+  </div>
+
+  <daqiq-card>
+    <form class="warehouse-list__search" (submit)="$event.preventDefault(); handleSearchSubmit()">
+      <label class="warehouse-list__search-label" for="warehouse-search">جستجو</label>
+      <input
+        id="warehouse-search"
+        class="warehouse-list__search-input"
+        type="search"
+        [value]="searchTerm()"
+        placeholder="جستجو بر اساس کد، نام، توضیحات، مسئول، تلفن یا ایمیل"
+        (input)="handleSearchInput($event)"
+      />
+      <daqiq-button label="جستجو" icon="pi pi-search" type="submit" />
+    </form>
+
+    @if (facade.error(); as error) {
+      <section class="warehouse-list__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+        <daqiq-button
+          label="تلاش دوباره"
+          icon="pi pi-refresh"
+          variant="secondary"
+          (pressed)="handleRefresh()"
+        />
+      </section>
+    }
+
+    @if (!facade.loading() && facade.items().length === 0 && !facade.error()) {
+      <daqiq-empty-state
+        icon="pi pi-building"
+        message="انباری برای نمایش وجود ندارد."
+        description="با ایجاد انبار جدید یا تغییر عبارت جستجو، داده‌ها در این بخش نمایش داده می‌شوند."
+      />
+    } @else {
+      <daqiq-data-table
+        [rows]="facade.items()"
+        [columns]="columns()"
+        [loading]="facade.loading() || facade.lookupsLoading()"
+        [totalRecords]="facade.totalItems()"
+        [pageIndex]="pageIndex()"
+        [pageSize]="pageSize()"
+        [sort]="sort()"
+        rowKey="id"
+        [rowActionsTemplate]="rowActions"
+        (pageChange)="handlePageChange($event)"
+        (sortChange)="handleSortChange($event)"
+      />
+    }
+
+    <ng-template #rowActions let-row="row">
+      <div class="warehouse-list__row-actions">
+        @if (facade.canUpdate()) {
+          <daqiq-button
+            label="ویرایش"
+            icon="pi pi-pencil"
+            variant="text"
+            (pressed)="handleEdit(row)"
+          />
+        }
+
+        @if (facade.canDelete()) {
+          <daqiq-button
+            label="حذف"
+            icon="pi pi-trash"
+            variant="danger"
+            (pressed)="handleDelete(row)"
+          />
+        }
+      </div>
+    </ng-template>
+  </daqiq-card>
+</daqiq-page-container>

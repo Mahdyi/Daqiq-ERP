@@ -10,6 +10,18 @@ export type AppPermission =
   | 'products.create'
   | 'products.update'
   | 'products.delete'
+  | 'suppliers.view'
+  | 'suppliers.create'
+  | 'suppliers.update'
+  | 'suppliers.delete'
+  | 'warehouses.view'
+  | 'warehouses.create'
+  | 'warehouses.update'
+  | 'warehouses.delete'
+  | 'storageLocations.view'
+  | 'storageLocations.create'
+  | 'storageLocations.update'
+  | 'storageLocations.delete'
   | 'sales.view'
   | 'sales.create'
   | 'sales.update'
@@ -53,6 +65,18 @@ export const ROLE_PERMISSIONS = {
     'products.create',
     'products.update',
     'products.delete',
+    'suppliers.view',
+    'suppliers.create',
+    'suppliers.update',
+    'suppliers.delete',
+    'warehouses.view',
+    'warehouses.create',
+    'warehouses.update',
+    'warehouses.delete',
+    'storageLocations.view',
+    'storageLocations.create',
+    'storageLocations.update',
+    'storageLocations.delete',
     'sales.view',
     'sales.create',
     'sales.update',
@@ -87,6 +111,15 @@ export const ROLE_PERMISSIONS = {
     'products.view',
     'products.create',
     'products.update',
+    'suppliers.view',
+    'suppliers.create',
+    'suppliers.update',
+    'warehouses.view',
+    'warehouses.create',
+    'warehouses.update',
+    'storageLocations.view',
+    'storageLocations.create',
+    'storageLocations.update',
     'sales.view',
     'inventory.view',
     'accounting.view',
@@ -98,6 +131,10 @@ export const ROLE_PERMISSIONS = {
     'dashboard.view',
     'customers.view',
     'products.view',
+    'suppliers.view',
+    'suppliers.update',
+    'warehouses.view',
+    'storageLocations.view',
     'accounting.view',
     'accounting.create',
     'accounting.update'
@@ -116,6 +153,13 @@ export const ROLE_PERMISSIONS = {
     'dashboard.view',
     'products.view',
     'products.update',
+    'suppliers.view',
+    'warehouses.view',
+    'warehouses.create',
+    'warehouses.update',
+    'storageLocations.view',
+    'storageLocations.create',
+    'storageLocations.update',
     'inventory.view',
     'inventory.create',
     'inventory.update'

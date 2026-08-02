@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  direction: rtl;
+}
+
+.storage-location-editor__state,
+.storage-location-editor__error {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 8rem;
+  justify-content: center;
+}
+
+.storage-location-editor__state {
+  color: var(--erp-text-muted-color, var(--p-text-muted-color));
+}
+
+.storage-location-editor__error {
+  border: 1px solid var(--p-red-200, #fecaca);
+  border-radius: var(--erp-layout-radius-md, 0.5rem);
+  background: color-mix(in srgb, var(--p-red-50, #fef2f2) 72%, transparent);
+  color: var(--p-red-700, #b91c1c);
+  padding: 1rem;
+}

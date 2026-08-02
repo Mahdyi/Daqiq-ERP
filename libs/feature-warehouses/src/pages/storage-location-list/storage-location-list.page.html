@@ -1,0 +1,94 @@
+<daqiq-page-container title="موقعیت‌های انبار" subtitle="مدیریت قفسه‌ها، سالن‌ها، بافرها و جایگاه‌های نگهداری">
+  <div pageActions class="storage-location-list__actions">
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading() || facade.referenceLoading()"
+      (pressed)="handleRefresh()"
+    />
+
+    @if (facade.canCreate()) {
+      <daqiq-button
+        label="ایجاد موقعیت"
+        icon="pi pi-plus"
+        (pressed)="handleCreate()"
+      />
+    }
+  </div>
+
+  <daqiq-card>
+    <form
+      class="storage-location-list__search"
+      (submit)="$event.preventDefault(); handleSearchSubmit()"
+    >
+      <label class="storage-location-list__search-label" for="storage-location-search">جستجو</label>
+      <input
+        id="storage-location-search"
+        class="storage-location-list__search-input"
+        type="search"
+        [value]="searchTerm()"
+        placeholder="جستجو بر اساس کد، نام یا توضیحات موقعیت"
+        (input)="handleSearchInput($event)"
+      />
+      <daqiq-button label="جستجو" icon="pi pi-search" type="submit" />
+    </form>
+
+    @if (facade.error(); as error) {
+      <section class="storage-location-list__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+        <daqiq-button
+          label="تلاش دوباره"
+          icon="pi pi-refresh"
+          variant="secondary"
+          (pressed)="handleRefresh()"
+        />
+      </section>
+    }
+
+    @if (!facade.loading() && facade.items().length === 0 && !facade.error()) {
+      <daqiq-empty-state
+        icon="pi pi-map-marker"
+        message="موقعیت انباری برای نمایش وجود ندارد."
+        description="با ایجاد موقعیت جدید یا تغییر عبارت جستجو، داده‌ها در این بخش نمایش داده می‌شوند."
+      />
+    } @else {
+      <daqiq-data-table
+        [rows]="facade.items()"
+        [columns]="columns()"
+        [loading]="facade.loading() || facade.referenceLoading()"
+        [totalRecords]="facade.totalItems()"
+        [pageIndex]="pageIndex()"
+        [pageSize]="pageSize()"
+        [sort]="sort()"
+        rowKey="id"
+        [rowActionsTemplate]="rowActions"
+        (pageChange)="handlePageChange($event)"
+        (sortChange)="handleSortChange($event)"
+      />
+    }
+
+    <ng-template #rowActions let-row="row">
+      <div class="storage-location-list__row-actions">
+        @if (facade.canUpdate()) {
+          <daqiq-button
+            label="ویرایش"
+            icon="pi pi-pencil"
+            variant="text"
+            (pressed)="handleEdit(row)"
+          />
+        }
+
+        @if (facade.canDelete()) {
+          <daqiq-button
+            label="حذف"
+            icon="pi pi-trash"
+            variant="danger"
+            (pressed)="handleDelete(row)"
+          />
+        }
+      </div>
+    </ng-template>
+  </daqiq-card>
+</daqiq-page-container>
