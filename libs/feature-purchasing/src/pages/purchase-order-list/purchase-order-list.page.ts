@@ -68,6 +68,10 @@ export class PurchaseOrderListPage implements OnInit {
     void this.router.navigate(['/purchasing/purchase-orders', order.id, 'edit']);
   }
 
+  protected handleReceive(order: PurchaseOrder): void {
+    void this.router.navigate(['/purchasing/purchase-orders', order.id, 'receive']);
+  }
+
   protected handlePageChange(event: DataTablePageEvent): void {
     void this.facade.paginate(event.pageIndex, event.pageSize);
   }

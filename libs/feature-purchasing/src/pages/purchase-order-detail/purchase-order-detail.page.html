@@ -74,6 +74,13 @@
             (pressed)="handleApprove(order)"
           />
         }
+        @if (facade.canReceiveStatus(order.statusCode)) {
+          <daqiq-button
+            label="ثبت رسید"
+            icon="pi pi-inbox"
+            (pressed)="handleReceive(order)"
+          />
+        }
         @if (facade.canCancelStatus(order.statusCode)) {
           <daqiq-button
             label="لغو"

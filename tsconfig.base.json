@@ -38,6 +38,8 @@
       "@daqiq/feature-inventory/*": ["libs/feature-inventory/src/*"],
       "@daqiq/feature-purchasing": ["libs/feature-purchasing/src/public-api.ts"],
       "@daqiq/feature-purchasing/*": ["libs/feature-purchasing/src/*"],
+      "@daqiq/feature-sales": ["libs/feature-sales/src/public-api.ts"],
+      "@daqiq/feature-sales/*": ["libs/feature-sales/src/*"],
       "@daqiq/shared": ["libs/shared/src/public-api.ts"],
       "@daqiq/shared/*": ["libs/shared/src/*"],
       "@daqiq/ui": ["libs/ui/src/public-api.ts"],

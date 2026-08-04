@@ -1,0 +1,141 @@
+<daqiq-page-container [title]="title()" subtitle="ثبت مقدار واقعی دریافت‌شده و موقعیت انباری برای سفارش خرید تأییدشده">
+  <div pageActions class="goods-receipt-posting__actions">
+    <daqiq-button
+      label="بازگشت"
+      icon="pi pi-arrow-right"
+      variant="secondary"
+      (pressed)="handleBack()"
+    />
+  </div>
+
+  @if (facade.error(); as error) {
+    <daqiq-card>
+      <section class="goods-receipt-posting__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    </daqiq-card>
+  }
+
+  @if (facade.order(); as order) {
+    <daqiq-card>
+      <div class="goods-receipt-posting__header">
+        <div>
+          <span>سفارش خرید</span>
+          <strong>{{ order.orderNumber }}</strong>
+        </div>
+        <div>
+          <span>تأمین‌کننده</span>
+          <strong>{{ order.supplierCode }} - {{ order.supplierName }}</strong>
+        </div>
+        <div>
+          <span>وضعیت</span>
+          <strong>{{ order.statusLabel }}</strong>
+        </div>
+      </div>
+
+      <div class="goods-receipt-posting__form-grid">
+        <label>
+          <span>تاریخ رسید</span>
+          <input
+            type="date"
+            [value]="facade.receiptDate()"
+            (input)="handleReceiptDateInput($event)"
+          />
+        </label>
+
+        <label>
+          <span>انبار دریافت</span>
+          <select [value]="facade.warehouseId() ?? ''" (change)="handleWarehouseChange($event)">
+            <option value="">انتخاب انبار</option>
+            @for (warehouse of facade.warehouses(); track warehouse.id) {
+              <option [value]="warehouse.id">{{ warehouse.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="goods-receipt-posting__notes">
+          <span>یادداشت</span>
+          <textarea rows="3" [value]="facade.notes() ?? ''" (input)="handleNotesInput($event)"></textarea>
+        </label>
+      </div>
+    </daqiq-card>
+
+    <daqiq-card>
+      <section class="goods-receipt-posting__lines" aria-labelledby="receive-lines-title">
+        <div class="goods-receipt-posting__section-heading">
+          <h2 id="receive-lines-title">خطوط دریافت</h2>
+          <span>مقدار قابل دریافت نمی‌تواند از مانده سفارش بیشتر باشد.</span>
+        </div>
+
+        <div class="goods-receipt-posting__line-table">
+          <table>
+            <thead>
+              <tr>
+                <th>کالا</th>
+                <th>سفارش‌شده</th>
+                <th>رسیدشده</th>
+                <th>مانده</th>
+                <th>مقدار رسید</th>
+                <th>موقعیت انبار</th>
+                <th>یادداشت خط</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (line of facade.progress(); track line.purchaseOrderLineId) {
+                <tr>
+                  <td>
+                    <strong>{{ line.productSku }}</strong>
+                    <span>{{ line.productName }}</span>
+                  </td>
+                  <td>{{ formatNumber(line.orderedQuantity) }} {{ line.unitLabel ?? line.unitCode }}</td>
+                  <td>{{ formatNumber(line.receivedQuantity) }}</td>
+                  <td>{{ formatNumber(line.remainingQuantity) }}</td>
+                  <td>
+                    <input
+                      type="number"
+                      min="0"
+                      [max]="line.remainingQuantity"
+                      step="0.0001"
+                      [disabled]="line.remainingQuantity <= 0"
+                      [value]="lineQuantity(line.purchaseOrderLineId) ?? ''"
+                      (input)="handleLineQuantityInput(line, $event)"
+                    />
+                  </td>
+                  <td>
+                    <select
+                      [value]="lineLocation(line.purchaseOrderLineId) ?? ''"
+                      (change)="handleLineLocationChange(line, $event)"
+                    >
+                      <option value="">بدون موقعیت</option>
+                      @for (location of facade.locations(); track location.id) {
+                        <option [value]="location.id">{{ location.label }}</option>
+                      }
+                    </select>
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      [value]="lineNotes(line.purchaseOrderLineId) ?? ''"
+                      (input)="handleLineNotesInput(line, $event)"
+                    />
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="goods-receipt-posting__submit">
+          <daqiq-button
+            label="ثبت رسید و به‌روزرسانی موجودی"
+            icon="pi pi-check"
+            [loading]="facade.posting()"
+            [disabled]="!facade.canSubmit()"
+            (pressed)="handlePost()"
+          />
+        </div>
+      </section>
+    </daqiq-card>
+  }
+</daqiq-page-container>

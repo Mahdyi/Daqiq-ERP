@@ -49,11 +49,14 @@ export const routes: Routes = [
           import('@daqiq/feature-inventory').then((inventory) => inventory.INVENTORY_ROUTES)
       },
       {
-        path: 'purchasing/purchase-orders',
+        path: 'purchasing',
         loadChildren: () =>
-          import('@daqiq/feature-purchasing').then(
-            (purchasing) => purchasing.PURCHASE_ORDER_ROUTES
-          )
+          import('@daqiq/feature-purchasing').then((purchasing) => purchasing.PURCHASING_ROUTES)
+      },
+      {
+        path: 'sales',
+        loadChildren: () =>
+          import('@daqiq/feature-sales').then((sales) => sales.SALES_ROUTES)
       },
       {
         path: 'admin/users',

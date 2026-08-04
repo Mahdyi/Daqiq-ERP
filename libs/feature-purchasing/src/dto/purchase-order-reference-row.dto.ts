@@ -16,3 +16,9 @@ export interface WarehouseReferenceRowDto {
   readonly code: string;
   readonly name: string;
 }
+
+export interface StorageLocationReferenceRowDto {
+  readonly id: string;
+  readonly code: string;
+  readonly name: string;
+}

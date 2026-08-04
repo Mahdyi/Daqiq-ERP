@@ -77,6 +77,10 @@ export class PurchaseOrderDetailPage implements OnInit {
     void this.facade.close(order);
   }
 
+  protected handleReceive(order: PurchaseOrder): void {
+    void this.router.navigate(['/purchasing/purchase-orders', order.id, 'receive']);
+  }
+
   protected formatDate(value: Date | null): string {
     return value ? formatDate(value) : '—';
   }

@@ -1,0 +1,76 @@
+<daqiq-page-container
+  title="رسیدهای خرید"
+  subtitle="مشاهده رسیدهای ثبت‌شده و اثرات انباری سفارش‌های خرید"
+>
+  <div pageActions class="goods-receipt-list__actions">
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading()"
+      (pressed)="handleRefresh()"
+    />
+  </div>
+
+  <daqiq-card>
+    <form class="goods-receipt-list__search" (submit)="$event.preventDefault(); handleSearchSubmit()">
+      <label class="goods-receipt-list__search-label" for="goods-receipt-search">جستجو</label>
+      <input
+        id="goods-receipt-search"
+        class="goods-receipt-list__search-input"
+        type="search"
+        [value]="searchTerm()"
+        placeholder="جستجو بر اساس شماره رسید، سفارش، تأمین‌کننده یا انبار"
+        (input)="handleSearchInput($event)"
+      />
+      <daqiq-button label="جستجو" icon="pi pi-search" type="submit" />
+    </form>
+
+    @if (facade.error(); as error) {
+      <section class="goods-receipt-list__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+        <daqiq-button
+          label="تلاش دوباره"
+          icon="pi pi-refresh"
+          variant="secondary"
+          (pressed)="handleRefresh()"
+        />
+      </section>
+    }
+
+    @if (!facade.loading() && facade.items().length === 0 && !facade.error()) {
+      <daqiq-empty-state
+        icon="pi pi-inbox"
+        message="رسید خریدی برای نمایش وجود ندارد."
+        description="پس از ثبت رسید از سفارش خرید تأییدشده، سند در این بخش نمایش داده می‌شود."
+      />
+    } @else {
+      <daqiq-data-table
+        [rows]="facade.items()"
+        [columns]="columns"
+        [loading]="facade.loading()"
+        [totalRecords]="facade.totalItems()"
+        [pageIndex]="pageIndex()"
+        [pageSize]="pageSize()"
+        [sort]="sort()"
+        rowKey="id"
+        [rowActionsTemplate]="rowActions"
+        (pageChange)="handlePageChange($event)"
+        (sortChange)="handleSortChange($event)"
+        (rowActivated)="handleView($event)"
+      />
+    }
+
+    <ng-template #rowActions let-row="row">
+      <div class="goods-receipt-list__row-actions">
+        <daqiq-button
+          label="جزئیات"
+          icon="pi pi-eye"
+          variant="text"
+          (pressed)="handleView(row)"
+        />
+      </div>
+    </ng-template>
+  </daqiq-card>
+</daqiq-page-container>

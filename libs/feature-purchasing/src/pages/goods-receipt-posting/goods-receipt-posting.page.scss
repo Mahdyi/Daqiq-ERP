@@ -1,0 +1,110 @@
+:host {
+  display: block;
+}
+
+.goods-receipt-posting__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.goods-receipt-posting__header,
+.goods-receipt-posting__form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.goods-receipt-posting__header span,
+.goods-receipt-posting__section-heading span,
+.goods-receipt-posting__form-grid span {
+  display: block;
+  color: var(--text-color-secondary);
+  font-size: 0.875rem;
+  margin-block-end: 0.35rem;
+}
+
+.goods-receipt-posting__form-grid {
+  margin-block-start: 1rem;
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--surface-border);
+}
+
+.goods-receipt-posting__notes {
+  grid-column: span 3;
+}
+
+.goods-receipt-posting__form-grid input,
+.goods-receipt-posting__form-grid select,
+.goods-receipt-posting__form-grid textarea,
+.goods-receipt-posting__line-table input,
+.goods-receipt-posting__line-table select {
+  width: 100%;
+  min-height: 2.5rem;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--border-radius);
+  background: var(--surface-card);
+  color: var(--text-color);
+  padding: 0.55rem 0.65rem;
+}
+
+.goods-receipt-posting__section-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+  margin-block-end: 1rem;
+}
+
+.goods-receipt-posting__section-heading h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.goods-receipt-posting__line-table {
+  overflow-x: auto;
+}
+
+.goods-receipt-posting__line-table table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 60rem;
+}
+
+.goods-receipt-posting__line-table th,
+.goods-receipt-posting__line-table td {
+  border-block-end: 1px solid var(--surface-border);
+  padding: 0.75rem;
+  text-align: start;
+  vertical-align: top;
+}
+
+.goods-receipt-posting__line-table td:first-child span {
+  display: block;
+  color: var(--text-color-secondary);
+  margin-block-start: 0.25rem;
+}
+
+.goods-receipt-posting__submit {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-start: 1rem;
+}
+
+.goods-receipt-posting__error {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--red-500);
+}
+
+@media (max-width: 900px) {
+  .goods-receipt-posting__header,
+  .goods-receipt-posting__form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .goods-receipt-posting__notes {
+    grid-column: auto;
+  }
+}

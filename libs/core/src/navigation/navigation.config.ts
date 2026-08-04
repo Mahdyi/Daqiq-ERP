@@ -129,6 +129,33 @@ export const APP_NAVIGATION = [
         authorization: {
           permissions: ['purchasing.view']
         }
+      },
+      {
+        id: 'goods-receipts',
+        label: 'رسیدهای خرید',
+        icon: 'pi pi-inbox',
+        route: ['/purchasing/goods-receipts'],
+        exact: false,
+        authorization: {
+          permissions: ['receiving.view']
+        }
+      }
+    ]
+  },
+  {
+    id: 'sales',
+    label: 'فروش',
+    icon: 'pi pi-shopping-bag',
+    children: [
+      {
+        id: 'sales-orders',
+        label: 'سفارش‌های فروش',
+        icon: 'pi pi-file-edit',
+        route: ['/sales/sales-orders'],
+        exact: false,
+        authorization: {
+          permissions: ['salesOrders.view']
+        }
       }
     ]
   },

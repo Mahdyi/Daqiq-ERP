@@ -61,6 +61,7 @@ export class PurchaseOrderFacade {
   readonly canApprove = computed(() => this.authorization.hasPermission('purchasing.approve'));
   readonly canCancel = computed(() => this.authorization.hasPermission('purchasing.cancel'));
   readonly canClose = computed(() => this.authorization.hasPermission('purchasing.delete'));
+  readonly canReceive = computed(() => this.authorization.hasPermission('receiving.post'));
 
   async loadDefault(): Promise<void> {
     await this.load(DEFAULT_QUERY);
@@ -199,6 +200,10 @@ export class PurchaseOrderFacade {
 
   canCloseStatus(status: PurchaseOrderStatus): boolean {
     return status === 'approved' && this.canClose();
+  }
+
+  canReceiveStatus(status: PurchaseOrderStatus): boolean {
+    return status === 'approved' && this.canReceive();
   }
 
   private async transition(

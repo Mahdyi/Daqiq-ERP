@@ -1,0 +1,160 @@
+<daqiq-page-container [title]="title" subtitle="ثبت سفارش فروش بدون اثرگذاری مستقیم بر موجودی انبار">
+  <div pageActions class="sales-order-editor__actions">
+    <daqiq-button
+      label="بازگشت"
+      icon="pi pi-arrow-right"
+      variant="secondary"
+      (pressed)="handleCancel()"
+    />
+  </div>
+
+  @if (facade.error(); as error) {
+    <daqiq-card>
+      <section class="sales-order-editor__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    </daqiq-card>
+  }
+
+  <daqiq-card>
+    <daqiq-dynamic-form
+      [fields]="facade.fields()"
+      [initialValue]="headerInitialValue()"
+      [submitting]="facade.submitting() || facade.loading()"
+      [layout]="{
+        columns: 2,
+        submitLabel: isEditMode ? 'به‌روزرسانی سفارش' : 'ایجاد سفارش',
+        cancelLabel: 'انصراف',
+        showCancel: true
+      }"
+      (submitted)="handleSubmit($event)"
+      (cancelled)="handleCancel()"
+    />
+  </daqiq-card>
+
+  <daqiq-card>
+    <section class="sales-order-editor__line-editor" aria-labelledby="sales-order-line-editor-title">
+      <div class="sales-order-editor__section-heading">
+        <h2 id="sales-order-line-editor-title">خطوط سفارش</h2>
+        <span>حداقل یک خط سفارش الزامی است.</span>
+      </div>
+
+      <div class="sales-order-editor__line-grid">
+        <label>
+          <span>کالا</span>
+          <select [value]="lineDraft().productId ?? ''" (change)="handleProductChange($event)">
+            <option value="">انتخاب کالا</option>
+            @for (option of facade.productOptions(); track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          <span>واحد</span>
+          <input
+            type="text"
+            [value]="productUnitLabel(lineDraft().productId)"
+            readonly
+          />
+        </label>
+
+        <label>
+          <span>مقدار</span>
+          <input
+            type="number"
+            min="0.0001"
+            step="0.0001"
+            [value]="lineDraft().quantity ?? ''"
+            (input)="handleQuantityInput($event)"
+          />
+        </label>
+
+        <label>
+          <span>قیمت واحد</span>
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            [value]="lineDraft().unitPrice ?? ''"
+            (input)="handleUnitPriceInput($event)"
+          />
+        </label>
+
+        <label>
+          <span>نرخ مالیات</span>
+          <select [value]="lineDraft().taxRateLookupValueId ?? ''" (change)="handleTaxRateChange($event)">
+            <option value="">بدون مالیات</option>
+            @for (option of facade.taxRateOptions(); track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="sales-order-editor__description">
+          <span>شرح خط</span>
+          <input
+            type="text"
+            [value]="lineDraft().description ?? ''"
+            (input)="handleDescriptionInput($event)"
+          />
+        </label>
+
+        <daqiq-button
+          label="افزودن خط"
+          icon="pi pi-plus"
+          (pressed)="handleAddLine()"
+        />
+      </div>
+
+      @if (lineError(); as error) {
+        <p class="sales-order-editor__line-error">{{ error }}</p>
+      }
+
+      @if (facade.lines().length === 0) {
+        <p class="sales-order-editor__empty-lines">هنوز خطی به سفارش اضافه نشده است.</p>
+      } @else {
+        <div class="sales-order-editor__line-table">
+          <table>
+            <thead>
+              <tr>
+                <th>کالا</th>
+                <th>مقدار</th>
+                <th>واحد</th>
+                <th>قیمت واحد</th>
+                <th>نرخ مالیات</th>
+                <th>عملیات</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (line of facade.lines(); track line.clientId) {
+                <tr>
+                  <td>{{ facade.productLabel(line.productId) }}</td>
+                  <td>{{ formatNumber(line.quantity ?? 0) }}</td>
+                  <td>{{ productUnitLabel(line.productId) }}</td>
+                  <td>{{ formatNumber(line.unitPrice ?? 0) }}</td>
+                  <td>{{ facade.lookupLabel(line.taxRateLookupValueId) }}</td>
+                  <td>
+                    <daqiq-button
+                      label="حذف"
+                      icon="pi pi-trash"
+                      variant="danger"
+                      (pressed)="handleRemoveLine(line.clientId)"
+                    />
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      <div class="sales-order-editor__totals">
+        <span>جمع جزء: {{ formatNumber(facade.subtotal()) }}</span>
+        <span>مالیات: {{ formatNumber(facade.taxTotal()) }}</span>
+        <strong>جمع کل: {{ formatNumber(facade.total()) }}</strong>
+      </div>
+    </section>
+  </daqiq-card>
+</daqiq-page-container>

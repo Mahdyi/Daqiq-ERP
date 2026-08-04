@@ -1,0 +1,85 @@
+<daqiq-page-container [title]="title()" subtitle="مشاهده سند رسید خرید و خطوط اثرگذار بر موجودی">
+  <div pageActions class="goods-receipt-detail__actions">
+    <daqiq-button
+      label="بازگشت"
+      icon="pi pi-arrow-right"
+      variant="secondary"
+      (pressed)="handleBack()"
+    />
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.detailLoading()"
+      (pressed)="handleReload()"
+    />
+  </div>
+
+  @if (facade.detailError(); as error) {
+    <daqiq-card>
+      <section class="goods-receipt-detail__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    </daqiq-card>
+  } @else if (facade.selectedReceipt(); as receipt) {
+    <daqiq-card>
+      <div class="goods-receipt-detail__header">
+        <div>
+          <span class="goods-receipt-detail__label">سفارش خرید</span>
+          <strong>{{ receipt.purchaseOrderNumber }}</strong>
+        </div>
+        <div>
+          <span class="goods-receipt-detail__label">تأمین‌کننده</span>
+          <strong>{{ receipt.supplierCode }} - {{ receipt.supplierName }}</strong>
+        </div>
+        <div>
+          <span class="goods-receipt-detail__label">وضعیت</span>
+          <strong>{{ receipt.statusLabel }}</strong>
+        </div>
+        <div>
+          <span class="goods-receipt-detail__label">تاریخ رسید</span>
+          <strong>{{ formatDate(receipt.receiptDate) }}</strong>
+        </div>
+        <div>
+          <span class="goods-receipt-detail__label">انبار</span>
+          <strong>{{ receipt.warehouseCode }} - {{ receipt.warehouseName }}</strong>
+        </div>
+        <div>
+          <span class="goods-receipt-detail__label">ثبت‌کننده</span>
+          <strong>{{ receipt.postedByEmail ?? receipt.createdByEmail ?? '—' }}</strong>
+        </div>
+      </div>
+
+      <div class="goods-receipt-detail__workflow">
+        @if (facade.canCancelStatus(receipt.statusCode)) {
+          <daqiq-button
+            label="لغو رسید"
+            icon="pi pi-times"
+            variant="danger"
+            [loading]="facade.loading()"
+            (pressed)="handleCancel(receipt)"
+          />
+        }
+      </div>
+    </daqiq-card>
+
+    <daqiq-card>
+      @if (facade.selectedLines().length === 0) {
+        <daqiq-empty-state
+          icon="pi pi-list"
+          message="خطی برای این رسید ثبت نشده است."
+          description="رسیدهای معتبر باید حداقل یک خط دریافت کالا داشته باشند."
+        />
+      } @else {
+        <daqiq-data-table
+          [rows]="facade.selectedLines()"
+          [columns]="lineColumns"
+          [totalRecords]="facade.selectedLines().length"
+          [pageSize]="facade.selectedLines().length"
+          rowKey="id"
+        />
+      }
+    </daqiq-card>
+  }
+</daqiq-page-container>

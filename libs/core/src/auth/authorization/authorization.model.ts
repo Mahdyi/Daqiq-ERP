@@ -26,6 +26,13 @@ export type AppPermission =
   | 'sales.create'
   | 'sales.update'
   | 'sales.delete'
+  | 'salesOrders.view'
+  | 'salesOrders.create'
+  | 'salesOrders.update'
+  | 'salesOrders.submit'
+  | 'salesOrders.confirm'
+  | 'salesOrders.cancel'
+  | 'salesOrders.delete'
   | 'inventory.view'
   | 'inventory.adjust'
   | 'inventory.transfer'
@@ -37,6 +44,10 @@ export type AppPermission =
   | 'purchasing.approve'
   | 'purchasing.cancel'
   | 'purchasing.delete'
+  | 'receiving.view'
+  | 'receiving.create'
+  | 'receiving.post'
+  | 'receiving.cancel'
   | 'accounting.view'
   | 'accounting.create'
   | 'accounting.update'
@@ -88,6 +99,13 @@ export const ROLE_PERMISSIONS = {
     'sales.create',
     'sales.update',
     'sales.delete',
+    'salesOrders.view',
+    'salesOrders.create',
+    'salesOrders.update',
+    'salesOrders.submit',
+    'salesOrders.confirm',
+    'salesOrders.cancel',
+    'salesOrders.delete',
     'inventory.view',
     'inventory.adjust',
     'inventory.transfer',
@@ -99,6 +117,10 @@ export const ROLE_PERMISSIONS = {
     'purchasing.approve',
     'purchasing.cancel',
     'purchasing.delete',
+    'receiving.view',
+    'receiving.create',
+    'receiving.post',
+    'receiving.cancel',
     'accounting.view',
     'accounting.create',
     'accounting.update',
@@ -135,6 +157,12 @@ export const ROLE_PERMISSIONS = {
     'storageLocations.create',
     'storageLocations.update',
     'sales.view',
+    'salesOrders.view',
+    'salesOrders.create',
+    'salesOrders.update',
+    'salesOrders.submit',
+    'salesOrders.confirm',
+    'salesOrders.cancel',
     'inventory.view',
     'inventory.adjust',
     'inventory.transfer',
@@ -144,6 +172,10 @@ export const ROLE_PERMISSIONS = {
     'purchasing.submit',
     'purchasing.approve',
     'purchasing.cancel',
+    'receiving.view',
+    'receiving.create',
+    'receiving.post',
+    'receiving.cancel',
     'accounting.view',
     'settings.view',
     'lookups.view',
@@ -158,7 +190,9 @@ export const ROLE_PERMISSIONS = {
     'warehouses.view',
     'storageLocations.view',
     'inventory.view',
+    'salesOrders.view',
     'purchasing.view',
+    'receiving.view',
     'accounting.view',
     'accounting.create',
     'accounting.update'
@@ -171,7 +205,12 @@ export const ROLE_PERMISSIONS = {
     'products.view',
     'sales.view',
     'sales.create',
-    'sales.update'
+    'sales.update',
+    'salesOrders.view',
+    'salesOrders.create',
+    'salesOrders.update',
+    'salesOrders.submit',
+    'salesOrders.cancel'
   ],
   warehouse: [
     'dashboard.view',
@@ -187,7 +226,11 @@ export const ROLE_PERMISSIONS = {
     'inventory.view',
     'inventory.adjust',
     'inventory.transfer',
-    'purchasing.view'
+    'salesOrders.view',
+    'purchasing.view',
+    'receiving.view',
+    'receiving.create',
+    'receiving.post'
   ],
   viewer: ['dashboard.view']
 } satisfies Record<AppRole, readonly AppPermission[]>;

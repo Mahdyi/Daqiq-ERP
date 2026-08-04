@@ -87,6 +87,14 @@
             (pressed)="handleEdit(row)"
           />
         }
+        @if (facade.canReceiveStatus(row.statusCode)) {
+          <daqiq-button
+            label="ثبت رسید"
+            icon="pi pi-inbox"
+            variant="text"
+            (pressed)="handleReceive(row)"
+          />
+        }
       </div>
     </ng-template>
   </daqiq-card>

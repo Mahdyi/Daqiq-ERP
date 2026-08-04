@@ -4,6 +4,7 @@ import { Observable, map } from 'rxjs';
 
 import type {
   ProductReferenceRowDto,
+  StorageLocationReferenceRowDto,
   SupplierReferenceRowDto,
   WarehouseReferenceRowDto
 } from '../dto/purchase-order-reference-row.dto';
@@ -60,6 +61,20 @@ export class PurchaseOrderReferenceDataService {
           select: 'id,code,name',
           active: 'eq.true',
           order: 'name.asc'
+        },
+        responseShape: 'raw'
+      })
+      .pipe(map((rows) => rows.map((row) => ({ id: row.id, label: `${row.code} - ${row.name}` }))));
+  }
+
+  listStorageLocations(warehouseId: string): Observable<readonly PurchaseOrderOption[]> {
+    return this.api
+      .get<readonly StorageLocationReferenceRowDto[]>('storage_locations', {
+        params: {
+          select: 'id,code,name',
+          warehouse_id: `eq.${warehouseId}`,
+          active: 'eq.true',
+          order: 'code.asc'
         },
         responseShape: 'raw'
       })
