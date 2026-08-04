@@ -36,6 +36,8 @@
       "@daqiq/feature-warehouses/*": ["libs/feature-warehouses/src/*"],
       "@daqiq/feature-inventory": ["libs/feature-inventory/src/public-api.ts"],
       "@daqiq/feature-inventory/*": ["libs/feature-inventory/src/*"],
+      "@daqiq/feature-purchasing": ["libs/feature-purchasing/src/public-api.ts"],
+      "@daqiq/feature-purchasing/*": ["libs/feature-purchasing/src/*"],
       "@daqiq/shared": ["libs/shared/src/public-api.ts"],
       "@daqiq/shared/*": ["libs/shared/src/*"],
       "@daqiq/ui": ["libs/ui/src/public-api.ts"],

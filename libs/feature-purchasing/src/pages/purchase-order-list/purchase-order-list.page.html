@@ -1,0 +1,93 @@
+<daqiq-page-container
+  title="سفارش‌های خرید"
+  subtitle="مدیریت سفارش‌های خرید تأمین‌کنندگان بدون ایجاد اثر انباری"
+>
+  <div pageActions class="purchase-order-list__actions">
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading()"
+      (pressed)="handleRefresh()"
+    />
+
+    @if (facade.canCreate()) {
+      <daqiq-button
+        label="ایجاد سفارش خرید"
+        icon="pi pi-plus"
+        (pressed)="handleCreate()"
+      />
+    }
+  </div>
+
+  <daqiq-card>
+    <form class="purchase-order-list__search" (submit)="$event.preventDefault(); handleSearchSubmit()">
+      <label class="purchase-order-list__search-label" for="purchase-order-search">جستجو</label>
+      <input
+        id="purchase-order-search"
+        class="purchase-order-list__search-input"
+        type="search"
+        [value]="searchTerm()"
+        placeholder="جستجو بر اساس شماره سفارش، تأمین‌کننده یا وضعیت"
+        (input)="handleSearchInput($event)"
+      />
+      <daqiq-button label="جستجو" icon="pi pi-search" type="submit" />
+    </form>
+
+    @if (facade.error(); as error) {
+      <section class="purchase-order-list__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+        <daqiq-button
+          label="تلاش دوباره"
+          icon="pi pi-refresh"
+          variant="secondary"
+          (pressed)="handleRefresh()"
+        />
+      </section>
+    }
+
+    @if (!facade.loading() && facade.items().length === 0 && !facade.error()) {
+      <daqiq-empty-state
+        icon="pi pi-file-edit"
+        message="سفارش خریدی برای نمایش وجود ندارد."
+        description="با ایجاد سفارش خرید جدید، داده‌ها در این بخش نمایش داده می‌شوند."
+      />
+    } @else {
+      <daqiq-data-table
+        [rows]="facade.items()"
+        [columns]="columns"
+        [loading]="facade.loading()"
+        [totalRecords]="facade.totalItems()"
+        [pageIndex]="pageIndex()"
+        [pageSize]="pageSize()"
+        [sort]="sort()"
+        rowKey="id"
+        [rowActionsTemplate]="rowActions"
+        (pageChange)="handlePageChange($event)"
+        (sortChange)="handleSortChange($event)"
+        (rowActivated)="handleView($event)"
+      />
+    }
+
+    <ng-template #rowActions let-row="row">
+      <div class="purchase-order-list__row-actions">
+        <daqiq-button
+          label="جزئیات"
+          icon="pi pi-eye"
+          variant="text"
+          (pressed)="handleView(row)"
+        />
+
+        @if (facade.canEditStatus(row.statusCode)) {
+          <daqiq-button
+            label="ویرایش"
+            icon="pi pi-pencil"
+            variant="text"
+            (pressed)="handleEdit(row)"
+          />
+        }
+      </div>
+    </ng-template>
+  </daqiq-card>
+</daqiq-page-container>

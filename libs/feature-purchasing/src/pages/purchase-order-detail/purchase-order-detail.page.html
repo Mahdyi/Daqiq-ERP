@@ -1,0 +1,120 @@
+<daqiq-page-container [title]="title()" subtitle="مشاهده وضعیت، مبالغ و خطوط سفارش خرید">
+  <div pageActions class="purchase-order-detail__actions">
+    <daqiq-button
+      label="بازگشت"
+      icon="pi pi-arrow-right"
+      variant="secondary"
+      (pressed)="handleBack()"
+    />
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.detailLoading()"
+      (pressed)="handleReload()"
+    />
+  </div>
+
+  @if (facade.detailError(); as error) {
+    <daqiq-card>
+      <section class="purchase-order-detail__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    </daqiq-card>
+  } @else if (facade.selectedOrder(); as order) {
+    <daqiq-card>
+      <div class="purchase-order-detail__header">
+        <div>
+          <span class="purchase-order-detail__label">تأمین‌کننده</span>
+          <strong>{{ order.supplierCode }} - {{ order.supplierName }}</strong>
+        </div>
+        <div>
+          <span class="purchase-order-detail__label">وضعیت</span>
+          <strong>{{ order.statusLabel }}</strong>
+        </div>
+        <div>
+          <span class="purchase-order-detail__label">تاریخ سفارش</span>
+          <strong>{{ formatDate(order.orderDate) }}</strong>
+        </div>
+        <div>
+          <span class="purchase-order-detail__label">تاریخ مورد انتظار</span>
+          <strong>{{ formatDate(order.expectedDate) }}</strong>
+        </div>
+        <div>
+          <span class="purchase-order-detail__label">ارز</span>
+          <strong>{{ order.currencyLabel ?? '—' }}</strong>
+        </div>
+        <div>
+          <span class="purchase-order-detail__label">انبار تحویل</span>
+          <strong>{{ order.deliveryWarehouseName ?? '—' }}</strong>
+        </div>
+      </div>
+
+      <div class="purchase-order-detail__workflow">
+        @if (facade.canEditStatus(order.statusCode)) {
+          <daqiq-button
+            label="ویرایش"
+            icon="pi pi-pencil"
+            variant="secondary"
+            (pressed)="handleEdit(order)"
+          />
+        }
+        @if (facade.canSubmitStatus(order.statusCode)) {
+          <daqiq-button
+            label="ارسال برای تأیید"
+            icon="pi pi-send"
+            (pressed)="handleSubmit(order)"
+          />
+        }
+        @if (facade.canApproveStatus(order.statusCode)) {
+          <daqiq-button
+            label="تأیید"
+            icon="pi pi-check"
+            (pressed)="handleApprove(order)"
+          />
+        }
+        @if (facade.canCancelStatus(order.statusCode)) {
+          <daqiq-button
+            label="لغو"
+            icon="pi pi-times"
+            variant="danger"
+            (pressed)="handleCancel(order)"
+          />
+        }
+        @if (facade.canCloseStatus(order.statusCode)) {
+          <daqiq-button
+            label="بستن"
+            icon="pi pi-lock"
+            variant="secondary"
+            (pressed)="handleClose(order)"
+          />
+        }
+      </div>
+    </daqiq-card>
+
+    <daqiq-card>
+      @if (facade.selectedLines().length === 0) {
+        <daqiq-empty-state
+          icon="pi pi-list"
+          message="خطی برای این سفارش ثبت نشده است."
+          description="سفارش‌های معتبر باید حداقل یک خط داشته باشند."
+        />
+      } @else {
+        <daqiq-data-table
+          [rows]="facade.selectedLines()"
+          [columns]="lineColumns"
+          [totalRecords]="facade.selectedLines().length"
+          [pageSize]="facade.selectedLines().length"
+          rowKey="id"
+        />
+      }
+
+      <div class="purchase-order-detail__totals">
+        <span>جمع جزء: {{ formatNumber(order.subtotalAmount) }}</span>
+        <span>مالیات: {{ formatNumber(order.taxAmount) }}</span>
+        <strong>جمع کل: {{ formatNumber(order.totalAmount) }}</strong>
+      </div>
+    </daqiq-card>
+  }
+</daqiq-page-container>

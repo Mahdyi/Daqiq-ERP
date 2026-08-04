@@ -30,6 +30,13 @@ export type AppPermission =
   | 'inventory.adjust'
   | 'inventory.transfer'
   | 'inventory.delete'
+  | 'purchasing.view'
+  | 'purchasing.create'
+  | 'purchasing.update'
+  | 'purchasing.submit'
+  | 'purchasing.approve'
+  | 'purchasing.cancel'
+  | 'purchasing.delete'
   | 'accounting.view'
   | 'accounting.create'
   | 'accounting.update'
@@ -85,6 +92,13 @@ export const ROLE_PERMISSIONS = {
     'inventory.adjust',
     'inventory.transfer',
     'inventory.delete',
+    'purchasing.view',
+    'purchasing.create',
+    'purchasing.update',
+    'purchasing.submit',
+    'purchasing.approve',
+    'purchasing.cancel',
+    'purchasing.delete',
     'accounting.view',
     'accounting.create',
     'accounting.update',
@@ -124,6 +138,12 @@ export const ROLE_PERMISSIONS = {
     'inventory.view',
     'inventory.adjust',
     'inventory.transfer',
+    'purchasing.view',
+    'purchasing.create',
+    'purchasing.update',
+    'purchasing.submit',
+    'purchasing.approve',
+    'purchasing.cancel',
     'accounting.view',
     'settings.view',
     'lookups.view',
@@ -138,6 +158,7 @@ export const ROLE_PERMISSIONS = {
     'warehouses.view',
     'storageLocations.view',
     'inventory.view',
+    'purchasing.view',
     'accounting.view',
     'accounting.create',
     'accounting.update'
@@ -165,7 +186,8 @@ export const ROLE_PERMISSIONS = {
     'storageLocations.update',
     'inventory.view',
     'inventory.adjust',
-    'inventory.transfer'
+    'inventory.transfer',
+    'purchasing.view'
   ],
   viewer: ['dashboard.view']
 } satisfies Record<AppRole, readonly AppPermission[]>;

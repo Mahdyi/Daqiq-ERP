@@ -116,6 +116,23 @@ export const APP_NAVIGATION = [
     ]
   },
   {
+    id: 'purchasing',
+    label: 'خرید',
+    icon: 'pi pi-shopping-cart',
+    children: [
+      {
+        id: 'purchase-orders',
+        label: 'سفارش‌های خرید',
+        icon: 'pi pi-file-edit',
+        route: ['/purchasing/purchase-orders'],
+        exact: false,
+        authorization: {
+          permissions: ['purchasing.view']
+        }
+      }
+    ]
+  },
+  {
     id: 'system-management',
     label: 'مدیریت سیستم',
     icon: 'pi pi-cog',
