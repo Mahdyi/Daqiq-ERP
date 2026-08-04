@@ -491,6 +491,36 @@
         }
       }
     },
+    "feature-inventory": {
+      "projectType": "library",
+      "root": "libs/feature-inventory",
+      "sourceRoot": "libs/feature-inventory/src",
+      "prefix": "daqiq",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/feature-inventory/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/feature-inventory/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "libs/feature-inventory/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
     "feature-equipment": {
       "projectType": "library",
       "root": "libs/feature-equipment",

@@ -1,0 +1,60 @@
+<daqiq-page-container title="حرکات موجودی" subtitle="دفتر ثبت افزایش، کاهش و انتقال موجودی کالاها">
+  <div pageActions class="inventory-page__actions">
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading()"
+      (pressed)="handleRefresh()"
+    />
+  </div>
+
+  <daqiq-card>
+    <form class="inventory-page__search" (submit)="$event.preventDefault(); handleSearchSubmit()">
+      <label class="inventory-page__search-label" for="inventory-movement-search">جستجو</label>
+      <input
+        id="inventory-movement-search"
+        class="inventory-page__search-input"
+        type="search"
+        [value]="searchTerm()"
+        placeholder="جستجو بر اساس شماره سند، کالا، انبار، دلیل یا کاربر"
+        (input)="handleSearchInput($event)"
+      />
+      <daqiq-button label="جستجو" icon="pi pi-search" type="submit" />
+    </form>
+
+    @if (facade.error(); as error) {
+      <section class="inventory-page__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+        <daqiq-button
+          label="تلاش دوباره"
+          icon="pi pi-refresh"
+          variant="secondary"
+          (pressed)="handleRefresh()"
+        />
+      </section>
+    }
+
+    @if (!facade.loading() && facade.items().length === 0 && !facade.error()) {
+      <daqiq-empty-state
+        icon="pi pi-history"
+        message="حرکت موجودی برای نمایش وجود ندارد."
+        description="حرکات موجودی پس از ثبت اصلاح یا انتقال در این دفتر نمایش داده می‌شود."
+      />
+    } @else {
+      <daqiq-data-table
+        [rows]="facade.items()"
+        [columns]="columns"
+        [loading]="facade.loading()"
+        [totalRecords]="facade.totalItems()"
+        [pageIndex]="facade.query()?.page ?? 0"
+        [pageSize]="facade.query()?.pageSize ?? 20"
+        [sort]="sort()"
+        rowKey="id"
+        (pageChange)="handlePageChange($event)"
+        (sortChange)="handleSortChange($event)"
+      />
+    }
+  </daqiq-card>
+</daqiq-page-container>

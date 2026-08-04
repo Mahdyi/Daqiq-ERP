@@ -69,6 +69,53 @@ export const APP_NAVIGATION = [
     ]
   },
   {
+    id: 'inventory',
+    label: 'انبارداری',
+    icon: 'pi pi-warehouse',
+    children: [
+      {
+        id: 'inventory-balances',
+        label: 'موجودی انبار',
+        icon: 'pi pi-box',
+        route: ['/inventory/balances'],
+        exact: false,
+        authorization: {
+          permissions: ['inventory.view']
+        }
+      },
+      {
+        id: 'inventory-movements',
+        label: 'حرکات موجودی',
+        icon: 'pi pi-history',
+        route: ['/inventory/movements'],
+        exact: false,
+        authorization: {
+          permissions: ['inventory.view']
+        }
+      },
+      {
+        id: 'inventory-adjustment',
+        label: 'اصلاح موجودی',
+        icon: 'pi pi-plus-circle',
+        route: ['/inventory/adjustment'],
+        exact: false,
+        authorization: {
+          permissions: ['inventory.adjust']
+        }
+      },
+      {
+        id: 'inventory-transfer',
+        label: 'انتقال موجودی',
+        icon: 'pi pi-arrow-right-arrow-left',
+        route: ['/inventory/transfer'],
+        exact: false,
+        authorization: {
+          permissions: ['inventory.transfer']
+        }
+      }
+    ]
+  },
+  {
     id: 'system-management',
     label: 'مدیریت سیستم',
     icon: 'pi pi-cog',

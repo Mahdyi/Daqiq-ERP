@@ -1,0 +1,37 @@
+<daqiq-page-container title="انتقال موجودی" subtitle="انتقال کنترل‌شده موجودی بین انبارها یا موقعیت‌ها">
+  <daqiq-card>
+    @if (facade.referenceLoading()) {
+      <section class="inventory-form__state" role="status" aria-live="polite">
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+        <span>در حال بارگذاری اطلاعات مرجع...</span>
+      </section>
+    } @else if (facade.error(); as error) {
+      <section class="inventory-form__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+        <daqiq-button
+          label="تلاش دوباره"
+          icon="pi pi-refresh"
+          variant="secondary"
+          (pressed)="handleRetry()"
+        />
+      </section>
+    }
+
+    @if (!facade.referenceLoading()) {
+      <daqiq-dynamic-form
+        [fields]="facade.transferFields()"
+        [initialValue]="initialValue"
+        [layout]="{
+          columns: 2,
+          submitLabel: 'ثبت انتقال موجودی',
+          cancelLabel: 'انصراف',
+          showCancel: true
+        }"
+        [submitting]="facade.submitting()"
+        (submitted)="handleSubmit($event)"
+        (cancelled)="handleCancel()"
+      />
+    }
+  </daqiq-card>
+</daqiq-page-container>

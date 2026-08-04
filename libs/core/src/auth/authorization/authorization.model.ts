@@ -27,8 +27,8 @@ export type AppPermission =
   | 'sales.update'
   | 'sales.delete'
   | 'inventory.view'
-  | 'inventory.create'
-  | 'inventory.update'
+  | 'inventory.adjust'
+  | 'inventory.transfer'
   | 'inventory.delete'
   | 'accounting.view'
   | 'accounting.create'
@@ -82,8 +82,8 @@ export const ROLE_PERMISSIONS = {
     'sales.update',
     'sales.delete',
     'inventory.view',
-    'inventory.create',
-    'inventory.update',
+    'inventory.adjust',
+    'inventory.transfer',
     'inventory.delete',
     'accounting.view',
     'accounting.create',
@@ -122,6 +122,8 @@ export const ROLE_PERMISSIONS = {
     'storageLocations.update',
     'sales.view',
     'inventory.view',
+    'inventory.adjust',
+    'inventory.transfer',
     'accounting.view',
     'settings.view',
     'lookups.view',
@@ -135,6 +137,7 @@ export const ROLE_PERMISSIONS = {
     'suppliers.update',
     'warehouses.view',
     'storageLocations.view',
+    'inventory.view',
     'accounting.view',
     'accounting.create',
     'accounting.update'
@@ -161,8 +164,8 @@ export const ROLE_PERMISSIONS = {
     'storageLocations.create',
     'storageLocations.update',
     'inventory.view',
-    'inventory.create',
-    'inventory.update'
+    'inventory.adjust',
+    'inventory.transfer'
   ],
   viewer: ['dashboard.view']
 } satisfies Record<AppRole, readonly AppPermission[]>;

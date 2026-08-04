@@ -1,0 +1,83 @@
+<daqiq-page-container title="موجودی انبار" subtitle="مشاهده موجودی کالاها در انبارها و موقعیت‌های نگهداری">
+  <div pageActions class="inventory-page__actions">
+    <daqiq-button
+      label="تاریخچه حرکات"
+      icon="pi pi-history"
+      variant="secondary"
+      (pressed)="handleMovements()"
+    />
+
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading()"
+      (pressed)="handleRefresh()"
+    />
+
+    @if (facade.canAdjust()) {
+      <daqiq-button
+        label="اصلاح موجودی"
+        icon="pi pi-plus-circle"
+        (pressed)="handleAdjustment()"
+      />
+    }
+
+    @if (facade.canTransfer()) {
+      <daqiq-button
+        label="انتقال موجودی"
+        icon="pi pi-arrow-right-arrow-left"
+        (pressed)="handleTransfer()"
+      />
+    }
+  </div>
+
+  <daqiq-card>
+    <form class="inventory-page__search" (submit)="$event.preventDefault(); handleSearchSubmit()">
+      <label class="inventory-page__search-label" for="inventory-balance-search">جستجو</label>
+      <input
+        id="inventory-balance-search"
+        class="inventory-page__search-input"
+        type="search"
+        [value]="searchTerm()"
+        placeholder="جستجو بر اساس کد کالا، نام کالا، انبار یا موقعیت"
+        (input)="handleSearchInput($event)"
+      />
+      <daqiq-button label="جستجو" icon="pi pi-search" type="submit" />
+    </form>
+
+    @if (facade.error(); as error) {
+      <section class="inventory-page__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+        <daqiq-button
+          label="تلاش دوباره"
+          icon="pi pi-refresh"
+          variant="secondary"
+          (pressed)="handleRefresh()"
+        />
+      </section>
+    }
+
+    @if (!facade.loading() && facade.items().length === 0 && !facade.error()) {
+      <daqiq-empty-state
+        icon="pi pi-warehouse"
+        message="موجودی برای نمایش وجود ندارد."
+        description="پس از ثبت اصلاح یا انتقال موجودی، مانده کالاها در این بخش نمایش داده می‌شود."
+      />
+    } @else {
+      <daqiq-data-table
+        [rows]="facade.items()"
+        [columns]="columns"
+        [loading]="facade.loading()"
+        [totalRecords]="facade.totalItems()"
+        [pageIndex]="facade.query()?.page ?? 0"
+        [pageSize]="facade.query()?.pageSize ?? 20"
+        [sort]="sort()"
+        rowKey="id"
+        (pageChange)="handlePageChange($event)"
+        (sortChange)="handleSortChange($event)"
+      />
+    }
+  </daqiq-card>
+</daqiq-page-container>
