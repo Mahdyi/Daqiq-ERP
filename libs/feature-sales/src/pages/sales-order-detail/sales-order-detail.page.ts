@@ -77,6 +77,10 @@ export class SalesOrderDetailPage implements OnInit {
     void this.facade.close(order);
   }
 
+  protected handleDeliver(order: SalesOrder): void {
+    void this.router.navigate(['/sales/sales-orders', order.id, 'deliver']);
+  }
+
   protected formatDate(value: Date | null): string {
     return value ? formatDate(value) : '—';
   }

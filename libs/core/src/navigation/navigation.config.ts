@@ -156,6 +156,16 @@ export const APP_NAVIGATION = [
         authorization: {
           permissions: ['salesOrders.view']
         }
+      },
+      {
+        id: 'sales-deliveries',
+        label: 'حواله‌های فروش',
+        icon: 'pi pi-send',
+        route: ['/sales/sales-deliveries'],
+        exact: false,
+        authorization: {
+          permissions: ['salesDeliveries.view']
+        }
       }
     ]
   },

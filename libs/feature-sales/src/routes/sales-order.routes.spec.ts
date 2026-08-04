@@ -12,5 +12,11 @@ describe('SALES_ROUTES', () => {
       .toEqual({ permissions: ['salesOrders.view'] });
     expect(children.find((route) => route.path === 'sales-orders/:id/edit')?.data?.['authorization'])
       .toEqual({ permissions: ['salesOrders.update'] });
+    expect(children.find((route) => route.path === 'sales-orders/:id/deliver')?.data?.['authorization'])
+      .toEqual({ permissions: ['salesDeliveries.post'] });
+    expect(children.find((route) => route.path === 'sales-deliveries')?.data?.['authorization'])
+      .toEqual({ permissions: ['salesDeliveries.view'] });
+    expect(children.find((route) => route.path === 'sales-deliveries/:id')?.data?.['authorization'])
+      .toEqual({ permissions: ['salesDeliveries.view'] });
   });
 });

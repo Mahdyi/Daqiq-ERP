@@ -61,6 +61,7 @@ export class SalesOrderFacade {
   readonly canConfirm = computed(() => this.authorization.hasPermission('salesOrders.confirm'));
   readonly canCancel = computed(() => this.authorization.hasPermission('salesOrders.cancel'));
   readonly canClose = computed(() => this.authorization.hasPermission('salesOrders.delete'));
+  readonly canPostDelivery = computed(() => this.authorization.hasPermission('salesDeliveries.post'));
 
   async loadDefault(): Promise<void> {
     await this.load(DEFAULT_QUERY);
@@ -199,6 +200,10 @@ export class SalesOrderFacade {
 
   canCloseStatus(status: SalesOrderStatus): boolean {
     return status === 'confirmed' && this.canClose();
+  }
+
+  canDeliverStatus(status: SalesOrderStatus): boolean {
+    return status === 'confirmed' && this.canPostDelivery();
   }
 
   private async transition(

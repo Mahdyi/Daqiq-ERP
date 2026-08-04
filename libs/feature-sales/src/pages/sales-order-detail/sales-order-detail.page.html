@@ -90,6 +90,13 @@
             (pressed)="handleClose(order)"
           />
         }
+        @if (facade.canDeliverStatus(order.statusCode)) {
+          <daqiq-button
+            label="ثبت حواله"
+            icon="pi pi-send"
+            (pressed)="handleDeliver(order)"
+          />
+        }
       </div>
     </daqiq-card>
 

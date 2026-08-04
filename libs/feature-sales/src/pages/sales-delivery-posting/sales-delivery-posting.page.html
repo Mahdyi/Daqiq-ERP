@@ -1,0 +1,143 @@
+<daqiq-page-container title="ثبت حواله فروش" subtitle="ثبت ارسال فیزیکی کالا و کاهش موجودی انبار">
+  <div pageActions class="sales-delivery-posting__actions">
+    <daqiq-button
+      label="بازگشت"
+      icon="pi pi-arrow-right"
+      variant="secondary"
+      (pressed)="handleBack()"
+    />
+  </div>
+
+  @if (facade.error(); as error) {
+    <daqiq-card>
+      <section class="sales-delivery-posting__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    </daqiq-card>
+  }
+
+  @if (facade.order(); as order) {
+    <daqiq-card>
+      <div class="sales-delivery-posting__summary">
+        <div>
+          <span>سفارش فروش</span>
+          <strong>{{ order.orderNumber }}</strong>
+        </div>
+        <div>
+          <span>مشتری</span>
+          <strong>{{ order.customerCode }} - {{ order.customerName }}</strong>
+        </div>
+        <div>
+          <span>وضعیت</span>
+          <strong>{{ order.statusLabel }}</strong>
+        </div>
+      </div>
+
+      <div class="sales-delivery-posting__form-grid">
+        <label>
+          <span>تاریخ حواله</span>
+          <input
+            type="date"
+            [value]="facade.deliveryDate()"
+            (input)="handleDateChange($event)"
+          />
+        </label>
+
+        <label>
+          <span>انبار ارسال</span>
+          <select [value]="facade.warehouseId() ?? ''" (change)="handleWarehouseChange($event)">
+            <option value="">انتخاب انبار</option>
+            @for (warehouse of facade.warehouses(); track warehouse.id) {
+              <option [value]="warehouse.id">{{ warehouse.label }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="sales-delivery-posting__notes">
+          <span>یادداشت</span>
+          <textarea rows="3" [value]="facade.notes() ?? ''" (input)="handleNotesInput($event)"></textarea>
+        </label>
+      </div>
+    </daqiq-card>
+
+    <daqiq-card>
+      @if (facade.progress().length === 0) {
+        <daqiq-empty-state
+          icon="pi pi-list"
+          message="خط قابل ارسالی برای این سفارش وجود ندارد."
+          description="فقط سفارش‌های تأییدشده با مقدار باقی‌مانده قابل تحویل هستند."
+        />
+      } @else {
+        <div class="sales-delivery-posting__table-wrap">
+          <table class="sales-delivery-posting__table">
+            <thead>
+              <tr>
+                <th>کالا</th>
+                <th>سفارش‌شده</th>
+                <th>ارسال‌شده</th>
+                <th>باقی‌مانده</th>
+                <th>مقدار ارسال</th>
+                <th>موقعیت</th>
+                <th>یادداشت</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (line of facade.progress(); track line.salesOrderLineId) {
+                @if (facade.lineDraft(line.salesOrderLineId); as draft) {
+                  <tr [class.sales-delivery-posting__line-invalid]="!facade.quantityIsValid(draft)">
+                    <td>
+                      <strong>{{ line.productSku }}</strong>
+                      <span>{{ line.productName }}</span>
+                    </td>
+                    <td>{{ formatNumber(line.orderedQuantity) }} {{ line.unitLabel ?? line.unitCode }}</td>
+                    <td>{{ formatNumber(line.shippedQuantity) }}</td>
+                    <td>{{ formatNumber(line.remainingQuantity) }}</td>
+                    <td>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.0001"
+                        [max]="line.remainingQuantity"
+                        [value]="draft.shippedQuantity"
+                        (input)="handleQuantityInput(line.salesOrderLineId, $event)"
+                      />
+                    </td>
+                    <td>
+                      <select
+                        [value]="draft.storageLocationId ?? ''"
+                        (change)="handleLocationChange(line.salesOrderLineId, $event)"
+                      >
+                        <option value="">بدون موقعیت</option>
+                        @for (location of facade.locations(); track location.id) {
+                          <option [value]="location.id">{{ location.label }}</option>
+                        }
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        [value]="draft.notes ?? ''"
+                        (input)="handleLineNotesInput(line.salesOrderLineId, $event)"
+                      />
+                    </td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="sales-delivery-posting__footer">
+          <daqiq-button
+            label="ثبت حواله"
+            icon="pi pi-send"
+            [disabled]="!facade.canSubmit()"
+            [loading]="facade.submitting()"
+            (pressed)="handleSubmit()"
+          />
+        </div>
+      }
+    </daqiq-card>
+  }
+</daqiq-page-container>

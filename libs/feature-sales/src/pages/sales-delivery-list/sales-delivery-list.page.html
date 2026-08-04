@@ -1,0 +1,76 @@
+<daqiq-page-container
+  title="حواله‌های فروش"
+  subtitle="مشاهده حواله‌های ثبت‌شده فروش"
+>
+  <div pageActions class="sales-delivery-list__actions">
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading()"
+      (pressed)="handleRefresh()"
+    />
+  </div>
+
+  <daqiq-card>
+    <form class="sales-delivery-list__search" (submit)="$event.preventDefault(); handleSearchSubmit()">
+      <label class="sales-delivery-list__search-label" for="sales-delivery-search">جستجو</label>
+      <input
+        id="sales-delivery-search"
+        class="sales-delivery-list__search-input"
+        type="search"
+        [value]="searchTerm()"
+        placeholder="جستجو بر اساس شماره حواله، سفارش فروش، مشتری یا انبار"
+        (input)="handleSearchInput($event)"
+      />
+      <daqiq-button label="جستجو" icon="pi pi-search" type="submit" />
+    </form>
+
+    @if (facade.error(); as error) {
+      <section class="sales-delivery-list__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+        <daqiq-button
+          label="تلاش دوباره"
+          icon="pi pi-refresh"
+          variant="secondary"
+          (pressed)="handleRefresh()"
+        />
+      </section>
+    }
+
+    @if (!facade.loading() && facade.items().length === 0 && !facade.error()) {
+      <daqiq-empty-state
+        icon="pi pi-send"
+        message="حواله فروشی برای نمایش وجود ندارد."
+        description="حواله‌ها از سفارش‌های فروش تأییدشده ثبت می‌شوند."
+      />
+    } @else {
+      <daqiq-data-table
+        [rows]="facade.items()"
+        [columns]="columns"
+        [loading]="facade.loading()"
+        [totalRecords]="facade.totalItems()"
+        [pageIndex]="pageIndex()"
+        [pageSize]="pageSize()"
+        [sort]="sort()"
+        rowKey="id"
+        [rowActionsTemplate]="rowActions"
+        (pageChange)="handlePageChange($event)"
+        (sortChange)="handleSortChange($event)"
+        (rowActivated)="handleView($event)"
+      />
+    }
+
+    <ng-template #rowActions let-row="row">
+      <div class="sales-delivery-list__row-actions">
+        <daqiq-button
+          label="جزئیات"
+          icon="pi pi-eye"
+          variant="text"
+          (pressed)="handleView(row)"
+        />
+      </div>
+    </ng-template>
+  </daqiq-card>
+</daqiq-page-container>

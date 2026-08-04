@@ -1,0 +1,95 @@
+<daqiq-page-container [title]="title()" subtitle="مشاهده اطلاعات حواله، خطوط ارسال و ارجاع‌های موجودی">
+  <div pageActions class="sales-delivery-detail__actions">
+    <daqiq-button
+      label="بازگشت"
+      icon="pi pi-arrow-right"
+      variant="secondary"
+      (pressed)="handleBack()"
+    />
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.detailLoading()"
+      (pressed)="handleReload()"
+    />
+  </div>
+
+  @if (facade.detailError(); as error) {
+    <daqiq-card>
+      <section class="sales-delivery-detail__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    </daqiq-card>
+  } @else if (facade.selectedDelivery(); as delivery) {
+    <daqiq-card>
+      <div class="sales-delivery-detail__header">
+        <div>
+          <span class="sales-delivery-detail__label">سفارش فروش</span>
+          <button type="button" class="sales-delivery-detail__link" (click)="handleSalesOrder(delivery)">
+            {{ delivery.salesOrderNumber }}
+          </button>
+        </div>
+        <div>
+          <span class="sales-delivery-detail__label">مشتری</span>
+          <strong>{{ delivery.customerCode }} - {{ delivery.customerName }}</strong>
+        </div>
+        <div>
+          <span class="sales-delivery-detail__label">انبار</span>
+          <strong>{{ delivery.warehouseCode }} - {{ delivery.warehouseName }}</strong>
+        </div>
+        <div>
+          <span class="sales-delivery-detail__label">تاریخ حواله</span>
+          <strong>{{ formatDate(delivery.deliveryDate) }}</strong>
+        </div>
+        <div>
+          <span class="sales-delivery-detail__label">وضعیت</span>
+          <strong>{{ delivery.statusLabel }}</strong>
+        </div>
+        <div>
+          <span class="sales-delivery-detail__label">ثبت‌کننده</span>
+          <strong>{{ delivery.postedByEmail ?? '—' }}</strong>
+        </div>
+        <div>
+          <span class="sales-delivery-detail__label">زمان ثبت</span>
+          <strong>{{ formatDate(delivery.postedAt) }}</strong>
+        </div>
+        <div>
+          <span class="sales-delivery-detail__label">یادداشت</span>
+          <strong>{{ delivery.notes ?? '—' }}</strong>
+        </div>
+      </div>
+
+      @if (delivery.statusCode === 'posted' && facade.canCancel()) {
+        <div class="sales-delivery-detail__workflow">
+          <daqiq-button
+            label="لغو حواله"
+            icon="pi pi-times"
+            variant="danger"
+            [loading]="facade.loading()"
+            (pressed)="handleCancel(delivery)"
+          />
+        </div>
+      }
+    </daqiq-card>
+
+    <daqiq-card>
+      @if (facade.selectedLines().length === 0) {
+        <daqiq-empty-state
+          icon="pi pi-list"
+          message="خطی برای این حواله ثبت نشده است."
+          description="حواله‌های معتبر باید حداقل یک خط ارسال داشته باشند."
+        />
+      } @else {
+        <daqiq-data-table
+          [rows]="facade.selectedLines()"
+          [columns]="lineColumns"
+          [totalRecords]="facade.selectedLines().length"
+          [pageSize]="facade.selectedLines().length"
+          rowKey="id"
+        />
+      }
+    </daqiq-card>
+  }
+</daqiq-page-container>

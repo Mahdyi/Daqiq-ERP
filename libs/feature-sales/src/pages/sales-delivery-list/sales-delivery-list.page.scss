@@ -1,0 +1,48 @@
+:host {
+  display: block;
+}
+
+.sales-delivery-list__actions,
+.sales-delivery-list__row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.sales-delivery-list__search {
+  display: grid;
+  grid-template-columns: auto minmax(12rem, 1fr) auto;
+  gap: 0.75rem;
+  align-items: end;
+  margin-block-end: 1rem;
+}
+
+.sales-delivery-list__search-label {
+  color: var(--text-color-secondary);
+  font-size: 0.875rem;
+}
+
+.sales-delivery-list__search-input {
+  width: 100%;
+  min-height: 2.5rem;
+  border: 1px solid var(--surface-border);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  background: var(--surface-card);
+  color: var(--text-color);
+}
+
+.sales-delivery-list__error {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-block-end: 1rem;
+  color: var(--red-600);
+}
+
+@media (max-width: 640px) {
+  .sales-delivery-list__search {
+    grid-template-columns: 1fr;
+  }
+}
