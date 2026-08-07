@@ -5,6 +5,7 @@ import { Observable, map } from 'rxjs';
 import type {
   ProductReferenceRowDto,
   CustomerReferenceRowDto,
+  LookupReferencePageDto,
   StorageLocationReferenceRowDto,
   WarehouseReferenceRowDto
 } from '../dto/sales-order-reference-row.dto';
@@ -79,6 +80,31 @@ export class SalesOrderReferenceDataService {
         responseShape: 'raw'
       })
       .pipe(map((rows) => rows.map((row) => ({ id: row.id, label: `${row.code} - ${row.name}` }))));
+  }
+
+  listTaxRates(): Observable<readonly SalesOrderOption[]> {
+    return this.api
+      .post<
+        {
+          readonly lookup_type_code: 'tax_rate';
+          readonly active: true;
+          readonly page_number: number;
+          readonly page_size: number;
+        },
+        LookupReferencePageDto
+      >('rpc/admin_list_lookup_values', {
+        lookup_type_code: 'tax_rate',
+        active: true,
+        page_number: 1,
+        page_size: 50
+      }, {
+        responseShape: 'raw'
+      })
+      .pipe(
+        map((page) =>
+          page.items.map((row) => ({ id: row.id, label: `${row.code} - ${row.label}` }))
+        )
+      );
   }
 }
 

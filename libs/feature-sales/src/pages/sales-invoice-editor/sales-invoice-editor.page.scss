@@ -1,0 +1,95 @@
+:host {
+  display: block;
+}
+
+.sales-invoice-editor__actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.sales-invoice-editor__summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-block-end: 1rem;
+}
+
+.sales-invoice-editor__summary span,
+.sales-invoice-editor__form-grid span {
+  display: block;
+  margin-block-end: 0.25rem;
+  color: var(--text-color-secondary);
+  font-size: 0.85rem;
+}
+
+.sales-invoice-editor__form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.sales-invoice-editor__notes {
+  grid-column: 1 / -1;
+}
+
+.sales-invoice-editor__form-grid input,
+.sales-invoice-editor__form-grid textarea,
+.sales-invoice-editor__table input,
+.sales-invoice-editor__table select {
+  width: 100%;
+  min-height: 2.25rem;
+  border: 1px solid var(--surface-border);
+  border-radius: 6px;
+  padding: 0.5rem 0.625rem;
+  background: var(--surface-card);
+  color: var(--text-color);
+}
+
+.sales-invoice-editor__table-wrap {
+  overflow-x: auto;
+}
+
+.sales-invoice-editor__table {
+  width: 100%;
+  min-width: 72rem;
+  border-collapse: collapse;
+}
+
+.sales-invoice-editor__table th,
+.sales-invoice-editor__table td {
+  padding: 0.75rem;
+  border-block-end: 1px solid var(--surface-border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.sales-invoice-editor__table td:first-child span {
+  display: block;
+  color: var(--text-color-secondary);
+  font-size: 0.85rem;
+}
+
+.sales-invoice-editor__line-invalid {
+  background: color-mix(in srgb, var(--red-50) 75%, transparent);
+}
+
+.sales-invoice-editor__footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-start: 1rem;
+}
+
+.sales-invoice-editor__error {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  color: var(--red-700);
+}
+
+@media (max-width: 960px) {
+  .sales-invoice-editor__summary,
+  .sales-invoice-editor__form-grid {
+    grid-template-columns: 1fr;
+  }
+}

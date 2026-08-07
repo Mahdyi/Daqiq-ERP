@@ -60,6 +60,10 @@ export class SalesDeliveryDetailPage implements OnInit {
     void this.router.navigate(['/sales/sales-orders', delivery.salesOrderId]);
   }
 
+  protected handleCreateInvoice(delivery: SalesDelivery): void {
+    void this.router.navigate(['/sales/sales-deliveries', delivery.id, 'invoice']);
+  }
+
   protected handleCancel(delivery: SalesDelivery): void {
     void this.facade.cancel(delivery);
   }

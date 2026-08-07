@@ -61,15 +61,24 @@
         </div>
       </div>
 
-      @if (delivery.statusCode === 'posted' && facade.canCancel()) {
+      @if (delivery.statusCode === 'posted' && (facade.canCreateInvoice() || facade.canCancel())) {
         <div class="sales-delivery-detail__workflow">
-          <daqiq-button
-            label="لغو حواله"
-            icon="pi pi-times"
-            variant="danger"
-            [loading]="facade.loading()"
-            (pressed)="handleCancel(delivery)"
-          />
+          @if (facade.canCreateInvoice()) {
+            <daqiq-button
+              label="صدور فاکتور"
+              icon="pi pi-receipt"
+              (pressed)="handleCreateInvoice(delivery)"
+            />
+          }
+          @if (facade.canCancel()) {
+            <daqiq-button
+              label="لغو حواله"
+              icon="pi pi-times"
+              variant="danger"
+              [loading]="facade.loading()"
+              (pressed)="handleCancel(delivery)"
+            />
+          }
         </div>
       }
     </daqiq-card>

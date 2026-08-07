@@ -37,6 +37,12 @@ export type AppPermission =
   | 'salesDeliveries.create'
   | 'salesDeliveries.post'
   | 'salesDeliveries.cancel'
+  | 'salesInvoices.view'
+  | 'salesInvoices.create'
+  | 'salesInvoices.update'
+  | 'salesInvoices.issue'
+  | 'salesInvoices.cancel'
+  | 'salesInvoices.delete'
   | 'inventory.view'
   | 'inventory.adjust'
   | 'inventory.transfer'
@@ -114,6 +120,12 @@ export const ROLE_PERMISSIONS = {
     'salesDeliveries.create',
     'salesDeliveries.post',
     'salesDeliveries.cancel',
+    'salesInvoices.view',
+    'salesInvoices.create',
+    'salesInvoices.update',
+    'salesInvoices.issue',
+    'salesInvoices.cancel',
+    'salesInvoices.delete',
     'inventory.view',
     'inventory.adjust',
     'inventory.transfer',
@@ -175,6 +187,11 @@ export const ROLE_PERMISSIONS = {
     'salesDeliveries.create',
     'salesDeliveries.post',
     'salesDeliveries.cancel',
+    'salesInvoices.view',
+    'salesInvoices.create',
+    'salesInvoices.update',
+    'salesInvoices.issue',
+    'salesInvoices.cancel',
     'inventory.view',
     'inventory.adjust',
     'inventory.transfer',
@@ -204,6 +221,11 @@ export const ROLE_PERMISSIONS = {
     'inventory.view',
     'salesOrders.view',
     'salesDeliveries.view',
+    'salesInvoices.view',
+    'salesInvoices.create',
+    'salesInvoices.update',
+    'salesInvoices.issue',
+    'salesInvoices.cancel',
     'purchasing.view',
     'receiving.view',
     'accounting.view',
@@ -225,7 +247,9 @@ export const ROLE_PERMISSIONS = {
     'salesOrders.submit',
     'salesOrders.cancel',
     'salesDeliveries.view',
-    'salesDeliveries.create'
+    'salesDeliveries.create',
+    'salesInvoices.view',
+    'salesInvoices.create'
   ],
   warehouse: [
     'dashboard.view',
@@ -245,6 +269,7 @@ export const ROLE_PERMISSIONS = {
     'salesDeliveries.view',
     'salesDeliveries.create',
     'salesDeliveries.post',
+    'salesInvoices.view',
     'purchasing.view',
     'receiving.view',
     'receiving.create',

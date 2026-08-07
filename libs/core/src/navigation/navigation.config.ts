@@ -166,6 +166,16 @@ export const APP_NAVIGATION = [
         authorization: {
           permissions: ['salesDeliveries.view']
         }
+      },
+      {
+        id: 'sales-invoices',
+        label: 'فاکتورهای فروش',
+        icon: 'pi pi-receipt',
+        route: ['/sales/sales-invoices'],
+        exact: false,
+        authorization: {
+          permissions: ['salesInvoices.view']
+        }
       }
     ]
   },

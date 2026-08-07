@@ -18,5 +18,11 @@ describe('SALES_ROUTES', () => {
       .toEqual({ permissions: ['salesDeliveries.view'] });
     expect(children.find((route) => route.path === 'sales-deliveries/:id')?.data?.['authorization'])
       .toEqual({ permissions: ['salesDeliveries.view'] });
+    expect(children.find((route) => route.path === 'sales-deliveries/:id/invoice')?.data?.['authorization'])
+      .toEqual({ permissions: ['salesInvoices.create'] });
+    expect(children.find((route) => route.path === 'sales-invoices')?.data?.['authorization'])
+      .toEqual({ permissions: ['salesInvoices.view'] });
+    expect(children.find((route) => route.path === 'sales-invoices/:id')?.data?.['authorization'])
+      .toEqual({ permissions: ['salesInvoices.view'] });
   });
 });

@@ -1,0 +1,158 @@
+<daqiq-page-container title="صدور فاکتور فروش" subtitle="ایجاد فاکتور از حواله فروش ثبت‌شده بدون تغییر موجودی">
+  <div pageActions class="sales-invoice-editor__actions">
+    <daqiq-button
+      label="بازگشت"
+      icon="pi pi-arrow-right"
+      variant="secondary"
+      (pressed)="handleBack()"
+    />
+  </div>
+
+  @if (facade.error(); as error) {
+    <daqiq-card>
+      <section class="sales-invoice-editor__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    </daqiq-card>
+  }
+
+  @if (facade.delivery(); as delivery) {
+    <daqiq-card>
+      <div class="sales-invoice-editor__summary">
+        <div>
+          <span>حواله فروش</span>
+          <strong>{{ delivery.deliveryNumber }}</strong>
+        </div>
+        <div>
+          <span>سفارش فروش</span>
+          <strong>{{ delivery.salesOrderNumber }}</strong>
+        </div>
+        <div>
+          <span>مشتری</span>
+          <strong>{{ delivery.customerCode }} - {{ delivery.customerName }}</strong>
+        </div>
+        <div>
+          <span>انبار</span>
+          <strong>{{ delivery.warehouseCode }} - {{ delivery.warehouseName }}</strong>
+        </div>
+      </div>
+
+      <div class="sales-invoice-editor__form-grid">
+        <label>
+          <span>تاریخ فاکتور</span>
+          <input
+            type="date"
+            [value]="facade.invoiceDate()"
+            (input)="handleInvoiceDateChange($event)"
+          />
+        </label>
+
+        <label>
+          <span>تاریخ سررسید</span>
+          <input
+            type="date"
+            [value]="facade.dueDate() ?? ''"
+            (input)="handleDueDateChange($event)"
+          />
+        </label>
+
+        <label class="sales-invoice-editor__notes">
+          <span>یادداشت</span>
+          <textarea rows="3" [value]="facade.notes() ?? ''" (input)="handleNotesInput($event)"></textarea>
+        </label>
+      </div>
+    </daqiq-card>
+
+    <daqiq-card>
+      @if (facade.progress().length === 0) {
+        <daqiq-empty-state
+          icon="pi pi-list"
+          message="خط قابل فاکتوری برای این حواله وجود ندارد."
+          description="فقط حواله‌های ثبت‌شده با مقدار تحویل‌شده باقی‌مانده قابل فاکتور شدن هستند."
+        />
+      } @else {
+        <div class="sales-invoice-editor__table-wrap">
+          <table class="sales-invoice-editor__table">
+            <thead>
+              <tr>
+                <th>کالا</th>
+                <th>تحویل‌شده</th>
+                <th>فاکتور‌شده</th>
+                <th>باقی‌مانده</th>
+                <th>مقدار فاکتور</th>
+                <th>قیمت واحد</th>
+                <th>مالیات</th>
+                <th>شرح</th>
+                <th>جمع تقریبی</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (line of facade.progress(); track line.salesDeliveryLineId) {
+                @if (facade.lineDraft(line.salesDeliveryLineId); as draft) {
+                  <tr [class.sales-invoice-editor__line-invalid]="!facade.quantityIsValid(draft)">
+                    <td>
+                      <strong>{{ line.productSku }}</strong>
+                      <span>{{ line.productName }}</span>
+                    </td>
+                    <td>{{ formatNumber(line.deliveredQuantity) }} {{ line.unitLabel ?? line.unitCode }}</td>
+                    <td>{{ formatNumber(line.invoicedQuantity) }}</td>
+                    <td>{{ formatNumber(line.remainingQuantity) }}</td>
+                    <td>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.0001"
+                        [max]="line.remainingQuantity"
+                        [value]="draft.quantity"
+                        (input)="handleQuantityInput(line.salesDeliveryLineId, $event)"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        [value]="draft.unitPrice"
+                        (input)="handleUnitPriceInput(line.salesDeliveryLineId, $event)"
+                      />
+                    </td>
+                    <td>
+                      <select
+                        [value]="draft.taxRateLookupValueId ?? ''"
+                        (change)="handleTaxRateChange(line.salesDeliveryLineId, $event)"
+                      >
+                        <option value="">بدون مالیات</option>
+                        @for (taxRate of facade.taxRates(); track taxRate.id) {
+                          <option [value]="taxRate.id">{{ taxRate.label }}</option>
+                        }
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        [value]="draft.description ?? ''"
+                        (input)="handleDescriptionInput(line.salesDeliveryLineId, $event)"
+                      />
+                    </td>
+                    <td>{{ formatMoney(facade.lineAmount(draft)) }}</td>
+                  </tr>
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="sales-invoice-editor__footer">
+          <daqiq-button
+            label="ایجاد فاکتور"
+            icon="pi pi-receipt"
+            [disabled]="!facade.canSubmit()"
+            [loading]="facade.submitting()"
+            (pressed)="handleSubmit()"
+          />
+        </div>
+      }
+    </daqiq-card>
+  }
+</daqiq-page-container>

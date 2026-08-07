@@ -1,0 +1,121 @@
+<daqiq-page-container [title]="title()" subtitle="مشاهده اطلاعات فاکتور، مبالغ و خطوط فروش">
+  <div pageActions class="sales-invoice-detail__actions">
+    <daqiq-button
+      label="بازگشت"
+      icon="pi pi-arrow-right"
+      variant="secondary"
+      (pressed)="handleBack()"
+    />
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.detailLoading()"
+      (pressed)="handleReload()"
+    />
+  </div>
+
+  @if (facade.detailError(); as error) {
+    <daqiq-card>
+      <section class="sales-invoice-detail__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    </daqiq-card>
+  } @else if (facade.selectedInvoice(); as invoice) {
+    <daqiq-card>
+      <div class="sales-invoice-detail__header">
+        <div>
+          <span class="sales-invoice-detail__label">حواله فروش</span>
+          @if (invoice.salesDeliveryId) {
+            <button type="button" class="sales-invoice-detail__link" (click)="handleSalesDelivery(invoice)">
+              {{ invoice.salesDeliveryNumber ?? '—' }}
+            </button>
+          } @else {
+            <strong>—</strong>
+          }
+        </div>
+        <div>
+          <span class="sales-invoice-detail__label">سفارش فروش</span>
+          @if (invoice.salesOrderId) {
+            <button type="button" class="sales-invoice-detail__link" (click)="handleSalesOrder(invoice)">
+              {{ invoice.salesOrderNumber ?? '—' }}
+            </button>
+          } @else {
+            <strong>—</strong>
+          }
+        </div>
+        <div>
+          <span class="sales-invoice-detail__label">مشتری</span>
+          <strong>{{ invoice.customerCode }} - {{ invoice.customerName }}</strong>
+        </div>
+        <div>
+          <span class="sales-invoice-detail__label">وضعیت</span>
+          <strong>{{ invoice.statusLabel }}</strong>
+        </div>
+        <div>
+          <span class="sales-invoice-detail__label">تاریخ فاکتور</span>
+          <strong>{{ formatDate(invoice.invoiceDate) }}</strong>
+        </div>
+        <div>
+          <span class="sales-invoice-detail__label">تاریخ سررسید</span>
+          <strong>{{ formatDate(invoice.dueDate) }}</strong>
+        </div>
+        <div>
+          <span class="sales-invoice-detail__label">ارز</span>
+          <strong>{{ invoice.currencyLabel ?? invoice.currencyCode ?? '—' }}</strong>
+        </div>
+        <div>
+          <span class="sales-invoice-detail__label">یادداشت</span>
+          <strong>{{ invoice.notes ?? '—' }}</strong>
+        </div>
+      </div>
+
+      @if (facade.canIssueStatus(invoice.statusCode) || facade.canCancelStatus(invoice.statusCode)) {
+        <div class="sales-invoice-detail__workflow">
+          @if (facade.canIssueStatus(invoice.statusCode)) {
+            <daqiq-button
+              label="صدور فاکتور"
+              icon="pi pi-check"
+              [loading]="facade.loading()"
+              (pressed)="handleIssue(invoice)"
+            />
+          }
+          @if (facade.canCancelStatus(invoice.statusCode)) {
+            <daqiq-button
+              label="لغو فاکتور"
+              icon="pi pi-times"
+              variant="danger"
+              [loading]="facade.loading()"
+              (pressed)="handleCancel(invoice)"
+            />
+          }
+        </div>
+      }
+    </daqiq-card>
+
+    <daqiq-card>
+      @if (facade.selectedLines().length === 0) {
+        <daqiq-empty-state
+          icon="pi pi-list"
+          message="خطی برای این فاکتور ثبت نشده است."
+          description="فاکتورهای معتبر باید حداقل یک خط کالا داشته باشند."
+        />
+      } @else {
+        <daqiq-data-table
+          [rows]="facade.selectedLines()"
+          [columns]="lineColumns"
+          [totalRecords]="facade.selectedLines().length"
+          [pageSize]="facade.selectedLines().length"
+          rowKey="id"
+        />
+      }
+
+      <div class="sales-invoice-detail__totals">
+        <span>جمع جزء: {{ formatMoney(invoice.subtotalAmount) }}</span>
+        <span>مالیات: {{ formatMoney(invoice.taxAmount) }}</span>
+        <strong>جمع کل: {{ formatMoney(invoice.totalAmount) }}</strong>
+      </div>
+    </daqiq-card>
+  }
+</daqiq-page-container>
