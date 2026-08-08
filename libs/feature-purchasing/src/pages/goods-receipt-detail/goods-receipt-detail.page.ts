@@ -60,6 +60,10 @@ export class GoodsReceiptDetailPage implements OnInit {
     void this.facade.cancel(receipt);
   }
 
+  protected handleCreateSupplierInvoice(receipt: GoodsReceipt): void {
+    void this.router.navigate(['/purchasing/goods-receipts', receipt.id, 'invoice']);
+  }
+
   protected formatDate(value: Date | null): string {
     return value ? formatDate(value) : '—';
   }

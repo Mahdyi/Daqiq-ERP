@@ -22,3 +22,13 @@ export interface StorageLocationReferenceRowDto {
   readonly code: string;
   readonly name: string;
 }
+
+export interface LookupReferenceRowDto {
+  readonly id: string;
+  readonly code: string;
+  readonly label: string;
+}
+
+export interface LookupReferencePageDto {
+  readonly items: readonly LookupReferenceRowDto[];
+}

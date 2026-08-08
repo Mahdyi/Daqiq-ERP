@@ -6,10 +6,14 @@ import { GoodsReceiptRepository } from '../data-access/goods-receipt-repository.
 import { PurchaseOrderCommandService } from '../data-access/purchase-order-command.service';
 import { PurchaseOrderReferenceDataService } from '../data-access/purchase-order-reference-data.service';
 import { PurchaseOrderRepository } from '../data-access/purchase-order-repository.service';
+import { SupplierInvoiceCommandService } from '../data-access/supplier-invoice-command.service';
+import { SupplierInvoiceRepository } from '../data-access/supplier-invoice-repository.service';
 import { GoodsReceiptPostingFacade } from '../facades/goods-receipt-posting.facade';
 import { GoodsReceiptFacade } from '../facades/goods-receipt.facade';
 import { PurchaseOrderEditorFacade } from '../facades/purchase-order-editor.facade';
 import { PurchaseOrderFacade } from '../facades/purchase-order.facade';
+import { SupplierInvoiceEditorFacade } from '../facades/supplier-invoice-editor.facade';
+import { SupplierInvoiceFacade } from '../facades/supplier-invoice.facade';
 
 const PURCHASING_PROVIDERS = [
   PurchaseOrderRepository,
@@ -20,7 +24,11 @@ const PURCHASING_PROVIDERS = [
   GoodsReceiptRepository,
   GoodsReceiptCommandService,
   GoodsReceiptFacade,
-  GoodsReceiptPostingFacade
+  GoodsReceiptPostingFacade,
+  SupplierInvoiceRepository,
+  SupplierInvoiceCommandService,
+  SupplierInvoiceFacade,
+  SupplierInvoiceEditorFacade
 ];
 
 export const PURCHASING_ROUTES: Routes = [
@@ -118,6 +126,20 @@ export const PURCHASING_ROUTES: Routes = [
           )
       },
       {
+        path: 'goods-receipts/:id/invoice',
+        canActivate: [authGuard, authorizationGuard],
+        data: {
+          breadcrumb: 'ثبت فاکتور تأمین‌کننده',
+          authorization: {
+            permissions: ['supplierInvoices.create']
+          }
+        },
+        loadComponent: () =>
+          import('../pages/supplier-invoice-editor/supplier-invoice-editor.page').then(
+            (page) => page.SupplierInvoiceEditorPage
+          )
+      },
+      {
         path: 'goods-receipts/:id',
         canActivate: [authGuard, authorizationGuard],
         data: {
@@ -129,6 +151,34 @@ export const PURCHASING_ROUTES: Routes = [
         loadComponent: () =>
           import('../pages/goods-receipt-detail/goods-receipt-detail.page').then(
             (page) => page.GoodsReceiptDetailPage
+          )
+      },
+      {
+        path: 'supplier-invoices',
+        canActivate: [authGuard, authorizationGuard],
+        data: {
+          breadcrumb: 'فاکتورهای تأمین‌کننده',
+          authorization: {
+            permissions: ['supplierInvoices.view']
+          }
+        },
+        loadComponent: () =>
+          import('../pages/supplier-invoice-list/supplier-invoice-list.page').then(
+            (page) => page.SupplierInvoiceListPage
+          )
+      },
+      {
+        path: 'supplier-invoices/:id',
+        canActivate: [authGuard, authorizationGuard],
+        data: {
+          breadcrumb: 'جزئیات فاکتور تأمین‌کننده',
+          authorization: {
+            permissions: ['supplierInvoices.view']
+          }
+        },
+        loadComponent: () =>
+          import('../pages/supplier-invoice-detail/supplier-invoice-detail.page').then(
+            (page) => page.SupplierInvoiceDetailPage
           )
       }
     ]

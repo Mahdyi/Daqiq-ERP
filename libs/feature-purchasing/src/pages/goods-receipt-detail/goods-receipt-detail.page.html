@@ -52,6 +52,14 @@
       </div>
 
       <div class="goods-receipt-detail__workflow">
+        @if (facade.canCreateSupplierInvoiceStatus(receipt.statusCode)) {
+          <daqiq-button
+            label="ثبت فاکتور تأمین‌کننده"
+            icon="pi pi-receipt"
+            [loading]="facade.loading()"
+            (pressed)="handleCreateSupplierInvoice(receipt)"
+          />
+        }
         @if (facade.canCancelStatus(receipt.statusCode)) {
           <daqiq-button
             label="لغو رسید"

@@ -1,0 +1,111 @@
+:host {
+  display: block;
+}
+
+.supplier-invoice-editor__actions,
+.supplier-invoice-editor__footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.supplier-invoice-editor__summary,
+.supplier-invoice-editor__form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.supplier-invoice-editor__summary {
+  margin-block-end: 1.25rem;
+}
+
+.supplier-invoice-editor__summary > div,
+.supplier-invoice-editor__form-grid label {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.supplier-invoice-editor__summary span,
+.supplier-invoice-editor__form-grid span {
+  color: var(--text-color-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.supplier-invoice-editor__notes {
+  grid-column: 1 / -1;
+}
+
+.supplier-invoice-editor__form-grid input,
+.supplier-invoice-editor__form-grid textarea,
+.supplier-invoice-editor__table input,
+.supplier-invoice-editor__table select {
+  width: 100%;
+  min-height: 2.25rem;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--border-radius);
+  padding: 0.45rem 0.6rem;
+  background: var(--surface-card);
+  color: var(--text-color);
+}
+
+.supplier-invoice-editor__table-wrap {
+  overflow-x: auto;
+}
+
+.supplier-invoice-editor__table {
+  width: 100%;
+  min-width: 70rem;
+  border-collapse: collapse;
+}
+
+.supplier-invoice-editor__table th,
+.supplier-invoice-editor__table td {
+  padding: 0.75rem;
+  border-block-end: 1px solid var(--surface-border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.supplier-invoice-editor__table th {
+  color: var(--text-color-secondary);
+  font-weight: 700;
+}
+
+.supplier-invoice-editor__table td:first-child {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.supplier-invoice-editor__table td:first-child span {
+  color: var(--text-color-secondary);
+}
+
+.supplier-invoice-editor__line-invalid {
+  background: var(--red-50);
+}
+
+.supplier-invoice-editor__footer {
+  margin-block-start: 1rem;
+}
+
+.supplier-invoice-editor__error {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--red-700);
+}
+
+@media (max-width: 960px) {
+  .supplier-invoice-editor__summary,
+  .supplier-invoice-editor__form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .supplier-invoice-editor__summary,
+  .supplier-invoice-editor__form-grid {
+    grid-template-columns: 1fr;
+  }
+}

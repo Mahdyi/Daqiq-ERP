@@ -1,0 +1,76 @@
+<daqiq-page-container
+  title="فاکتورهای تأمین‌کننده"
+  subtitle="مشاهده و مدیریت فاکتورهای دریافتی از تأمین‌کنندگان"
+>
+  <div pageActions class="supplier-invoice-list__actions">
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading()"
+      (pressed)="handleRefresh()"
+    />
+  </div>
+
+  <daqiq-card>
+    <form class="supplier-invoice-list__search" (submit)="$event.preventDefault(); handleSearchSubmit()">
+      <label class="supplier-invoice-list__search-label" for="supplier-invoice-search">جستجو</label>
+      <input
+        id="supplier-invoice-search"
+        class="supplier-invoice-list__search-input"
+        type="search"
+        [value]="searchTerm()"
+        placeholder="جستجو بر اساس شماره فاکتور، رسید، سفارش یا تأمین‌کننده"
+        (input)="handleSearchInput($event)"
+      />
+      <daqiq-button label="جستجو" icon="pi pi-search" type="submit" />
+    </form>
+
+    @if (facade.error(); as error) {
+      <section class="supplier-invoice-list__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+        <daqiq-button
+          label="تلاش دوباره"
+          icon="pi pi-refresh"
+          variant="secondary"
+          (pressed)="handleRefresh()"
+        />
+      </section>
+    }
+
+    @if (!facade.loading() && facade.items().length === 0 && !facade.error()) {
+      <daqiq-empty-state
+        icon="pi pi-receipt"
+        message="فاکتور تأمین‌کننده‌ای برای نمایش وجود ندارد."
+        description="فاکتورها از رسیدهای خرید ثبت‌شده ایجاد می‌شوند و اثر موجودی ندارند."
+      />
+    } @else {
+      <daqiq-data-table
+        [rows]="facade.items()"
+        [columns]="columns"
+        [loading]="facade.loading()"
+        [totalRecords]="facade.totalItems()"
+        [pageIndex]="pageIndex()"
+        [pageSize]="pageSize()"
+        [sort]="sort()"
+        rowKey="id"
+        [rowActionsTemplate]="rowActions"
+        (pageChange)="handlePageChange($event)"
+        (sortChange)="handleSortChange($event)"
+        (rowActivated)="handleView($event)"
+      />
+    }
+
+    <ng-template #rowActions let-row="row">
+      <div class="supplier-invoice-list__row-actions">
+        <daqiq-button
+          label="جزئیات"
+          icon="pi pi-eye"
+          variant="text"
+          (pressed)="handleView(row)"
+        />
+      </div>
+    </ng-template>
+  </daqiq-card>
+</daqiq-page-container>

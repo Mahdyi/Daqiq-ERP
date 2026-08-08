@@ -139,6 +139,16 @@ export const APP_NAVIGATION = [
         authorization: {
           permissions: ['receiving.view']
         }
+      },
+      {
+        id: 'supplier-invoices',
+        label: 'فاکتورهای تأمین‌کننده',
+        icon: 'pi pi-receipt',
+        route: ['/purchasing/supplier-invoices'],
+        exact: false,
+        authorization: {
+          permissions: ['supplierInvoices.view']
+        }
       }
     ]
   },

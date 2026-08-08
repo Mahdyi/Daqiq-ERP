@@ -58,6 +58,12 @@ export type AppPermission =
   | 'receiving.create'
   | 'receiving.post'
   | 'receiving.cancel'
+  | 'supplierInvoices.view'
+  | 'supplierInvoices.create'
+  | 'supplierInvoices.update'
+  | 'supplierInvoices.post'
+  | 'supplierInvoices.cancel'
+  | 'supplierInvoices.delete'
   | 'accounting.view'
   | 'accounting.create'
   | 'accounting.update'
@@ -141,6 +147,12 @@ export const ROLE_PERMISSIONS = {
     'receiving.create',
     'receiving.post',
     'receiving.cancel',
+    'supplierInvoices.view',
+    'supplierInvoices.create',
+    'supplierInvoices.update',
+    'supplierInvoices.post',
+    'supplierInvoices.cancel',
+    'supplierInvoices.delete',
     'accounting.view',
     'accounting.create',
     'accounting.update',
@@ -205,6 +217,11 @@ export const ROLE_PERMISSIONS = {
     'receiving.create',
     'receiving.post',
     'receiving.cancel',
+    'supplierInvoices.view',
+    'supplierInvoices.create',
+    'supplierInvoices.update',
+    'supplierInvoices.post',
+    'supplierInvoices.cancel',
     'accounting.view',
     'settings.view',
     'lookups.view',
@@ -228,6 +245,11 @@ export const ROLE_PERMISSIONS = {
     'salesInvoices.cancel',
     'purchasing.view',
     'receiving.view',
+    'supplierInvoices.view',
+    'supplierInvoices.create',
+    'supplierInvoices.update',
+    'supplierInvoices.post',
+    'supplierInvoices.cancel',
     'accounting.view',
     'accounting.create',
     'accounting.update'
@@ -273,7 +295,8 @@ export const ROLE_PERMISSIONS = {
     'purchasing.view',
     'receiving.view',
     'receiving.create',
-    'receiving.post'
+    'receiving.post',
+    'supplierInvoices.view'
   ],
   viewer: ['dashboard.view']
 } satisfies Record<AppRole, readonly AppPermission[]>;

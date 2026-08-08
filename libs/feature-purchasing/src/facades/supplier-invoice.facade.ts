@@ -3,70 +3,67 @@ import { ApiError, ApiPage, AuthorizationService } from '@daqiq/core';
 import { ConfirmationService, NotificationService } from '@daqiq/ui';
 import { firstValueFrom } from 'rxjs';
 
-import { GoodsReceiptCommandService } from '../data-access/goods-receipt-command.service';
-import { GoodsReceiptRepository } from '../data-access/goods-receipt-repository.service';
-import type { GoodsReceiptLine } from '../models/goods-receipt-line.model';
-import type { GoodsReceiptQuery } from '../models/goods-receipt-query.model';
-import type { GoodsReceipt } from '../models/goods-receipt.model';
+import { SupplierInvoiceCommandService } from '../data-access/supplier-invoice-command.service';
+import { SupplierInvoiceRepository } from '../data-access/supplier-invoice-repository.service';
+import type { SupplierInvoiceLine } from '../models/supplier-invoice-line.model';
+import type { SupplierInvoiceQuery } from '../models/supplier-invoice-query.model';
+import type { SupplierInvoiceStatus } from '../models/supplier-invoice-status.model';
+import type { SupplierInvoice } from '../models/supplier-invoice.model';
 import { toApiError } from './purchase-order.facade';
 
-const DEFAULT_QUERY: GoodsReceiptQuery = {
+const DEFAULT_QUERY: SupplierInvoiceQuery = {
   page: 0,
   pageSize: 20,
-  sortField: 'receiptDate',
+  sortField: 'invoiceDate',
   sortDirection: 'desc'
 };
 
-interface GoodsReceiptListState {
-  readonly page: ApiPage<GoodsReceipt> | null;
+interface SupplierInvoiceListState {
+  readonly page: ApiPage<SupplierInvoice> | null;
   readonly loading: boolean;
   readonly error: ApiError | null;
   readonly requestVersion: number;
 }
 
 @Injectable()
-export class GoodsReceiptFacade {
-  private readonly repository = inject(GoodsReceiptRepository);
-  private readonly commands = inject(GoodsReceiptCommandService);
+export class SupplierInvoiceFacade {
+  private readonly repository = inject(SupplierInvoiceRepository);
+  private readonly commands = inject(SupplierInvoiceCommandService);
   private readonly authorization = inject(AuthorizationService);
   private readonly notifications = inject(NotificationService);
   private readonly confirmations = inject(ConfirmationService);
-  private readonly stateSignal = signal<GoodsReceiptListState>({
+  private readonly stateSignal = signal<SupplierInvoiceListState>({
     page: null,
     loading: false,
     error: null,
     requestVersion: 0
   });
-  private readonly querySignal = signal<GoodsReceiptQuery | null>(null);
-  private readonly selectedReceiptSignal = signal<GoodsReceipt | null>(null);
-  private readonly selectedLinesSignal = signal<readonly GoodsReceiptLine[]>([]);
+  private readonly querySignal = signal<SupplierInvoiceQuery | null>(null);
+  private readonly selectedInvoiceSignal = signal<SupplierInvoice | null>(null);
+  private readonly selectedLinesSignal = signal<readonly SupplierInvoiceLine[]>([]);
   private readonly detailLoadingSignal = signal(false);
   private readonly detailErrorSignal = signal<ApiError | null>(null);
   private activeOperationCount = 0;
 
-  readonly state: Signal<GoodsReceiptListState> = this.stateSignal.asReadonly();
-  readonly query: Signal<GoodsReceiptQuery | null> = this.querySignal.asReadonly();
+  readonly state: Signal<SupplierInvoiceListState> = this.stateSignal.asReadonly();
+  readonly query: Signal<SupplierInvoiceQuery | null> = this.querySignal.asReadonly();
   readonly page = computed(() => this.state().page);
   readonly items = computed(() => this.page()?.items ?? []);
   readonly totalItems = computed(() => this.page()?.totalItems ?? 0);
   readonly loading = computed(() => this.state().loading);
   readonly error = computed(() => this.state().error);
-  readonly selectedReceipt = this.selectedReceiptSignal.asReadonly();
+  readonly selectedInvoice = this.selectedInvoiceSignal.asReadonly();
   readonly selectedLines = this.selectedLinesSignal.asReadonly();
   readonly detailLoading = this.detailLoadingSignal.asReadonly();
   readonly detailError = this.detailErrorSignal.asReadonly();
-  readonly canCreate = computed(() => this.authorization.hasPermission('receiving.create'));
-  readonly canPost = computed(() => this.authorization.hasPermission('receiving.post'));
-  readonly canCancel = computed(() => this.authorization.hasPermission('receiving.cancel'));
-  readonly canCreateSupplierInvoice = computed(() =>
-    this.authorization.hasPermission('supplierInvoices.create')
-  );
+  readonly canPost = computed(() => this.authorization.hasPermission('supplierInvoices.post'));
+  readonly canCancel = computed(() => this.authorization.hasPermission('supplierInvoices.cancel'));
 
   async loadDefault(): Promise<void> {
     await this.load(DEFAULT_QUERY);
   }
 
-  async load(query: GoodsReceiptQuery): Promise<void> {
+  async load(query: SupplierInvoiceQuery): Promise<void> {
     const requestVersion = this.state().requestVersion + 1;
     this.querySignal.set(query);
     this.stateSignal.update((state) => ({
@@ -123,7 +120,7 @@ export class GoodsReceiptFacade {
   }
 
   async sort(
-    sortField: keyof GoodsReceipt | null,
+    sortField: keyof SupplierInvoice | null,
     sortDirection: 'asc' | 'desc' | null
   ): Promise<void> {
     await this.load({
@@ -139,25 +136,37 @@ export class GoodsReceiptFacade {
     this.detailErrorSignal.set(null);
 
     try {
-      const [receipt, lines] = await Promise.all([
+      const [invoice, lines] = await Promise.all([
         firstValueFrom(this.repository.getById(id)),
         firstValueFrom(this.repository.listLines(id))
       ]);
-      this.selectedReceiptSignal.set(receipt);
+      this.selectedInvoiceSignal.set(invoice);
       this.selectedLinesSignal.set(lines);
     } catch (error: unknown) {
       this.detailErrorSignal.set(toApiError(error));
-      this.selectedReceiptSignal.set(null);
+      this.selectedInvoiceSignal.set(null);
       this.selectedLinesSignal.set([]);
     } finally {
       this.detailLoadingSignal.set(false);
     }
   }
 
-  async cancel(receipt: GoodsReceipt): Promise<void> {
+  async post(invoice: SupplierInvoice): Promise<void> {
+    if (!this.canPostStatus(invoice.statusCode)) {
+      return;
+    }
+
+    await this.transition(invoice.id, 'post');
+  }
+
+  async cancel(invoice: SupplierInvoice): Promise<void> {
+    if (!this.canCancelStatus(invoice.statusCode)) {
+      return;
+    }
+
     const accepted = await this.confirmations.confirm({
-      header: 'لغو رسید خرید',
-      message: 'آیا از لغو این رسید خرید مطمئن هستید؟ اثر موجودی با سند برگشتی خنثی می‌شود.',
+      header: 'لغو فاکتور تأمین‌کننده',
+      message: 'آیا از لغو این فاکتور تأمین‌کننده مطمئن هستید؟',
       icon: 'pi pi-exclamation-triangle',
       acceptButtonStyleClass: 'p-button-danger'
     });
@@ -166,28 +175,42 @@ export class GoodsReceiptFacade {
       return;
     }
 
+    await this.transition(invoice.id, 'cancel');
+  }
+
+  canPostStatus(status: SupplierInvoiceStatus): boolean {
+    return status === 'draft' && this.canPost();
+  }
+
+  canCancelStatus(status: SupplierInvoiceStatus): boolean {
+    return ['draft', 'posted'].includes(status) && this.canCancel();
+  }
+
+  private async transition(id: string, action: 'post' | 'cancel'): Promise<void> {
     this.beginOperation();
 
     try {
-      const updated = await firstValueFrom(this.commands.cancelReceipt(receipt.id));
-      this.selectedReceiptSignal.set(updated);
-      this.notifications.success('رسید خرید با موفقیت لغو شد.');
+      const result = await firstValueFrom(
+        action === 'post' ? this.commands.post(id) : this.commands.cancel(id)
+      );
+      this.selectedInvoiceSignal.set(result.invoice);
+      this.selectedLinesSignal.set(result.lines);
+      this.notifications.success(
+        action === 'post'
+          ? 'فاکتور تأمین‌کننده با موفقیت ثبت شد.'
+          : 'فاکتور تأمین‌کننده با موفقیت لغو شد.'
+      );
       await this.refresh();
     } catch (error: unknown) {
       const apiError = toApiError(error);
+      this.stateSignal.update((state) => ({
+        ...state,
+        error: apiError
+      }));
       this.detailErrorSignal.set(apiError);
-      this.stateSignal.update((state) => ({ ...state, error: apiError }));
     } finally {
       this.endOperation();
     }
-  }
-
-  canCancelStatus(status: GoodsReceipt['statusCode']): boolean {
-    return status === 'posted' && this.canCancel();
-  }
-
-  canCreateSupplierInvoiceStatus(status: GoodsReceipt['statusCode']): boolean {
-    return status === 'posted' && this.canCreateSupplierInvoice();
   }
 
   private beginOperation(): void {

@@ -3,6 +3,7 @@ import { ApiClient } from '@daqiq/core';
 import { Observable, map } from 'rxjs';
 
 import type {
+  LookupReferencePageDto,
   ProductReferenceRowDto,
   StorageLocationReferenceRowDto,
   SupplierReferenceRowDto,
@@ -79,5 +80,30 @@ export class PurchaseOrderReferenceDataService {
         responseShape: 'raw'
       })
       .pipe(map((rows) => rows.map((row) => ({ id: row.id, label: `${row.code} - ${row.name}` }))));
+  }
+
+  listTaxRates(): Observable<readonly PurchaseOrderOption[]> {
+    return this.api
+      .post<
+        {
+          readonly lookup_type_code: 'tax_rate';
+          readonly active: true;
+          readonly page_number: number;
+          readonly page_size: number;
+        },
+        LookupReferencePageDto
+      >('rpc/admin_list_lookup_values', {
+        lookup_type_code: 'tax_rate',
+        active: true,
+        page_number: 1,
+        page_size: 50
+      }, {
+        responseShape: 'raw'
+      })
+      .pipe(
+        map((page) =>
+          page.items.map((row) => ({ id: row.id, label: `${row.code} - ${row.label}` }))
+        )
+      );
   }
 }

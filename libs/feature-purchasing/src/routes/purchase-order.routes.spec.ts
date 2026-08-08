@@ -37,4 +37,21 @@ describe('PURCHASE_ORDER_ROUTES', () => {
       permissions: ['receiving.view']
     });
   });
+
+  it('exposes supplier invoice routes with supplier invoice permissions', () => {
+    const children = PURCHASING_ROUTES[0]?.children ?? [];
+    const createRoute = children.find((route) => route.path === 'goods-receipts/:id/invoice');
+    const listRoute = children.find((route) => route.path === 'supplier-invoices');
+    const detailRoute = children.find((route) => route.path === 'supplier-invoices/:id');
+
+    expect(createRoute?.data?.['authorization']).toEqual({
+      permissions: ['supplierInvoices.create']
+    });
+    expect(listRoute?.data?.['authorization']).toEqual({
+      permissions: ['supplierInvoices.view']
+    });
+    expect(detailRoute?.data?.['authorization']).toEqual({
+      permissions: ['supplierInvoices.view']
+    });
+  });
 });

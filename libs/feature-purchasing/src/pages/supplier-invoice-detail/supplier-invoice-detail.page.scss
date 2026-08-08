@@ -1,0 +1,76 @@
+:host {
+  display: block;
+}
+
+.supplier-invoice-detail__actions,
+.supplier-invoice-detail__workflow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.supplier-invoice-detail__header {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.supplier-invoice-detail__header > div {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.supplier-invoice-detail__label {
+  color: var(--text-color-secondary);
+  font-size: 0.85rem;
+}
+
+.supplier-invoice-detail__link {
+  width: fit-content;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--primary-color);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.supplier-invoice-detail__workflow {
+  margin-block-start: 1rem;
+}
+
+.supplier-invoice-detail__error {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--red-700);
+}
+
+.supplier-invoice-detail__totals {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-block-start: 1rem;
+  color: var(--text-color-secondary);
+}
+
+.supplier-invoice-detail__totals strong {
+  color: var(--text-color);
+}
+
+@media (max-width: 960px) {
+  .supplier-invoice-detail__header {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .supplier-invoice-detail__header {
+    grid-template-columns: 1fr;
+  }
+}
