@@ -1,0 +1,62 @@
+<daqiq-page-container title="اسناد حسابداری" subtitle="مشاهده و پیگیری اسناد حسابداری سامانه">
+  <div pageActions class="journal-entry-list__actions">
+    <daqiq-button
+      label="سند جدید"
+      icon="pi pi-plus"
+      (pressed)="handleCreate()"
+    />
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading()"
+      (pressed)="handleRefresh()"
+    />
+  </div>
+
+  <daqiq-card>
+    <form class="journal-entry-list__search" (submit)="$event.preventDefault(); handleSearchSubmit()">
+      <label class="journal-entry-list__search-label" for="journal-entry-search">جستجو</label>
+      <input
+        id="journal-entry-search"
+        class="journal-entry-list__search-input"
+        type="search"
+        [value]="searchTerm()"
+        placeholder="جستجو بر اساس شماره سند، دوره یا شرح"
+        (input)="handleSearchInput($event)"
+      />
+      <daqiq-button label="جستجو" icon="pi pi-search" type="submit" />
+    </form>
+
+    @if (facade.error(); as error) {
+      <section class="journal-entry-list__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    }
+
+    @if (!facade.loading() && facade.items().length === 0 && !facade.error()) {
+      <daqiq-empty-state
+        icon="pi pi-file"
+        message="سندی برای نمایش وجود ندارد."
+        description="اسناد دستی یا اسناد ایجادشده از فاکتورها در این بخش نمایش داده می‌شوند."
+      />
+    } @else {
+      <daqiq-data-table
+        [rows]="facade.items()"
+        [columns]="columns"
+        [loading]="facade.loading()"
+        [totalRecords]="facade.totalItems()"
+        rowKey="id"
+        [rowActionsTemplate]="rowActions"
+        (rowActivated)="handleView($event)"
+      />
+    }
+
+    <ng-template #rowActions let-row="row">
+      <div class="journal-entry-list__row-actions">
+        <daqiq-button label="جزئیات" icon="pi pi-eye" variant="text" (pressed)="handleView(row)" />
+      </div>
+    </ng-template>
+  </daqiq-card>
+</daqiq-page-container>

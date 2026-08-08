@@ -1,0 +1,52 @@
+<daqiq-page-container
+  title="سرفصل‌های حسابداری"
+  subtitle="مشاهده ساختار پایه حساب‌های کل سامانه"
+>
+  <div pageActions class="accounting-page__actions">
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading()"
+      (pressed)="handleRefresh()"
+    />
+  </div>
+
+  <daqiq-card>
+    <form class="accounting-page__search" (submit)="$event.preventDefault(); handleSearchSubmit()">
+      <label class="accounting-page__search-label" for="gl-account-search">جستجو</label>
+      <input
+        id="gl-account-search"
+        class="accounting-page__search-input"
+        type="search"
+        [value]="searchTerm()"
+        placeholder="جستجو بر اساس کد، نام یا نوع حساب"
+        (input)="handleSearchInput($event)"
+      />
+      <daqiq-button label="جستجو" icon="pi pi-search" type="submit" />
+    </form>
+
+    @if (facade.error(); as error) {
+      <section class="accounting-page__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    }
+
+    @if (!facade.loading() && facade.items().length === 0 && !facade.error()) {
+      <daqiq-empty-state
+        icon="pi pi-sitemap"
+        message="حسابی برای نمایش وجود ندارد."
+        description="سرفصل‌های حسابداری پس از اجرای مهاجرت حسابداری ایجاد می‌شوند."
+      />
+    } @else {
+      <daqiq-data-table
+        [rows]="facade.items()"
+        [columns]="columns"
+        [loading]="facade.loading()"
+        [totalRecords]="facade.totalItems()"
+        rowKey="id"
+      />
+    }
+  </daqiq-card>
+</daqiq-page-container>

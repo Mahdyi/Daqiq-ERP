@@ -67,7 +67,15 @@ export type AppPermission =
   | 'accounting.view'
   | 'accounting.create'
   | 'accounting.update'
+  | 'accounting.post'
+  | 'accounting.cancel'
   | 'accounting.delete'
+  | 'accountingPeriods.view'
+  | 'accountingPeriods.update'
+  | 'chartOfAccounts.view'
+  | 'chartOfAccounts.create'
+  | 'chartOfAccounts.update'
+  | 'chartOfAccounts.delete'
   | 'users.view'
   | 'users.create'
   | 'users.update'
@@ -156,7 +164,15 @@ export const ROLE_PERMISSIONS = {
     'accounting.view',
     'accounting.create',
     'accounting.update',
+    'accounting.post',
+    'accounting.cancel',
     'accounting.delete',
+    'accountingPeriods.view',
+    'accountingPeriods.update',
+    'chartOfAccounts.view',
+    'chartOfAccounts.create',
+    'chartOfAccounts.update',
+    'chartOfAccounts.delete',
     'users.view',
     'users.create',
     'users.update',
@@ -223,6 +239,8 @@ export const ROLE_PERMISSIONS = {
     'supplierInvoices.post',
     'supplierInvoices.cancel',
     'accounting.view',
+    'accountingPeriods.view',
+    'chartOfAccounts.view',
     'settings.view',
     'lookups.view',
     'featureFlags.view'
@@ -252,7 +270,14 @@ export const ROLE_PERMISSIONS = {
     'supplierInvoices.cancel',
     'accounting.view',
     'accounting.create',
-    'accounting.update'
+    'accounting.update',
+    'accounting.post',
+    'accounting.cancel',
+    'accountingPeriods.view',
+    'accountingPeriods.update',
+    'chartOfAccounts.view',
+    'chartOfAccounts.create',
+    'chartOfAccounts.update'
   ],
   sales: [
     'dashboard.view',

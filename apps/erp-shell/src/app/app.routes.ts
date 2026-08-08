@@ -59,6 +59,11 @@ export const routes: Routes = [
           import('@daqiq/feature-sales').then((sales) => sales.SALES_ROUTES)
       },
       {
+        path: 'accounting',
+        loadChildren: () =>
+          import('@daqiq/feature-accounting').then((accounting) => accounting.ACCOUNTING_ROUTES)
+      },
+      {
         path: 'admin/users',
         loadChildren: () => import('@daqiq/feature-users').then((users) => users.USER_ROUTES)
       },

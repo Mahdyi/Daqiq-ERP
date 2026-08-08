@@ -1,0 +1,42 @@
+.accounting-page__actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.accounting-page__search {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1fr) auto;
+  gap: 0.75rem;
+  align-items: end;
+  margin-block-end: 1rem;
+}
+
+.accounting-page__search-label {
+  grid-column: 1 / -1;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.accounting-page__search-input {
+  width: 100%;
+  border: 1px solid var(--surface-border);
+  border-radius: 6px;
+  padding: 0.75rem 0.875rem;
+  color: var(--text-color);
+  background: var(--surface-card);
+}
+
+.accounting-page__error {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-block-end: 1rem;
+  color: var(--red-500);
+}
+
+@media (max-width: 640px) {
+  .accounting-page__search {
+    grid-template-columns: 1fr;
+  }
+}

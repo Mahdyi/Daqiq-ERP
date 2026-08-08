@@ -1,0 +1,118 @@
+<daqiq-page-container title="ایجاد سند حسابداری" subtitle="ثبت سند دستی متوازن برای اصلاحات یا ثبت‌های ساده">
+  <div pageActions class="journal-editor__actions">
+    <daqiq-button label="بازگشت" icon="pi pi-arrow-right" variant="secondary" (pressed)="handleCancel()" />
+  </div>
+
+  <daqiq-card>
+    @if (facade.error(); as error) {
+      <section class="journal-editor__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    }
+
+    <form class="journal-editor" (submit)="$event.preventDefault(); handleSubmit()">
+      <section class="journal-editor__header">
+        <label>
+          <span>تاریخ سند</span>
+          <input
+            type="date"
+            [value]="journalDate()"
+            (input)="handleHeaderInput('journalDate', $event)"
+            required
+          />
+        </label>
+
+        <label>
+          <span>شرح</span>
+          <input
+            type="text"
+            [value]="description() ?? ''"
+            placeholder="شرح سند"
+            (input)="handleHeaderInput('description', $event)"
+          />
+        </label>
+
+        <label>
+          <span>ارز</span>
+          <select [value]="currencyLookupValueId() ?? ''" (change)="handleHeaderInput('currency', $event)">
+            <option value="">بدون ارز</option>
+            @for (currency of facade.currencyOptions(); track currency.id) {
+              <option [value]="currency.id">{{ currency.label }}</option>
+            }
+          </select>
+        </label>
+      </section>
+
+      <section class="journal-editor__lines" aria-label="خطوط سند">
+        <div class="journal-editor__line journal-editor__line--head">
+          <span>حساب</span>
+          <span>شرح</span>
+          <span>بدهکار</span>
+          <span>بستانکار</span>
+          <span>عملیات</span>
+        </div>
+
+        @for (line of facade.lines(); track $index; let index = $index) {
+          <div class="journal-editor__line">
+            <select [value]="line.accountId" (change)="handleLineInput(index, 'accountId', $event)">
+              <option value="">انتخاب حساب</option>
+              @for (account of facade.accountOptions(); track account.id) {
+                <option [value]="account.id">{{ account.accountCode }} - {{ account.accountName }}</option>
+              }
+            </select>
+            <input
+              type="text"
+              [value]="line.description ?? ''"
+              placeholder="شرح خط"
+              (input)="handleLineInput(index, 'description', $event)"
+            />
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              [value]="line.debitAmount"
+              (input)="handleLineInput(index, 'debitAmount', $event)"
+            />
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              [value]="line.creditAmount"
+              (input)="handleLineInput(index, 'creditAmount', $event)"
+            />
+            <daqiq-button
+              label="حذف"
+              icon="pi pi-trash"
+              variant="text"
+              (pressed)="handleRemoveLine(index)"
+            />
+          </div>
+        }
+      </section>
+
+      <div class="journal-editor__totals">
+        <span>جمع بدهکار: {{ formatMoney(facade.totals().debit) }}</span>
+        <span>جمع بستانکار: {{ formatMoney(facade.totals().credit) }}</span>
+        <strong>{{ facade.totals().balanced ? 'متوازن' : 'نامتوازن' }}</strong>
+      </div>
+
+      <div class="journal-editor__footer">
+        <daqiq-button
+          label="افزودن خط"
+          icon="pi pi-plus"
+          variant="secondary"
+          type="button"
+          (pressed)="handleAddLine()"
+        />
+        <daqiq-button
+          label="ثبت سند"
+          icon="pi pi-check"
+          type="submit"
+          [disabled]="!facade.canSubmit()"
+          [loading]="facade.loading()"
+        />
+      </div>
+    </form>
+  </daqiq-card>
+</daqiq-page-container>

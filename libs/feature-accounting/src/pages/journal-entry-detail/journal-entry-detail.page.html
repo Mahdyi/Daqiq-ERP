@@ -1,0 +1,106 @@
+<daqiq-page-container [title]="title()" subtitle="مشاهده اطلاعات سربرگ، وضعیت و خطوط سند حسابداری">
+  <div pageActions class="journal-detail__actions">
+    <daqiq-button label="بازگشت" icon="pi pi-arrow-right" variant="secondary" (pressed)="handleBack()" />
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.detailLoading()"
+      (pressed)="handleReload()"
+    />
+  </div>
+
+  @if (facade.detailError(); as error) {
+    <daqiq-card>
+      <section class="journal-detail__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    </daqiq-card>
+  } @else if (facade.selectedEntry(); as entry) {
+    <daqiq-card>
+      <div class="journal-detail__header">
+        <div>
+          <span class="journal-detail__label">شماره سند</span>
+          <strong>{{ entry.journalNumber }}</strong>
+        </div>
+        <div>
+          <span class="journal-detail__label">وضعیت</span>
+          <strong>{{ entry.statusLabel }}</strong>
+        </div>
+        <div>
+          <span class="journal-detail__label">منبع</span>
+          <strong>{{ entry.sourceTypeLabel }}</strong>
+        </div>
+        <div>
+          <span class="journal-detail__label">تاریخ سند</span>
+          <strong>{{ formatDate(entry.journalDate) }}</strong>
+        </div>
+        <div>
+          <span class="journal-detail__label">دوره</span>
+          <strong>{{ entry.periodCode }}</strong>
+        </div>
+        <div>
+          <span class="journal-detail__label">ارز</span>
+          <strong>{{ entry.currencyLabel ?? entry.currencyCode ?? '—' }}</strong>
+        </div>
+        <div>
+          <span class="journal-detail__label">بدهکار</span>
+          <strong>{{ formatMoney(entry.totalDebit) }}</strong>
+        </div>
+        <div>
+          <span class="journal-detail__label">بستانکار</span>
+          <strong>{{ formatMoney(entry.totalCredit) }}</strong>
+        </div>
+        <div>
+          <span class="journal-detail__label">شرح</span>
+          <strong>{{ entry.description ?? '—' }}</strong>
+        </div>
+        <div>
+          <span class="journal-detail__label">ثبت‌کننده</span>
+          <strong>{{ entry.postedByEmail ?? '—' }}</strong>
+        </div>
+      </div>
+
+      @if (facade.canPostEntry(entry) || facade.canCancelEntry(entry)) {
+        <div class="journal-detail__workflow">
+          @if (facade.canPostEntry(entry)) {
+            <daqiq-button
+              label="ثبت سند"
+              icon="pi pi-check"
+              [loading]="facade.loading()"
+              (pressed)="handlePost(entry)"
+            />
+          }
+          @if (facade.canCancelEntry(entry)) {
+            <daqiq-button
+              label="لغو سند"
+              icon="pi pi-times"
+              variant="danger"
+              [loading]="facade.loading()"
+              (pressed)="handleCancel(entry)"
+            />
+          }
+        </div>
+      }
+    </daqiq-card>
+
+    <daqiq-card>
+      @if (facade.selectedLines().length === 0) {
+        <daqiq-empty-state
+          icon="pi pi-list"
+          message="خطی برای این سند ثبت نشده است."
+          description="سند قابل ثبت باید حداقل دو خط متوازن داشته باشد."
+        />
+      } @else {
+        <daqiq-data-table
+          [rows]="facade.selectedLines()"
+          [columns]="lineColumns"
+          [totalRecords]="facade.selectedLines().length"
+          [pageSize]="facade.selectedLines().length"
+          rowKey="id"
+        />
+      }
+    </daqiq-card>
+  }
+</daqiq-page-container>

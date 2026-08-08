@@ -190,6 +190,53 @@ export const APP_NAVIGATION = [
     ]
   },
   {
+    id: 'accounting',
+    label: 'حسابداری',
+    icon: 'pi pi-calculator',
+    children: [
+      {
+        id: 'chart-of-accounts',
+        label: 'سرفصل‌های حسابداری',
+        icon: 'pi pi-sitemap',
+        route: ['/accounting/chart-of-accounts'],
+        exact: false,
+        authorization: {
+          permissions: ['chartOfAccounts.view']
+        }
+      },
+      {
+        id: 'accounting-periods',
+        label: 'دوره‌های مالی',
+        icon: 'pi pi-calendar',
+        route: ['/accounting/periods'],
+        exact: false,
+        authorization: {
+          permissions: ['accountingPeriods.view']
+        }
+      },
+      {
+        id: 'journal-entries',
+        label: 'اسناد حسابداری',
+        icon: 'pi pi-file',
+        route: ['/accounting/journal-entries'],
+        exact: false,
+        authorization: {
+          permissions: ['accounting.view']
+        }
+      },
+      {
+        id: 'general-ledger',
+        label: 'دفتر کل',
+        icon: 'pi pi-book',
+        route: ['/accounting/general-ledger'],
+        exact: false,
+        authorization: {
+          permissions: ['accounting.view']
+        }
+      }
+    ]
+  },
+  {
     id: 'system-management',
     label: 'مدیریت سیستم',
     icon: 'pi pi-cog',

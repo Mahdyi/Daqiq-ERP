@@ -1,0 +1,49 @@
+<daqiq-page-container title="دفتر کل" subtitle="مشاهده خطوط ثبت‌شده در دفتر کل حسابداری">
+  <div pageActions class="general-ledger__actions">
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading()"
+      (pressed)="handleRefresh()"
+    />
+  </div>
+
+  <daqiq-card>
+    <form class="general-ledger__search" (submit)="$event.preventDefault(); handleSearchSubmit()">
+      <label class="general-ledger__search-label" for="general-ledger-search">جستجو</label>
+      <input
+        id="general-ledger-search"
+        class="general-ledger__search-input"
+        type="search"
+        [value]="searchTerm()"
+        placeholder="جستجو بر اساس شماره سند، کد حساب، نام حساب یا شرح"
+        (input)="handleSearchInput($event)"
+      />
+      <daqiq-button label="جستجو" icon="pi pi-search" type="submit" />
+    </form>
+
+    @if (facade.error(); as error) {
+      <section class="general-ledger__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    }
+
+    @if (!facade.loading() && facade.items().length === 0 && !facade.error()) {
+      <daqiq-empty-state
+        icon="pi pi-book"
+        message="خط ثبت‌شده‌ای در دفتر کل وجود ندارد."
+        description="فقط اسناد حسابداری ثبت‌شده در دفتر کل نمایش داده می‌شوند."
+      />
+    } @else {
+      <daqiq-data-table
+        [rows]="facade.items()"
+        [columns]="columns"
+        [loading]="facade.loading()"
+        [totalRecords]="facade.totalItems()"
+        rowKey="rowKey"
+      />
+    }
+  </daqiq-card>
+</daqiq-page-container>

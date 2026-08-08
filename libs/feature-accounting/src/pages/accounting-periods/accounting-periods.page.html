@@ -1,0 +1,36 @@
+<daqiq-page-container title="دوره‌های مالی" subtitle="مشاهده دوره‌های مالی و وضعیت بسته بودن آنها">
+  <div pageActions class="accounting-periods__actions">
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading()"
+      (pressed)="handleRefresh()"
+    />
+  </div>
+
+  <daqiq-card>
+    @if (facade.error(); as error) {
+      <section class="accounting-periods__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    }
+
+    @if (!facade.loading() && facade.items().length === 0 && !facade.error()) {
+      <daqiq-empty-state
+        icon="pi pi-calendar"
+        message="دوره مالی برای نمایش وجود ندارد."
+        description="دوره‌ها از مهاجرت حسابداری و تنظیمات مالی سامانه تأمین می‌شوند."
+      />
+    } @else {
+      <daqiq-data-table
+        [rows]="facade.items()"
+        [columns]="columns"
+        [loading]="facade.loading()"
+        [totalRecords]="facade.totalItems()"
+        rowKey="id"
+      />
+    }
+  </daqiq-card>
+</daqiq-page-container>
