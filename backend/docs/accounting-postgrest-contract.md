@@ -129,6 +129,85 @@ accounting.closedPeriodBlocked
 Audit metadata contains accounting identifiers, totals, account codes, period codes, and source IDs.
 It must not contain passwords, tokens, secrets, or credential material.
 
+## Local Smoke Test
+
+Run the accounting smoke test from the repository root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File backend/postgrest/smoke-test-accounting.ps1
+```
+
+The script uses `PGRST_BASE_URL` when set, then `POSTGREST_BASE_URL`, and otherwise defaults to:
+
+```text
+http://127.0.0.1:3000
+```
+
+For this local Windows setup, port `3400` may be excluded/reserved. The current development
+PostgREST port is configured as `3500` in `backend/.env`:
+
+```powershell
+$env:PGRST_BASE_URL = "http://127.0.0.1:3500"
+powershell -ExecutionPolicy Bypass -File backend/postgrest/smoke-test-accounting.ps1
+```
+
+The script can use pre-provided role tokens through local environment variables:
+
+```text
+ERP_ADMIN_TOKEN
+ERP_ACCOUNTANT_TOKEN
+ERP_MANAGER_TOKEN
+ERP_WAREHOUSE_TOKEN
+ERP_SALES_TOKEN
+ERP_VIEWER_TOKEN
+```
+
+Prefer local login credentials instead of manually pasted JWTs. Provide them only through local
+environment variables:
+
+```text
+SMOKE_ADMIN_EMAIL
+SMOKE_ADMIN_PASSWORD
+SMOKE_ACCOUNTANT_EMAIL
+SMOKE_ACCOUNTANT_PASSWORD
+SMOKE_MANAGER_EMAIL
+SMOKE_MANAGER_PASSWORD
+SMOKE_WAREHOUSE_EMAIL
+SMOKE_WAREHOUSE_PASSWORD
+SMOKE_SALES_EMAIL
+SMOKE_SALES_PASSWORD
+SMOKE_VIEWER_EMAIL
+SMOKE_VIEWER_PASSWORD
+```
+
+Example:
+
+```powershell
+$env:PGRST_BASE_URL = "http://127.0.0.1:3500"
+$env:SMOKE_ADMIN_EMAIL = "admin@erp.com"
+$env:SMOKE_ADMIN_PASSWORD = "<local only>"
+$env:SMOKE_ACCOUNTANT_EMAIL = "accountant@erp.com"
+$env:SMOKE_ACCOUNTANT_PASSWORD = "<local only>"
+```
+
+Never commit passwords, JWTs, refresh tokens, access tokens, or JWT secrets.
+
+The smoke test verifies:
+
+- accountant chart-of-accounts access
+- backend-generated journal numbers
+- balanced manual journal creation and posting
+- unbalanced journal posting is blocked
+- closed-period posting is blocked, with the period restored afterward
+- posted journals cannot be edited or deleted through the table API
+- manager read-only behavior and blocked posting
+- warehouse, sales, and viewer accounting read denial
+- optional sales/supplier invoice accounting posting when unposted invoice fixtures exist
+- duplicate invoice accounting posting is blocked
+- invoice accounting posting does not change inventory
+- posted journals appear in the general ledger
+- accounting audit events are created
+
 ## Non-Goals
 
 Payments, bank reconciliation, inventory valuation, COGS, fiscal closing, exchange revaluation,

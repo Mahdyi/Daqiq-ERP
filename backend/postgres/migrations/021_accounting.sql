@@ -787,10 +787,12 @@ SELECT '2026-' || lpad(month_number::text, 2, '0'),
        (make_date(2026, month_number, 1) + interval '1 month - 1 day')::date,
        false
 FROM generate_series(1, 12) AS month_number
-ON CONFLICT (period_code) DO UPDATE
-SET period_name = EXCLUDED.period_name,
-    start_date = EXCLUDED.start_date,
-    end_date = EXCLUDED.end_date;
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM api.accounting_periods period
+  WHERE period.period_code = '2026-' || lpad(month_number::text, 2, '0')
+)
+ON CONFLICT (period_code) DO NOTHING;
 
 CREATE OR REPLACE VIEW api.gl_account_view
 WITH (security_invoker = true)
@@ -906,7 +908,8 @@ JOIN api.journal_entries entry ON entry.id = line.journal_entry_id
 JOIN api.gl_accounts account ON account.id = line.account_id
 JOIN api.lookup_values account_type ON account_type.id = account.account_type_lookup_value_id
 JOIN api.lookup_values source_type ON source_type.id = entry.source_type_lookup_value_id
-WHERE private.journal_status_code(entry.status_lookup_value_id) = 'posted';
+JOIN api.lookup_values status ON status.id = entry.status_lookup_value_id
+WHERE status.code = 'posted';
 
 CREATE OR REPLACE FUNCTION private.journal_entry_json(target_journal_entry_id uuid)
 RETURNS jsonb
