@@ -142,6 +142,36 @@ function First-Row {
   $rows[0]
 }
 
+function First-LookupValue {
+  param(
+    [Parameter(Mandatory)] [string] $Code,
+    [string] $PreferredCode,
+    [Parameter(Mandatory)] [string] $Token
+  )
+
+  $response = Invoke-PostgrestJson -Method POST -Path '/rpc/admin_list_lookup_values' -Token $Token -Body @{
+    lookup_type_code = $Code
+    active = $true
+    page_number = 1
+    page_size = 50
+  }
+  Assert-Status $response @(200) "Admin can list $Code lookups"
+  $items = @($response.Json.items)
+
+  if ($items.Count -eq 0) {
+    throw "Lookup type $Code has no active values."
+  }
+
+  if (-not [string]::IsNullOrWhiteSpace($PreferredCode)) {
+    $preferred = @($items | Where-Object { $_.code -eq $PreferredCode })
+    if ($preferred.Count -gt 0) {
+      return $preferred[0]
+    }
+  }
+
+  $items[0]
+}
+
 function Require-SmokeCredentialPlan {
   param([Parameter(Mandatory)] [object[]] $RoleConfigs)
 
@@ -276,27 +306,195 @@ function Get-InventoryQuantityTotal {
   $sum
 }
 
-function Find-UnpostedInvoice {
+function New-SalesInvoiceAccountingFixture {
   param(
-    [Parameter(Mandatory)] [string] $ViewName,
-    [Parameter(Mandatory)] [string] $StatusCode,
-    [Parameter(Mandatory)] [string] $SourceType,
-    [Parameter(Mandatory)] [string] $Token
+    [Parameter(Mandatory)] [string] $AdminToken,
+    [Parameter(Mandatory)] [string] $ManagerToken,
+    [Parameter(Mandatory)] [string] $SalesToken,
+    [Parameter(Mandatory)] [string] $WarehouseToken,
+    [Parameter(Mandatory)] [string] $AccountantToken
   )
 
-  $invoiceResponse = Invoke-PostgrestJson -Method GET -Path "/${ViewName}?status_code=eq.${StatusCode}&select=id,invoice_number,total_amount&order=created_at.asc&limit=20" -Token $Token
-  Assert-Status $invoiceResponse @(200, 206) "Accounting can list $ViewName candidates"
+  Write-Host 'Preparing deterministic issued sales invoice fixture...'
+  $customer = First-Row -Response (Invoke-PostgrestJson -Method GET -Path '/customers?active=eq.true&limit=1' -Token $AdminToken) -Name 'Active customer'
+  $product = First-Row -Response (Invoke-PostgrestJson -Method GET -Path '/products?active=eq.true&sellable=eq.true&track_inventory=eq.true&limit=1' -Token $AdminToken) -Name 'Inventory-tracked sellable product'
+  $warehouse = First-Row -Response (Invoke-PostgrestJson -Method GET -Path '/warehouses?active=eq.true&limit=1' -Token $AdminToken) -Name 'Active warehouse'
+  $currency = First-LookupValue -Code 'currency' -PreferredCode 'IRR' -Token $AdminToken
+  $taxRate = First-LookupValue -Code 'tax_rate' -PreferredCode 'standard' -Token $AdminToken
+  $today = (Get-Date).ToString('yyyy-MM-dd')
 
-  foreach ($invoice in @(Convert-Rows -Content $invoiceResponse.Content)) {
-    $linkResponse = Invoke-PostgrestJson -Method GET -Path "/accounting_source_links?source_type=eq.$SourceType&source_id=eq.$($invoice.id)&select=id&limit=1" -Token $Token
-    Assert-Status $linkResponse @(200, 206) "Accounting can check source link for $($invoice.invoice_number)"
+  Assert-Status (Invoke-PostgrestJson -Method POST -Path '/rpc/inventory_adjust_in' -Token $AdminToken -Body @{
+    product_id = $product.id
+    warehouse_id = $warehouse.id
+    storage_location_id = $null
+    quantity = 10
+    reason = 'Accounting smoke sales invoice fixture stock'
+  }) @(200) 'Admin can seed stock for accounting sales invoice fixture'
 
-    if (@(Convert-Rows -Content $linkResponse.Content).Count -eq 0) {
-      return $invoice
-    }
+  $orderResponse = Invoke-PostgrestJson -Method POST -Path '/rpc/create_sales_order' -Token $AdminToken -Body @{
+    customer_id = $customer.id
+    order_date = $today
+    requested_delivery_date = (Get-Date).AddDays(3).ToString('yyyy-MM-dd')
+    currency_lookup_value_id = $currency.id
+    delivery_warehouse_id = $warehouse.id
+    notes = 'Accounting smoke sales order'
+    lines = @(
+      @{
+        product_id = $product.id
+        quantity = 2
+        unit_lookup_value_id = $product.base_unit_lookup_value_id
+        unit_price = 100
+        tax_rate_lookup_value_id = $taxRate.id
+        description = 'Accounting smoke sales line'
+      }
+    )
+  }
+  Assert-Status $orderResponse @(200) 'Admin can create sales order for accounting fixture'
+  $salesOrder = $orderResponse.Json
+
+  Assert-Status (Invoke-PostgrestJson -Method POST -Path '/rpc/submit_sales_order' -Token $AdminToken -Body @{ sales_order_id = $salesOrder.id }) @(200) 'Admin can submit sales order for accounting fixture'
+  Assert-Status (Invoke-PostgrestJson -Method POST -Path '/rpc/confirm_sales_order' -Token $ManagerToken -Body @{ sales_order_id = $salesOrder.id }) @(200) 'Manager can confirm sales order for accounting fixture'
+
+  $orderLine = First-Row -Response (Invoke-PostgrestJson -Method GET -Path "/sales_order_line_view?sales_order_id=eq.$($salesOrder.id)&limit=1" -Token $AdminToken) -Name 'Sales order line for accounting fixture'
+  $deliveryResponse = Invoke-PostgrestJson -Method POST -Path '/rpc/post_sales_delivery' -Token $WarehouseToken -Body @{
+    sales_order_id = $salesOrder.id
+    delivery_date = $today
+    warehouse_id = $warehouse.id
+    notes = 'Accounting smoke sales delivery'
+    lines = @(
+      @{
+        salesOrderLineId = $orderLine.id
+        shippedQuantity = 1
+        storageLocationId = $null
+        notes = 'Accounting smoke shipment'
+      }
+    )
+  }
+  Assert-Status $deliveryResponse @(200) 'Warehouse can post sales delivery for accounting fixture'
+  $delivery = $deliveryResponse.Json
+  $deliveryLine = First-Row -Response (Invoke-PostgrestJson -Method GET -Path "/sales_delivery_line_view?sales_delivery_id=eq.$($delivery.id)&limit=1" -Token $AdminToken) -Name 'Sales delivery line for accounting fixture'
+
+  $invoiceResponse = Invoke-PostgrestJson -Method POST -Path '/rpc/create_sales_invoice_from_delivery' -Token $SalesToken -Body @{
+    sales_delivery_id = $delivery.id
+    invoice_date = $today
+    due_date = (Get-Date).AddDays(30).ToString('yyyy-MM-dd')
+    notes = 'Accounting smoke sales invoice'
+    lines = @(
+      @{
+        salesDeliveryLineId = $deliveryLine.id
+        quantity = 1
+        unitPrice = 100
+        taxRateLookupValueId = $taxRate.id
+        description = 'Accounting smoke sales invoice line'
+      }
+    )
+  }
+  Assert-Status $invoiceResponse @(200) 'Sales can create sales invoice for accounting fixture'
+  $invoice = $invoiceResponse.Json
+
+  Assert-Status (Invoke-PostgrestJson -Method POST -Path '/rpc/issue_sales_invoice' -Token $AccountantToken -Body @{ sales_invoice_id = $invoice.id }) @(200) 'Accountant can issue sales invoice for accounting fixture'
+  $issuedResponse = Invoke-PostgrestJson -Method GET -Path "/sales_invoice_view?id=eq.$($invoice.id)&select=id,invoice_number,total_amount,status_code&limit=1" -Token $AccountantToken
+  Assert-Status $issuedResponse @(200, 206) 'Accountant can reload issued sales invoice fixture'
+  $issued = First-Row -Response $issuedResponse -Name 'Issued sales invoice fixture'
+
+  if ($issued.status_code -ne 'issued') {
+    throw "Sales invoice fixture is not issued. Status=$($issued.status_code)"
   }
 
-  $null
+  Write-Host "PASS: Issued sales invoice fixture prepared: $($issued.invoice_number)"
+  $issued
+}
+
+function New-SupplierInvoiceAccountingFixture {
+  param(
+    [Parameter(Mandatory)] [string] $AdminToken,
+    [Parameter(Mandatory)] [string] $ManagerToken,
+    [Parameter(Mandatory)] [string] $WarehouseToken,
+    [Parameter(Mandatory)] [string] $AccountantToken
+  )
+
+  Write-Host 'Preparing deterministic posted supplier invoice fixture...'
+  $supplier = First-Row -Response (Invoke-PostgrestJson -Method GET -Path '/suppliers?active=eq.true&limit=1' -Token $AdminToken) -Name 'Active supplier'
+  $product = First-Row -Response (Invoke-PostgrestJson -Method GET -Path '/products?active=eq.true&purchasable=eq.true&track_inventory=eq.true&limit=1' -Token $AdminToken) -Name 'Inventory-tracked purchasable product'
+  $warehouse = First-Row -Response (Invoke-PostgrestJson -Method GET -Path '/warehouses?active=eq.true&limit=1' -Token $AdminToken) -Name 'Active warehouse'
+  $currency = First-LookupValue -Code 'currency' -PreferredCode 'IRR' -Token $AdminToken
+  $taxRate = First-LookupValue -Code 'tax_rate' -PreferredCode 'standard' -Token $AdminToken
+  $today = (Get-Date).ToString('yyyy-MM-dd')
+  $supplierInvoiceNumber = "ACC-SMOKE-SUP-$((Get-Date).ToString('yyyyMMddHHmmss'))"
+
+  $orderResponse = Invoke-PostgrestJson -Method POST -Path '/rpc/create_purchase_order' -Token $AdminToken -Body @{
+    supplier_id = $supplier.id
+    order_date = $today
+    expected_date = (Get-Date).AddDays(3).ToString('yyyy-MM-dd')
+    currency_lookup_value_id = $currency.id
+    delivery_warehouse_id = $warehouse.id
+    notes = 'Accounting smoke purchase order'
+    lines = @(
+      @{
+        product_id = $product.id
+        quantity = 2
+        unit_lookup_value_id = $product.base_unit_lookup_value_id
+        unit_price = 100
+        tax_rate_lookup_value_id = $taxRate.id
+        description = 'Accounting smoke purchase line'
+      }
+    )
+  }
+  Assert-Status $orderResponse @(200) 'Admin can create purchase order for accounting fixture'
+  $purchaseOrder = $orderResponse.Json
+
+  Assert-Status (Invoke-PostgrestJson -Method POST -Path '/rpc/submit_purchase_order' -Token $AdminToken -Body @{ purchase_order_id = $purchaseOrder.id }) @(200) 'Admin can submit purchase order for accounting fixture'
+  Assert-Status (Invoke-PostgrestJson -Method POST -Path '/rpc/approve_purchase_order' -Token $ManagerToken -Body @{ purchase_order_id = $purchaseOrder.id }) @(200) 'Manager can approve purchase order for accounting fixture'
+
+  $orderLine = First-Row -Response (Invoke-PostgrestJson -Method GET -Path "/purchase_order_line_view?purchase_order_id=eq.$($purchaseOrder.id)&limit=1" -Token $AdminToken) -Name 'Purchase order line for accounting fixture'
+  $receiptResponse = Invoke-PostgrestJson -Method POST -Path '/rpc/post_goods_receipt' -Token $WarehouseToken -Body @{
+    purchase_order_id = $purchaseOrder.id
+    receipt_date = $today
+    warehouse_id = $warehouse.id
+    notes = 'Accounting smoke goods receipt'
+    lines = @(
+      @{
+        purchase_order_line_id = $orderLine.id
+        received_quantity = 1
+        storage_location_id = $null
+        notes = 'Accounting smoke receipt line'
+      }
+    )
+  }
+  Assert-Status $receiptResponse @(200) 'Warehouse can post goods receipt for accounting fixture'
+  $receipt = $receiptResponse.Json
+  $receiptLine = First-Row -Response (Invoke-PostgrestJson -Method GET -Path "/goods_receipt_line_view?goods_receipt_id=eq.$($receipt.id)&limit=1" -Token $AdminToken) -Name 'Goods receipt line for accounting fixture'
+
+  $invoiceResponse = Invoke-PostgrestJson -Method POST -Path '/rpc/create_supplier_invoice_from_receipt' -Token $AccountantToken -Body @{
+    goods_receipt_id = $receipt.id
+    supplier_invoice_number = $supplierInvoiceNumber
+    invoice_date = $today
+    due_date = (Get-Date).AddDays(30).ToString('yyyy-MM-dd')
+    notes = 'Accounting smoke supplier invoice'
+    lines = @(
+      @{
+        goodsReceiptLineId = $receiptLine.id
+        quantity = 1
+        unitPrice = 100
+        taxRateLookupValueId = $taxRate.id
+        description = 'Accounting smoke supplier invoice line'
+      }
+    )
+  }
+  Assert-Status $invoiceResponse @(200) 'Accountant can create supplier invoice for accounting fixture'
+  $invoice = $invoiceResponse.Json
+
+  Assert-Status (Invoke-PostgrestJson -Method POST -Path '/rpc/post_supplier_invoice' -Token $AccountantToken -Body @{ supplier_invoice_id = $invoice.id }) @(200) 'Accountant can post supplier invoice for accounting fixture'
+  $postedResponse = Invoke-PostgrestJson -Method GET -Path "/supplier_invoice_view?id=eq.$($invoice.id)&select=id,invoice_number,total_amount,status_code&limit=1" -Token $AccountantToken
+  Assert-Status $postedResponse @(200, 206) 'Accountant can reload posted supplier invoice fixture'
+  $posted = First-Row -Response $postedResponse -Name 'Posted supplier invoice fixture'
+
+  if ($posted.status_code -ne 'posted') {
+    throw "Supplier invoice fixture is not posted. Status=$($posted.status_code)"
+  }
+
+  Write-Host "PASS: Posted supplier invoice fixture prepared: $($posted.invoice_number)"
+  $posted
 }
 
 function Invoke-InvoiceAccountingCheck {
@@ -304,15 +502,10 @@ function Invoke-InvoiceAccountingCheck {
     [Parameter(Mandatory)] [string] $Name,
     [Parameter(Mandatory)] [string] $RpcPath,
     [Parameter(Mandatory)] [string] $RequestKey,
-    [AllowNull()] $Invoice,
+    [Parameter(Mandatory)] $Invoice,
     [Parameter(Mandatory)] [string] $AccountantToken,
     [Parameter(Mandatory)] [string] $AdminToken
   )
-
-  if ($null -eq $Invoice) {
-    Write-Host "SKIP: $Name accounting posting needs an unposted source invoice fixture; no eligible fixture was found."
-    return
-  }
 
   $inventoryBefore = Get-InventoryQuantityTotal -Token $AdminToken
   $body = @{}
@@ -449,11 +642,11 @@ Assert-Status (Invoke-PostgrestJson -Method GET -Path '/gl_account_view?select=i
 Assert-Status (Invoke-PostgrestJson -Method GET -Path '/gl_account_view?select=id&limit=1' -Token $salesToken) @(401, 403, 404) 'Sales cannot read accounting'
 Assert-Status (Invoke-PostgrestJson -Method GET -Path '/gl_account_view?select=id&limit=1' -Token $viewerToken) @(401, 403, 404) 'Viewer cannot read accounting'
 
-Write-Host 'Checking optional invoice accounting fixtures...'
-$salesInvoice = Find-UnpostedInvoice -ViewName 'sales_invoice_view' -StatusCode 'issued' -SourceType 'sales_invoice' -Token $accountantToken
+Write-Host 'Checking invoice accounting fixtures...'
+$salesInvoice = New-SalesInvoiceAccountingFixture -AdminToken $adminToken -ManagerToken $managerToken -SalesToken $salesToken -WarehouseToken $warehouseToken -AccountantToken $accountantToken
 Invoke-InvoiceAccountingCheck -Name 'Sales invoice' -RpcPath '/rpc/post_sales_invoice_accounting' -RequestKey 'sales_invoice_id' -Invoice $salesInvoice -AccountantToken $accountantToken -AdminToken $adminToken
 
-$supplierInvoice = Find-UnpostedInvoice -ViewName 'supplier_invoice_view' -StatusCode 'posted' -SourceType 'supplier_invoice' -Token $accountantToken
+$supplierInvoice = New-SupplierInvoiceAccountingFixture -AdminToken $adminToken -ManagerToken $managerToken -WarehouseToken $warehouseToken -AccountantToken $accountantToken
 Invoke-InvoiceAccountingCheck -Name 'Supplier invoice' -RpcPath '/rpc/post_supplier_invoice_accounting' -RequestKey 'supplier_invoice_id' -Invoice $supplierInvoice -AccountantToken $accountantToken -AdminToken $adminToken
 
 Write-Host 'Checking audit events...'

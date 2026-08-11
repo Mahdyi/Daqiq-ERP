@@ -1,0 +1,40 @@
+<daqiq-page-container title="وضعیت تسویه فاکتورها" subtitle="مشاهده مانده فاکتورهای فروش و تأمین‌کننده">
+  <div pageActions class="settlement-page__actions">
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading()"
+      (pressed)="handleRefresh()"
+    />
+  </div>
+
+  @if (facade.error(); as error) {
+    <section class="settlement-page__error" role="alert">
+      <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+      <span>{{ error.message }}</span>
+    </section>
+  }
+
+  <daqiq-card>
+    <h2 class="settlement-page__heading">فاکتورهای فروش</h2>
+    <daqiq-data-table
+      [rows]="facade.salesItems()"
+      [columns]="salesColumns"
+      [loading]="facade.loading()"
+      [totalRecords]="facade.salesItems().length"
+      rowKey="salesInvoiceId"
+    />
+  </daqiq-card>
+
+  <daqiq-card>
+    <h2 class="settlement-page__heading">فاکتورهای تأمین‌کننده</h2>
+    <daqiq-data-table
+      [rows]="facade.supplierItems()"
+      [columns]="supplierColumns"
+      [loading]="facade.loading()"
+      [totalRecords]="facade.supplierItems().length"
+      rowKey="supplierInvoiceId"
+    />
+  </daqiq-card>
+</daqiq-page-container>

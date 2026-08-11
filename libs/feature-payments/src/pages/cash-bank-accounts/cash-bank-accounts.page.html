@@ -1,0 +1,41 @@
+<daqiq-page-container title="حساب‌های نقد و بانک" subtitle="مدیریت حساب‌های مورد استفاده برای دریافت و پرداخت">
+  <div pageActions class="payment-page__actions">
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading()"
+      (pressed)="handleRefresh()"
+    />
+  </div>
+
+  <daqiq-card>
+    <form class="payment-page__search" (submit)="$event.preventDefault(); handleSearchSubmit()">
+      <label class="payment-page__search-label" for="cash-bank-search">جستجو</label>
+      <input
+        id="cash-bank-search"
+        class="payment-page__search-input"
+        type="search"
+        [value]="searchTerm()"
+        placeholder="جستجو بر اساس کد یا نام حساب"
+        (input)="handleSearchInput($event)"
+      />
+      <daqiq-button label="جستجو" icon="pi pi-search" type="submit" />
+    </form>
+
+    @if (facade.error(); as error) {
+      <section class="payment-page__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    }
+
+    <daqiq-data-table
+      [rows]="facade.items()"
+      [columns]="columns"
+      [loading]="facade.loading()"
+      [totalRecords]="facade.totalItems()"
+      rowKey="id"
+    />
+  </daqiq-card>
+</daqiq-page-container>

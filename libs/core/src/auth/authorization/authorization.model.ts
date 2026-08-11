@@ -76,6 +76,15 @@ export type AppPermission =
   | 'chartOfAccounts.create'
   | 'chartOfAccounts.update'
   | 'chartOfAccounts.delete'
+  | 'payments.view'
+  | 'payments.create'
+  | 'payments.post'
+  | 'payments.cancel'
+  | 'payments.delete'
+  | 'cashBankAccounts.view'
+  | 'cashBankAccounts.create'
+  | 'cashBankAccounts.update'
+  | 'cashBankAccounts.delete'
   | 'users.view'
   | 'users.create'
   | 'users.update'
@@ -173,6 +182,15 @@ export const ROLE_PERMISSIONS = {
     'chartOfAccounts.create',
     'chartOfAccounts.update',
     'chartOfAccounts.delete',
+    'payments.view',
+    'payments.create',
+    'payments.post',
+    'payments.cancel',
+    'payments.delete',
+    'cashBankAccounts.view',
+    'cashBankAccounts.create',
+    'cashBankAccounts.update',
+    'cashBankAccounts.delete',
     'users.view',
     'users.create',
     'users.update',
@@ -241,6 +259,8 @@ export const ROLE_PERMISSIONS = {
     'accounting.view',
     'accountingPeriods.view',
     'chartOfAccounts.view',
+    'payments.view',
+    'cashBankAccounts.view',
     'settings.view',
     'lookups.view',
     'featureFlags.view'
@@ -277,7 +297,14 @@ export const ROLE_PERMISSIONS = {
     'accountingPeriods.update',
     'chartOfAccounts.view',
     'chartOfAccounts.create',
-    'chartOfAccounts.update'
+    'chartOfAccounts.update',
+    'payments.view',
+    'payments.create',
+    'payments.post',
+    'payments.cancel',
+    'cashBankAccounts.view',
+    'cashBankAccounts.create',
+    'cashBankAccounts.update'
   ],
   sales: [
     'dashboard.view',

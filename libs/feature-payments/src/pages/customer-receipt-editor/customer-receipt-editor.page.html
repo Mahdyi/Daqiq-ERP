@@ -1,0 +1,23 @@
+<daqiq-page-container title="ثبت دریافت مشتری" subtitle="ثبت دریافت و تخصیص آن به یک فاکتور فروش صادرشده">
+  <div pageActions class="payment-editor__actions">
+    <daqiq-button label="بازگشت" icon="pi pi-arrow-right" variant="secondary" routerLink="/payments/customer-receipts" />
+  </div>
+
+  <daqiq-card>
+    @if (facade.error(); as error) {
+      <section class="payment-editor__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    }
+
+    <daqiq-dynamic-form
+      [fields]="facade.fields()"
+      [initialValue]="initialValue"
+      [submitting]="facade.loading()"
+      [layout]="{ columns: 2, submitLabel: 'ثبت دریافت', cancelLabel: 'انصراف', showCancel: true }"
+      (submitted)="handleSubmit($event)"
+      (cancelled)="handleCancel()"
+    />
+  </daqiq-card>
+</daqiq-page-container>

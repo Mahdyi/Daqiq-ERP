@@ -1,0 +1,35 @@
+.payment-detail__actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.payment-detail__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+.payment-detail__grid div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.payment-detail__grid dt {
+  color: var(--text-color-secondary);
+  font-size: 0.85rem;
+}
+
+.payment-detail__grid dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.payment-detail__heading {
+  margin-block: 0 1rem;
+  font-size: 1rem;
+}
+
+.payment-detail__error {
+  color: var(--red-500);
+}

@@ -237,6 +237,53 @@ export const APP_NAVIGATION = [
     ]
   },
   {
+    id: 'payments',
+    label: 'دریافت و پرداخت',
+    icon: 'pi pi-wallet',
+    children: [
+      {
+        id: 'cash-bank-accounts',
+        label: 'حساب‌های نقد و بانک',
+        icon: 'pi pi-building-columns',
+        route: ['/payments/cash-bank-accounts'],
+        exact: false,
+        authorization: {
+          permissions: ['cashBankAccounts.view']
+        }
+      },
+      {
+        id: 'customer-receipts',
+        label: 'دریافت‌های مشتریان',
+        icon: 'pi pi-arrow-down-left',
+        route: ['/payments/customer-receipts'],
+        exact: false,
+        authorization: {
+          permissions: ['payments.view']
+        }
+      },
+      {
+        id: 'supplier-payments',
+        label: 'پرداخت‌های تأمین‌کنندگان',
+        icon: 'pi pi-arrow-up-right',
+        route: ['/payments/supplier-payments'],
+        exact: false,
+        authorization: {
+          permissions: ['payments.view']
+        }
+      },
+      {
+        id: 'payment-settlements',
+        label: 'وضعیت تسویه فاکتورها',
+        icon: 'pi pi-check-circle',
+        route: ['/payments/settlements'],
+        exact: false,
+        authorization: {
+          permissions: ['payments.view']
+        }
+      }
+    ]
+  },
+  {
     id: 'system-management',
     label: 'مدیریت سیستم',
     icon: 'pi pi-cog',

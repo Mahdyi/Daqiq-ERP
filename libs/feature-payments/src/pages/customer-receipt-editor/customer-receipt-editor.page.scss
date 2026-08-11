@@ -1,0 +1,12 @@
+.payment-editor__actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.payment-editor__error {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-block-end: 1rem;
+  color: var(--red-500);
+}

@@ -202,7 +202,8 @@ The smoke test verifies:
 - posted journals cannot be edited or deleted through the table API
 - manager read-only behavior and blocked posting
 - warehouse, sales, and viewer accounting read denial
-- optional sales/supplier invoice accounting posting when unposted invoice fixtures exist
+- deterministic sales/supplier invoice fixture preparation through the real upstream document flows
+- sales/supplier invoice accounting posting
 - duplicate invoice accounting posting is blocked
 - invoice accounting posting does not change inventory
 - posted journals appear in the general ledger

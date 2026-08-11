@@ -1,0 +1,52 @@
+<daqiq-page-container title="پرداخت‌های تأمین‌کنندگان" subtitle="مشاهده پرداخت‌های ثبت‌شده به تأمین‌کنندگان">
+  <div pageActions class="payment-page__actions">
+    @if (facade.canCreate()) {
+      <daqiq-button label="ثبت پرداخت" icon="pi pi-plus" (pressed)="handleCreate()" />
+    }
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading()"
+      (pressed)="handleRefresh()"
+    />
+  </div>
+
+  <daqiq-card>
+    <form class="payment-page__search" (submit)="$event.preventDefault(); handleSearchSubmit()">
+      <label class="payment-page__search-label" for="supplier-payment-search">جستجو</label>
+      <input
+        id="supplier-payment-search"
+        class="payment-page__search-input"
+        type="search"
+        [value]="searchTerm()"
+        placeholder="جستجو بر اساس شماره پرداخت، تأمین‌کننده یا شماره سند"
+        (input)="handleSearchInput($event)"
+      />
+      <daqiq-button label="جستجو" icon="pi pi-search" type="submit" />
+    </form>
+
+    @if (facade.error(); as error) {
+      <section class="payment-page__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    }
+
+    <daqiq-data-table
+      [rows]="facade.items()"
+      [columns]="columns"
+      [loading]="facade.loading()"
+      [totalRecords]="facade.totalItems()"
+      rowKey="id"
+      [rowActionsTemplate]="rowActions"
+      (rowActivated)="handleView($event)"
+    />
+
+    <ng-template #rowActions let-row="row">
+      <div class="payment-page__actions">
+        <daqiq-button label="جزئیات" icon="pi pi-eye" variant="text" (pressed)="handleView(row)" />
+      </div>
+    </ng-template>
+  </daqiq-card>
+</daqiq-page-container>

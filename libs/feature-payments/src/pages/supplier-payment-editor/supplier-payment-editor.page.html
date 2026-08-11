@@ -1,0 +1,23 @@
+<daqiq-page-container title="ثبت پرداخت تأمین‌کننده" subtitle="ثبت پرداخت و تخصیص آن به یک فاکتور تأمین‌کننده ثبت‌شده">
+  <div pageActions class="payment-editor__actions">
+    <daqiq-button label="بازگشت" icon="pi pi-arrow-right" variant="secondary" routerLink="/payments/supplier-payments" />
+  </div>
+
+  <daqiq-card>
+    @if (facade.error(); as error) {
+      <section class="payment-editor__error" role="alert">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+        <span>{{ error.message }}</span>
+      </section>
+    }
+
+    <daqiq-dynamic-form
+      [fields]="facade.fields()"
+      [initialValue]="initialValue"
+      [submitting]="facade.loading()"
+      [layout]="{ columns: 2, submitLabel: 'ثبت پرداخت', cancelLabel: 'انصراف', showCancel: true }"
+      (submitted)="handleSubmit($event)"
+      (cancelled)="handleCancel()"
+    />
+  </daqiq-card>
+</daqiq-page-container>

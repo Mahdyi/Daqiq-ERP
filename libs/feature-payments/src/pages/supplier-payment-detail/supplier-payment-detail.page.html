@@ -1,0 +1,35 @@
+<daqiq-page-container title="جزئیات پرداخت تأمین‌کننده" subtitle="مشاهده سند پرداخت و تخصیص‌های آن">
+  <div pageActions class="payment-detail__actions">
+    <daqiq-button label="بازگشت" icon="pi pi-arrow-right" variant="secondary" routerLink="/payments/supplier-payments" />
+  </div>
+
+  @if (facade.detailError(); as error) {
+    <section class="payment-detail__error" role="alert">{{ error.message }}</section>
+  }
+
+  @if (facade.selected(); as payment) {
+    <daqiq-card>
+      <dl class="payment-detail__grid">
+        <div><dt>شماره پرداخت</dt><dd>{{ payment.paymentNumber }}</dd></div>
+        <div><dt>تأمین‌کننده</dt><dd>{{ payment.supplierName }}</dd></div>
+        <div><dt>حساب نقد/بانک</dt><dd>{{ payment.cashBankAccountName }}</dd></div>
+        <div><dt>تاریخ</dt><dd>{{ formatDate(payment.paymentDate) }}</dd></div>
+        <div><dt>مبلغ</dt><dd>{{ formatMoney(payment.amount) }}</dd></div>
+        <div><dt>وضعیت</dt><dd>{{ payment.statusLabel }}</dd></div>
+        <div><dt>شماره سند</dt><dd>{{ formatNullable(payment.journalNumber) }}</dd></div>
+        <div><dt>ثبت‌کننده</dt><dd>{{ formatNullable(payment.postedByEmail) }}</dd></div>
+      </dl>
+    </daqiq-card>
+
+    <daqiq-card>
+      <h2 class="payment-detail__heading">تخصیص‌ها</h2>
+      <daqiq-data-table
+        [rows]="facade.allocations()"
+        [columns]="allocationColumns"
+        [loading]="facade.detailLoading()"
+        [totalRecords]="facade.allocations().length"
+        rowKey="id"
+      />
+    </daqiq-card>
+  }
+</daqiq-page-container>
