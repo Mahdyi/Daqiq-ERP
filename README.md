@@ -1,59 +1,227 @@
-# DaqiqErp
+# Daqiq ERP - Angular 20 + PostgreSQL/PostgREST Enterprise ERP Prototype
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.27.
+Daqiq ERP is a modular ERP prototype with a Persian RTL user interface, built with Angular 20, PostgreSQL, PostgREST, role-based access control, audit logging, inventory, purchasing, sales, accounting, and payments.
 
-## Development server
+This repository is an MVP Phase 1 and local demo-ready portfolio project. It is not presented as a fully production-hardened ERP.
 
-To start a local development server, run:
+## Key Features
 
-```bash
-ng serve
+Authentication and security:
+
+- PostgreSQL-backed login
+- JWT access tokens accepted by PostgREST
+- refresh tokens with rotation and logout revocation
+- role-based authorization
+- permission-aware Angular routes and navigation
+- PostgreSQL grants and row-level security as the final access-control boundary
+- user management
+- audit log and activity tracking
+
+Configuration and platform:
+
+- runtime settings
+- lookup/reference tables
+- feature flags
+- typed Angular API client
+- generic CRUD foundation
+- generic table and dynamic form infrastructure
+- backend health check
+- backend smoke-test runner
+- Playwright browser demo automation
+
+ERP modules:
+
+- customer master data
+- product/item master data
+- supplier master data
+- warehouses and storage locations
+- inventory balances and movements
+- purchase orders
+- goods receipts
+- supplier invoices
+- sales orders
+- sales deliveries/shipments
+- sales invoices
+- chart of accounts
+- journal entries
+- general ledger
+- cash/bank accounts
+- customer receipts
+- supplier payments
+- invoice settlement tracking
+
+## Tech Stack
+
+Frontend:
+
+- Angular 20
+- standalone components
+- Angular signals
+- OnPush change detection
+- strict TypeScript
+- PrimeNG/Sakai-inspired UI
+- Persian RTL layout
+- Playwright browser smoke tests
+
+Backend:
+
+- PostgreSQL
+- PostgREST
+- Docker Compose for local development
+- PostgreSQL constraints, grants, RLS, triggers, views, and RPCs
+- PowerShell smoke tests
+
+## Architecture Summary
+
+The main runtime path is:
+
+```text
+Angular ERP shell and feature libraries
+ApiClient
+PostgREST views/RPCs
+PostgreSQL schemas, constraints, RLS, and business functions
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Angular owns presentation, route guards, typed forms, typed tables, local UI state, and feature composition. The shared `ApiClient` is the intended HTTP entry point for frontend data access.
 
-## Code scaffolding
+PostgREST exposes the approved API schema. Read models are exposed through tables/views where safe. Business transactions that must be atomic are exposed through RPC functions.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+PostgreSQL is the source of truth for data integrity and security. Constraints, grants, RLS policies, triggers, and private helper functions enforce the rules even if a frontend button is hidden or bypassed.
 
-```bash
-ng generate component component-name
+Audit logging records important authentication, administration, security, and business events.
+
+More detail: [docs/architecture.md](docs/architecture.md)
+
+## Business Flows
+
+Purchase-to-pay:
+
+```text
+Supplier -> Purchase Order -> Goods Receipt -> Supplier Invoice -> Accounting Posting -> Supplier Payment
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Order-to-cash:
 
-```bash
-ng generate --help
+```text
+Customer -> Sales Order -> Sales Delivery -> Sales Invoice -> Accounting Posting -> Customer Receipt
 ```
 
-## Building
+Inventory:
 
-To build the project run:
-
-```bash
-ng build
+```text
+Goods Receipt -> Inventory Increase
+Sales Delivery -> Inventory Decrease
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Accounting:
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
+```text
+Invoice -> Journal Entry -> General Ledger
+Payment -> Journal Entry -> Settlement
 ```
 
-## Running end-to-end tests
+## Running Locally
 
-For end-to-end (e2e) testing, run:
+Start the backend:
 
-```bash
-ng e2e
+```powershell
+docker compose --env-file backend/.env -f backend/docker-compose.yml up -d
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Set local URLs:
 
-## Additional Resources
+```powershell
+$env:PGRST_BASE_URL = "http://127.0.0.1:3500"
+$env:ERP_APP_BASE_URL = "http://localhost:4200"
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Run backend health and smoke checks:
+
+```powershell
+npm run health:backend
+npm run smoke:backend
+```
+
+Build and start Angular:
+
+```powershell
+npm run build
+npm start
+```
+
+Run the browser demo smoke:
+
+```powershell
+npm run e2e:demo
+```
+
+Headed browser rehearsal:
+
+```powershell
+npm run e2e:demo:headed
+```
+
+## Environment Variables
+
+Use local-only environment variables for smoke tests and browser demo credentials.
+
+Templates:
+
+- [backend/postgrest/.env.smoke.example](backend/postgrest/.env.smoke.example)
+- [e2e/.env.e2e.example](e2e/.env.e2e.example)
+
+Never commit local secrets, JWTs, passwords, refresh tokens, database dumps with private data, or local `.env` files.
+
+## Demo Documentation
+
+- [Demo readiness guide](docs/demo-readiness.md)
+- [Browser demo automation](docs/browser-demo-automation.md)
+- [Presenter script](docs/presenter-script.md)
+- [UI demo checklist](docs/ui-demo-checklist.md)
+- [Screenshot guide](docs/screenshot-guide.md)
+- [Portfolio case study](docs/portfolio-case-study.md)
+
+## Project Status
+
+MVP Phase 1 is completed and local demo-ready.
+
+Verified workflow:
+
+- backend health check passes
+- all backend smoke tests pass
+- Angular build passes
+- Playwright browser demo smoke passes
+
+This project is portfolio-grade and suitable for technical demonstration. It still needs a production security review, deployment hardening, CI/CD, and operational controls before real production use.
+
+## Known Limitations
+
+Not implemented yet:
+
+- production deployment pipeline
+- CI/CD
+- bank reconciliation
+- financial statements
+- approval workflow
+- PDF printing
+- email sending
+- lot/serial tracking
+- advanced reporting
+- production identity-provider integration
+- production security hardening review
+
+## Recommended Next Step
+
+Step 38: Reporting Foundation.
+
+Candidate reports:
+
+- inventory on hand
+- inventory movement history
+- purchase order status
+- sales order status
+- invoice settlement
+- AR/AP open amounts
+- general ledger summary
+- payment summary
+- audit activity summary

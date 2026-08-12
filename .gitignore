@@ -10,6 +10,9 @@
 /node_modules
 npm-debug.log
 yarn-error.log
+*.dump
+*.backup
+*.bak
 
 # IDEs and editors
 .idea/
@@ -39,6 +42,7 @@ testem.log
 __screenshots__/
 /playwright-report/
 /test-results/
+/local-demo-media/
 
 # Backend local secrets
 /backend/.env
