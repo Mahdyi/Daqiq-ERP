@@ -1,0 +1,38 @@
+<daqiq-page-container title="گزارش‌های انبار" subtitle="موجودی کالاها و خلاصه گردش موجودی">
+  <div pageActions class="reports-page__actions">
+    <daqiq-button
+      label="به‌روزرسانی"
+      icon="pi pi-refresh"
+      variant="secondary"
+      [loading]="facade.loading()"
+      (pressed)="handleRefresh()"
+    />
+  </div>
+
+  @if (facade.error(); as error) {
+    <section class="reports-page__error" role="alert">
+      <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+      <span>{{ error.message }}</span>
+    </section>
+  }
+
+  <daqiq-card title="موجودی کالاها">
+    <daqiq-data-table
+      [rows]="facade.onHandItems()"
+      [columns]="onHandColumns"
+      [loading]="facade.loading()"
+      [totalRecords]="facade.onHandItems().length"
+      [rowKey]="onHandRowKey"
+    />
+  </daqiq-card>
+
+  <daqiq-card title="خلاصه گردش موجودی">
+    <daqiq-data-table
+      [rows]="facade.movementSummaryItems()"
+      [columns]="movementColumns"
+      [loading]="facade.loading()"
+      [totalRecords]="facade.movementSummaryItems().length"
+      [rowKey]="movementRowKey"
+    />
+  </daqiq-card>
+</daqiq-page-container>

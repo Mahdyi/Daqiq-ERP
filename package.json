@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve erp-shell",
     "build": "ng build erp-shell",
-    "build:all": "ng build core && ng build shared && ng build ui && ng build feature-auth && ng build feature-dashboard && ng build feature-customers && ng build feature-users && ng build feature-audit && ng build feature-settings && ng build feature-products && ng build feature-suppliers && ng build feature-warehouses && ng build feature-inventory && ng build feature-purchasing && ng build feature-sales && ng build feature-accounting && ng build feature-payments && ng build erp-shell",
+    "build:all": "ng build core && ng build shared && ng build ui && ng build feature-auth && ng build feature-dashboard && ng build feature-customers && ng build feature-users && ng build feature-audit && ng build feature-settings && ng build feature-products && ng build feature-suppliers && ng build feature-warehouses && ng build feature-inventory && ng build feature-purchasing && ng build feature-sales && ng build feature-accounting && ng build feature-payments && ng build feature-reports && ng build erp-shell",
     "health:backend": "powershell -ExecutionPolicy Bypass -File backend/postgrest/check-dev-health.ps1",
     "smoke:backend": "powershell -ExecutionPolicy Bypass -File backend/postgrest/run-all-smoke-tests.ps1",
     "e2e:demo": "powershell -ExecutionPolicy Bypass -File e2e/run-demo-smoke.ps1",

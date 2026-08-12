@@ -1,0 +1,25 @@
+<daqiq-page-container title="گزارش‌ها" subtitle="نمای کلی گزارش‌های عملیاتی خواندنی سامانه">
+  @if (facade.visibleCategories().length === 0) {
+    <daqiq-empty-state
+      icon="pi pi-chart-bar"
+      message="گزارشی برای نقش فعلی شما در دسترس نیست."
+      description="دسترسی گزارش‌ها بر اساس نقش و مجوزهای سامانه کنترل می‌شود."
+    />
+  } @else {
+    <div class="reports-overview__grid">
+      @for (category of facade.visibleCategories(); track category.permission) {
+        <a class="reports-overview__link" [routerLink]="category.route">
+          <daqiq-card>
+            <div class="reports-overview__card">
+              <i [class]="category.icon" aria-hidden="true"></i>
+              <div>
+                <h2>{{ category.title }}</h2>
+                <p>{{ category.description }}</p>
+              </div>
+            </div>
+          </daqiq-card>
+        </a>
+      }
+    </div>
+  }
+</daqiq-page-container>

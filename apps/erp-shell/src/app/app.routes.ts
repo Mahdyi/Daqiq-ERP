@@ -69,6 +69,11 @@ export const routes: Routes = [
           import('@daqiq/feature-payments').then((payments) => payments.PAYMENTS_ROUTES)
       },
       {
+        path: 'reports',
+        loadChildren: () =>
+          import('@daqiq/feature-reports').then((reports) => reports.REPORT_ROUTES)
+      },
+      {
         path: 'admin/users',
         loadChildren: () => import('@daqiq/feature-users').then((users) => users.USER_ROUTES)
       },

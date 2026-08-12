@@ -40,7 +40,8 @@ $smokeTests = @(
   'smoke-test-sales-invoices.ps1',
   'smoke-test-supplier-invoices.ps1',
   'smoke-test-accounting.ps1',
-  'smoke-test-payments.ps1'
+  'smoke-test-payments.ps1',
+  'smoke-test-reports.ps1'
 )
 
 Write-Host "Daqiq ERP smoke-test runner"

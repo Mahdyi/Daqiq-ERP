@@ -44,6 +44,8 @@
       "@daqiq/feature-accounting/*": ["libs/feature-accounting/src/*"],
       "@daqiq/feature-payments": ["libs/feature-payments/src/public-api.ts"],
       "@daqiq/feature-payments/*": ["libs/feature-payments/src/*"],
+      "@daqiq/feature-reports": ["libs/feature-reports/src/public-api.ts"],
+      "@daqiq/feature-reports/*": ["libs/feature-reports/src/*"],
       "@daqiq/shared": ["libs/shared/src/public-api.ts"],
       "@daqiq/shared/*": ["libs/shared/src/*"],
       "@daqiq/ui": ["libs/ui/src/public-api.ts"],

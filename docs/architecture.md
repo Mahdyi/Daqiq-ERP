@@ -71,6 +71,8 @@ private   helper functions, auth storage, refresh sessions, audit internals
 
 Views provide read models for the UI. RPCs own transactions such as posting goods receipts, deliveries, invoices, journals, receipts, and payments.
 
+Reporting views provide read-only operational summaries. PostgreSQL owns report totals and grouping logic; Angular renders the resulting rows and filters.
+
 ## 4. Security Model
 
 ```mermaid
@@ -188,6 +190,7 @@ feature-purchasing    purchase orders, goods receipts, supplier invoices
 feature-sales         sales orders, deliveries, sales invoices
 feature-accounting    chart of accounts, periods, journals, general ledger
 feature-payments      cash/bank accounts, receipts, payments, settlements
+feature-reports       read-only operational reports
 ```
 
 ## 7. Verification Architecture
@@ -198,6 +201,7 @@ Backend verification:
 - tests log in through `/rpc/login`
 - tests use real role boundaries
 - tests verify business rules and audit events
+- report smoke tests verify read-only views and reporting role boundaries
 
 Browser verification:
 

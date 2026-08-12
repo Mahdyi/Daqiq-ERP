@@ -82,6 +82,7 @@ Persian RTL enterprise UI:
 - chart of accounts, journals, and general ledger
 - customer receipts and supplier payments
 - settlement tracking
+- read-only reporting foundation
 - backend smoke-test runner
 - Playwright browser demo smoke
 - presenter and demo documentation
@@ -111,19 +112,15 @@ Verified:
 
 ## 8. Next Roadmap
 
-Recommended next step: Reporting Foundation.
+Recommended next step: Reporting Filters, Export Preparation, and KPI Cards.
 
-Potential reports:
+Potential next reporting improvements:
 
-- inventory on hand
-- inventory movement history
-- purchase order status
-- sales order status
-- invoice settlement
-- AR/AP open amounts
-- general ledger summary
-- payment summary
-- audit activity summary
+- date and entity filters
+- KPI summary cards
+- export-safe DTO shaping
+- AR/AP aging preparation
+- financial-statement groundwork
 
 Later product areas:
 

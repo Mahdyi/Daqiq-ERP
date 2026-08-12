@@ -97,7 +97,14 @@ export type AppPermission =
   | 'lookups.update'
   | 'lookups.delete'
   | 'featureFlags.view'
-  | 'featureFlags.update';
+  | 'featureFlags.update'
+  | 'reports.view'
+  | 'reports.inventory.view'
+  | 'reports.purchasing.view'
+  | 'reports.sales.view'
+  | 'reports.accounting.view'
+  | 'reports.payments.view'
+  | 'reports.audit.view';
 
 export interface AuthorizationPolicy {
   readonly roles?: readonly AppRole[];
@@ -203,7 +210,14 @@ export const ROLE_PERMISSIONS = {
     'lookups.update',
     'lookups.delete',
     'featureFlags.view',
-    'featureFlags.update'
+    'featureFlags.update',
+    'reports.view',
+    'reports.inventory.view',
+    'reports.purchasing.view',
+    'reports.sales.view',
+    'reports.accounting.view',
+    'reports.payments.view',
+    'reports.audit.view'
   ],
   manager: [
     'dashboard.view',
@@ -263,7 +277,12 @@ export const ROLE_PERMISSIONS = {
     'cashBankAccounts.view',
     'settings.view',
     'lookups.view',
-    'featureFlags.view'
+    'featureFlags.view',
+    'reports.view',
+    'reports.inventory.view',
+    'reports.purchasing.view',
+    'reports.sales.view',
+    'reports.payments.view'
   ],
   accountant: [
     'dashboard.view',
@@ -304,7 +323,10 @@ export const ROLE_PERMISSIONS = {
     'payments.cancel',
     'cashBankAccounts.view',
     'cashBankAccounts.create',
-    'cashBankAccounts.update'
+    'cashBankAccounts.update',
+    'reports.view',
+    'reports.accounting.view',
+    'reports.payments.view'
   ],
   sales: [
     'dashboard.view',
@@ -323,7 +345,9 @@ export const ROLE_PERMISSIONS = {
     'salesDeliveries.view',
     'salesDeliveries.create',
     'salesInvoices.view',
-    'salesInvoices.create'
+    'salesInvoices.create',
+    'reports.view',
+    'reports.sales.view'
   ],
   warehouse: [
     'dashboard.view',
@@ -348,7 +372,9 @@ export const ROLE_PERMISSIONS = {
     'receiving.view',
     'receiving.create',
     'receiving.post',
-    'supplierInvoices.view'
+    'supplierInvoices.view',
+    'reports.view',
+    'reports.inventory.view'
   ],
   viewer: ['dashboard.view']
 } satisfies Record<AppRole, readonly AppPermission[]>;

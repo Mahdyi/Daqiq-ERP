@@ -284,6 +284,83 @@ export const APP_NAVIGATION = [
     ]
   },
   {
+    id: 'reports',
+    label: 'گزارش‌ها',
+    icon: 'pi pi-chart-bar',
+    children: [
+      {
+        id: 'reports-overview',
+        label: 'نمای کلی گزارش‌ها',
+        icon: 'pi pi-chart-line',
+        route: ['/reports'],
+        exact: true,
+        authorization: {
+          permissions: ['reports.view']
+        }
+      },
+      {
+        id: 'inventory-reports',
+        label: 'گزارش‌های انبار',
+        icon: 'pi pi-box',
+        route: ['/reports/inventory'],
+        exact: false,
+        authorization: {
+          permissions: ['reports.inventory.view']
+        }
+      },
+      {
+        id: 'purchasing-reports',
+        label: 'گزارش‌های خرید',
+        icon: 'pi pi-shopping-cart',
+        route: ['/reports/purchasing'],
+        exact: false,
+        authorization: {
+          permissions: ['reports.purchasing.view']
+        }
+      },
+      {
+        id: 'sales-reports',
+        label: 'گزارش‌های فروش',
+        icon: 'pi pi-shopping-bag',
+        route: ['/reports/sales'],
+        exact: false,
+        authorization: {
+          permissions: ['reports.sales.view']
+        }
+      },
+      {
+        id: 'accounting-reports',
+        label: 'گزارش‌های حسابداری',
+        icon: 'pi pi-calculator',
+        route: ['/reports/accounting'],
+        exact: false,
+        authorization: {
+          permissions: ['reports.accounting.view']
+        }
+      },
+      {
+        id: 'payment-reports',
+        label: 'گزارش‌های دریافت و پرداخت',
+        icon: 'pi pi-wallet',
+        route: ['/reports/payments'],
+        exact: false,
+        authorization: {
+          permissions: ['reports.payments.view']
+        }
+      },
+      {
+        id: 'audit-reports',
+        label: 'گزارش فعالیت‌ها',
+        icon: 'pi pi-history',
+        route: ['/reports/audit'],
+        exact: false,
+        authorization: {
+          permissions: ['reports.audit.view']
+        }
+      }
+    ]
+  },
+  {
     id: 'system-management',
     label: 'مدیریت سیستم',
     icon: 'pi pi-cog',

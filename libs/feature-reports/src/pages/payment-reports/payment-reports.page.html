@@ -1,0 +1,16 @@
+<daqiq-page-container title="گزارش‌های دریافت و پرداخت" subtitle="خلاصه دریافت‌ها و پرداخت‌های ثبت‌شده">
+  <div pageActions class="reports-page__actions">
+    <daqiq-button label="به‌روزرسانی" icon="pi pi-refresh" variant="secondary" [loading]="facade.loading()" (pressed)="handleRefresh()" />
+  </div>
+
+  @if (facade.error(); as error) {
+    <section class="reports-page__error" role="alert">
+      <i class="pi pi-exclamation-triangle" aria-hidden="true"></i>
+      <span>{{ error.message }}</span>
+    </section>
+  }
+
+  <daqiq-card title="خلاصه پرداخت‌ها و دریافت‌ها">
+    <daqiq-data-table [rows]="facade.paymentSummaryItems()" [columns]="columns" [loading]="facade.loading()" [totalRecords]="facade.paymentSummaryItems().length" [rowKey]="rowKey" />
+  </daqiq-card>
+</daqiq-page-container>

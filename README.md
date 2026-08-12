@@ -49,6 +49,7 @@ ERP modules:
 - customer receipts
 - supplier payments
 - invoice settlement tracking
+- read-only operational reports
 
 ## Tech Stack
 
@@ -89,6 +90,8 @@ PostgREST exposes the approved API schema. Read models are exposed through table
 PostgreSQL is the source of truth for data integrity and security. Constraints, grants, RLS policies, triggers, and private helper functions enforce the rules even if a frontend button is hidden or bypassed.
 
 Audit logging records important authentication, administration, security, and business events.
+
+Reporting views summarize inventory, purchasing, sales, settlements, accounting, payments, and audit activity. They are read-only operational reports, not external BI dashboards or financial statements.
 
 More detail: [docs/architecture.md](docs/architecture.md)
 
@@ -191,6 +194,7 @@ Verified workflow:
 - all backend smoke tests pass
 - Angular build passes
 - Playwright browser demo smoke passes
+- reporting foundation build and smoke checks are available
 
 This project is portfolio-grade and suitable for technical demonstration. It still needs a production security review, deployment hardening, CI/CD, and operational controls before real production use.
 
@@ -206,22 +210,18 @@ Not implemented yet:
 - PDF printing
 - email sending
 - lot/serial tracking
-- advanced reporting
+- advanced BI/report builder
 - production identity-provider integration
 - production security hardening review
 
 ## Recommended Next Step
 
-Step 38: Reporting Foundation.
+Step 39: Reporting Filters, Export Preparation, and KPI Cards.
 
-Candidate reports:
+Candidate next reporting improvements:
 
-- inventory on hand
-- inventory movement history
-- purchase order status
-- sales order status
-- invoice settlement
-- AR/AP open amounts
-- general ledger summary
-- payment summary
-- audit activity summary
+- date and entity filters across report pages
+- lightweight KPI summary cards
+- export-safe row shaping
+- AR/AP aging preparation
+- financial-statement groundwork
