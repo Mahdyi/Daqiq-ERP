@@ -28,6 +28,20 @@ Run:
 powershell -ExecutionPolicy Bypass -File backend/postgrest/smoke-test-payments.ps1
 ```
 
+For complete demo readiness, run the shared health check and smoke-test orchestrator:
+
+```powershell
+$env:PGRST_BASE_URL = "http://127.0.0.1:3500"
+powershell -ExecutionPolicy Bypass -File backend/postgrest/check-dev-health.ps1
+powershell -ExecutionPolicy Bypass -File backend/postgrest/run-all-smoke-tests.ps1
+```
+
+Smoke-test conventions are documented in:
+
+```text
+docs/smoke-test-conventions.md
+```
+
 ## Read Endpoints
 
 ```text
@@ -108,7 +122,7 @@ The backend enforces allocation rules, wrong-party blocking, over-allocation blo
 The smoke test verifies:
 
 * accountant can view cash/bank accounts
-* accountant can post customer receipt and supplier payment when eligible invoice settlement rows exist
+* accountant can post customer receipt and supplier payment against fresh deterministic invoice fixtures
 * payment journals are balanced and visible in the general ledger
 * invoice remaining amounts decrease after payment
 * over-allocation and wrong-party allocations are blocked

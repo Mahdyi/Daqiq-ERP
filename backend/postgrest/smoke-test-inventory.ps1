@@ -130,8 +130,10 @@ foreach ($allowed in @(
   Assert-Status (Invoke-Api -Method GET -Path '/inventory_movement_view?limit=1' -Token $allowed.Token) @(200, 206) "$($allowed.Name) can list movements"
 }
 
+Assert-Status (Invoke-Api -Method GET -Path '/inventory_balance_view?limit=1' -Token $sales.accessToken) @(200, 206) 'Sales can list balances for sales availability checks'
+Assert-Status (Invoke-Api -Method GET -Path '/inventory_movement_view?limit=1' -Token $sales.accessToken) @(401, 403) 'Sales cannot list inventory movement history'
+
 foreach ($blocked in @(
-  @{ Name = 'Sales'; Token = $sales.accessToken },
   @{ Name = 'Viewer'; Token = $viewer.accessToken }
 )) {
   Assert-Status (Invoke-Api -Method GET -Path '/inventory_balance_view?limit=1' -Token $blocked.Token) @(401, 403) "$($blocked.Name) cannot list balances"

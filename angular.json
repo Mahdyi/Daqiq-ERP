@@ -64,7 +64,7 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
-            "proxyConfig": "apps/erp-shell/proxy.conf.json"
+            "proxyConfig": "apps/erp-shell/proxy.conf.cjs"
           },
           "configurations": {
             "production": {

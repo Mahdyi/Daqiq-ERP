@@ -6,7 +6,7 @@
       <p>{{ labels.subtitle }}</p>
     </div>
 
-    <form class="auth-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <form class="auth-form" data-testid="login-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
       <label class="auth-field">
         <span>{{ labels.email }}</span>
         <input
@@ -15,6 +15,7 @@
           autocomplete="username"
           dir="ltr"
           formControlName="email"
+          data-testid="login-email"
           [placeholder]="labels.emailPlaceholder"
           [attr.aria-invalid]="emailControl.invalid && emailControl.touched"
         />
@@ -32,6 +33,7 @@
           type="password"
           autocomplete="current-password"
           formControlName="password"
+          data-testid="login-password"
           [placeholder]="labels.passwordPlaceholder"
           [attr.aria-invalid]="passwordControl.invalid && passwordControl.touched"
         />
@@ -50,6 +52,7 @@
       <daqiq-button
         type="submit"
         icon="pi pi-sign-in"
+        data-testid="login-submit"
         [label]="auth.isLoading() ? labels.submitting : labels.submit"
         [loading]="auth.isLoading()"
         [disabled]="form.invalid || auth.isLoading()"

@@ -59,6 +59,7 @@ interface ThemePreferenceOption {
         <button
           class="erp-logout-button"
           type="button"
+          data-testid="shell-logout"
           [disabled]="logoutPending()"
           aria-label="خروج از سامانه"
           (click)="logout()"

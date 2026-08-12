@@ -13,8 +13,8 @@ import { TopbarComponent } from './topbar.component';
   selector: 'app-shell-layout',
   imports: [BreadcrumbComponent, FooterComponent, RouterOutlet, SidebarComponent, TopbarComponent],
   template: `
-    <div class="erp-shell" [class.erp-shell--sidebar-collapsed]="sidebarCollapsed()">
-      <div class="erp-shell__sidebar">
+    <div class="erp-shell" data-testid="app-shell" [class.erp-shell--sidebar-collapsed]="sidebarCollapsed()">
+      <div class="erp-shell__sidebar" data-testid="app-sidebar">
         <app-sidebar
           [collapsed]="sidebarCollapsed()"
           [items]="navigation.items()"
@@ -33,7 +33,7 @@ import { TopbarComponent } from './topbar.component';
         <main class="erp-shell__body">
           <daqiq-breadcrumb />
 
-          <section class="erp-shell__content" [attr.aria-label]="labels.pageContent">
+          <section class="erp-shell__content" data-testid="app-content" [attr.aria-label]="labels.pageContent">
             <router-outlet />
           </section>
 

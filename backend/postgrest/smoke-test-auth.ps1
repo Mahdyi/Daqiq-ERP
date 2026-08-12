@@ -219,7 +219,7 @@ try {
   Assert-Status $accountantCreate @(401, 403, 405) 'Accountant token cannot create customer'
 
   $warehouseList = Invoke-Api -Method GET -Path '/customers?limit=1' -Token $warehouse.accessToken
-  Assert-Status $warehouseList @(401, 403) 'Warehouse token cannot list customers'
+  Assert-Status $warehouseList @(200, 206) 'Warehouse token can list customers for delivery workflows'
 }
 finally {
   Invoke-Api `

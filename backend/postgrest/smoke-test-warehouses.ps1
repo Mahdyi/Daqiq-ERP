@@ -79,14 +79,14 @@ foreach ($allowed in @(
   @{ Name = 'Admin'; Token = $admin.accessToken },
   @{ Name = 'Manager'; Token = $manager.accessToken },
   @{ Name = 'Accountant'; Token = $accountant.accessToken },
-  @{ Name = 'Warehouse'; Token = $warehouse.accessToken }
+  @{ Name = 'Warehouse'; Token = $warehouse.accessToken },
+  @{ Name = 'Sales'; Token = $sales.accessToken }
 )) {
   Assert-Status (Invoke-Api -Method GET -Path '/warehouses?limit=1' -Token $allowed.Token) @(200, 206) "$($allowed.Name) can list warehouses"
   Assert-Status (Invoke-Api -Method GET -Path '/storage_locations?limit=1' -Token $allowed.Token) @(200, 206) "$($allowed.Name) can list storage locations"
 }
 
 foreach ($blocked in @(
-  @{ Name = 'Sales'; Token = $sales.accessToken },
   @{ Name = 'Viewer'; Token = $viewer.accessToken }
 )) {
   Assert-Status (Invoke-Api -Method GET -Path '/warehouses?limit=1' -Token $blocked.Token) @(401, 403) "$($blocked.Name) cannot list warehouses"

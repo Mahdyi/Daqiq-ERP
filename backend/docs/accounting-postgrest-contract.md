@@ -192,6 +192,21 @@ $env:SMOKE_ACCOUNTANT_PASSWORD = "<local only>"
 
 Never commit passwords, JWTs, refresh tokens, access tokens, or JWT secrets.
 
+For full local demo verification, prefer the operations scripts:
+
+```powershell
+$env:PGRST_BASE_URL = "http://127.0.0.1:3500"
+powershell -ExecutionPolicy Bypass -File backend/postgrest/check-dev-health.ps1
+powershell -ExecutionPolicy Bypass -File backend/postgrest/run-all-smoke-tests.ps1
+```
+
+See:
+
+```text
+docs/demo-readiness.md
+docs/smoke-test-conventions.md
+```
+
 The smoke test verifies:
 
 - accountant chart-of-accounts access

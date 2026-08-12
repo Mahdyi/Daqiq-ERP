@@ -37,9 +37,15 @@ yarn-error.log
 testem.log
 /typings
 __screenshots__/
+/playwright-report/
+/test-results/
 
 # Backend local secrets
 /backend/.env
+/backend/postgrest/.env.smoke.ps1
+/backend/postgrest/*.local.ps1
+/e2e/.env.e2e.ps1
+/e2e/*.local.ps1
 
 # System files
 .DS_Store

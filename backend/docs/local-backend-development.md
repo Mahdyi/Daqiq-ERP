@@ -32,7 +32,7 @@ backend/
 3. Start manually when needed:
 
    ```powershell
-   docker compose --env-file backend/.env -f backend/docker-compose.yml up
+   docker compose --env-file backend/.env -f backend/docker-compose.yml up -d
    ```
 
 The setup does not auto-start containers.
@@ -83,30 +83,33 @@ Only do this for local disposable data.
 
 ## Smoke Tests
 
-After starting the local backend, the auth smoke script can log in with development users and
-exercise PostgREST with returned JWTs:
+After starting the local backend, set the PostgREST base URL. On this Windows development
+machine the configured PostgREST port may be `3500` because `3000` can be unavailable:
 
 ```powershell
-$env:PGRST_BASE_URL = 'http://127.0.0.1:3000'
-pwsh backend/postgrest/smoke-test-auth.ps1
+$env:PGRST_BASE_URL = 'http://127.0.0.1:3500'
 ```
 
-The older customer smoke script expects externally supplied tokens. Use it only when you
-need to test manually supplied JWTs:
+Run the local health check:
 
 ```powershell
-$env:PGRST_ADMIN_TOKEN = '<local-admin-test-token>'
-$env:PGRST_MANAGER_TOKEN = '<local-manager-test-token>'
-$env:PGRST_ACCOUNTANT_TOKEN = '<local-accountant-test-token>'
-$env:PGRST_WAREHOUSE_TOKEN = '<local-warehouse-test-token>'
-$env:PGRST_BASE_URL = 'http://127.0.0.1:3000'
+powershell -ExecutionPolicy Bypass -File backend/postgrest/check-dev-health.ps1
 ```
 
-Then run:
+Run all smoke tests in dependency order:
 
 ```powershell
-pwsh backend/postgrest/smoke-test-customers.ps1
+powershell -ExecutionPolicy Bypass -File backend/postgrest/run-all-smoke-tests.ps1
 ```
 
-Smoke scripts do not store tokens. They create records with smoke-test code prefixes and
-clean them up with an admin token.
+Smoke scripts do not store tokens. Prefer `/rpc/login` with local-only smoke credentials.
+Use `backend/postgrest/.env.smoke.example` as a placeholder template. If you copy it to
+`backend/postgrest/.env.smoke.ps1`, the health and run-all smoke scripts will auto-load it.
+Never commit a real smoke credential file.
+
+See also:
+
+```text
+docs/demo-readiness.md
+docs/smoke-test-conventions.md
+```

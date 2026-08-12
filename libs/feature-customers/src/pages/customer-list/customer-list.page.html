@@ -1,7 +1,4 @@
-<daqiq-page-container
-  title="مشتریان"
-  subtitle="مدیریت اطلاعات پایه مشتریان"
->
+<daqiq-page-container title="مشتریان" subtitle="مدیریت اطلاعات پایه مشتریان">
   <div pageActions class="customer-list__actions">
     <daqiq-button
       label="به‌روزرسانی"
@@ -12,11 +9,7 @@
     />
 
     @if (facade.canCreate()) {
-      <daqiq-button
-        label="ایجاد مشتری"
-        icon="pi pi-plus"
-        (pressed)="handleCreate()"
-      />
+      <daqiq-button label="ایجاد مشتری" icon="pi pi-plus" (pressed)="handleCreate()" />
     }
   </div>
 
